@@ -1,4 +1,4 @@
-package com.example.projecthub
+package com.lsoys.projecthub
 
 import io.flutter.embedding.android.FlutterActivity
 
