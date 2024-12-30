@@ -22,7 +22,7 @@ class CategoriesPage extends StatefulWidget {
 }
 
 class _CategoriesPage extends State<CategoriesPage> {
-  List<Design> categoryModelList = [];
+  List<CategoryModel> categoryModelList = [];
 
   @override
   void initState() {
@@ -107,7 +107,7 @@ class _CategoriesPage extends State<CategoriesPage> {
 }
 
 class BackGroundTile extends StatelessWidget {
-  final Design? subCategoryModel;
+  final CategoryModel? subCategoryModel;
   final double? cellHeight;
 
   const BackGroundTile({super.key, this.subCategoryModel, this.cellHeight});

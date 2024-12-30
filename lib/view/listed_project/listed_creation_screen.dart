@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/config/data_file.dart';
+import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
+import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/view/listed_project/list_new_creation_screen.dart';
-import 'package:projecthub/widgets/app_widgets.dart';
+import 'package:projecthub/widgets/creation_card.dart';
 import 'package:provider/provider.dart';
 
 class ListedProjectScreen extends StatefulWidget {
@@ -84,8 +86,20 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
       ),
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             getSearchField(),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: AppPadding.edgePadding,
+                  right: AppPadding.edgePadding,
+                  top: AppPadding.edgePadding,
+                  bottom: AppPadding.edgePadding * 0.6),
+              child: Text(
+                "My listed creations",
+                style: AppText.heddingStyle2bBlack,
+              ),
+            ),
             Expanded(
               child: ListView.separated(
                   controller: _scrollController,
@@ -106,12 +120,12 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
 
   Widget getSearchField() {
     return AnimatedOpacity(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 400),
       opacity: _isSearchVisible ? 1 : 0,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 400),
         height: _isSearchVisible ? Get.height * 0.10 : 0,
-        color: Colors.white,
+        color: AppColor.bgColor,
         child: _isSearchVisible
             ? Padding(
                 padding: EdgeInsets.all(AppPadding.edgePadding),

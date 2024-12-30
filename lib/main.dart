@@ -36,11 +36,11 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          scaffoldBackgroundColor: const Color(0xFFF5F5F5),
+          scaffoldBackgroundColor: AppColor.bgColor,
           iconTheme: IconThemeData(
             color:
                 AppColor.primaryColor, // Sets the default color for all icons
-            size: 24,
+            size: 21,
           ),
           appBarTheme: AppBarTheme(
             color: AppColor.bgColor,

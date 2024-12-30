@@ -5,48 +5,48 @@ import 'package:lorem_ipsum/lorem_ipsum.dart' as lorem;
 
 class DataFileProvider extends ChangeNotifier {
   // ignore: prefer_final_fields
-  static List<Design> _categories = [
-    Design(
+  static List<CategoryModel> _categories = [
+    CategoryModel(
       image: 'assets/images/d3.png',
-      name: 'Design',
+      name: 'Code0',
       //color: '0XFFFFF6E5',
     ),
-    Design(
+    CategoryModel(
       image: 'assets/images/d4.png',
       name: 'Code',
       color: '0XFFFEE9EB',
     ),
-    Design(
+    CategoryModel(
       image: 'assets/images/user_image.png',
       name: 'Video graphics',
       color: '0XFFECF6FF',
     ),
-    Design(
+    CategoryModel(
       image: 'assets/images/d4.png',
       name: 'Code',
       color: '0XFFFEE9EB',
     ),
-    Design(
+    CategoryModel(
       image: 'assets/images/user_image.png',
       name: 'Video graphics',
       color: '0XFFECF6FF',
     ),
-    Design(
+    CategoryModel(
       image: 'assets/images/d3.png',
-      name: 'Design',
+      name: 'CategoryModel',
       color: '0XFFFFF6E5',
     ),
-    Design(
+    CategoryModel(
       image: 'assets/images/d4.png',
       name: 'Code',
       color: '0XFFFEE9EB',
     ),
-    Design(
+    CategoryModel(
       image: 'assets/images/d5.png',
       name: 'Video graphics',
       color: '0XFFECF6FF',
     ),
-    Design(
+    CategoryModel(
       image: 'assets/images/d6.png',
       name: 'Photography',
       color: '0XFFFFF6E5',
@@ -266,12 +266,86 @@ class DataFileProvider extends ChangeNotifier {
   List<CreationInfoModel> get trendingCreations => _trendingCreations;
   List<CreationInfoModel> get recentlyAddedCreations => _recentlyaddedCreations;
   List<CreationInfoModel> get otherCreations => _otherCreations;
-  List<Design> get categories => _categories;
+  List<CategoryModel> get categories => _categories;
 }
 
 class UserInfoProvider extends ChangeNotifier {
-  // ignore: prefer_final_fields
   List<CreationInfoModel> _userListedCreations = [
+    CreationInfoModel(
+      title: "Creatation title",
+      price: 400,
+      subtitle: lorem.loremIpsum(paragraphs: 3),
+      imagePath: "assets/images/c1.jpg",
+      rating: 4.8,
+      sellerImage: "assets/images/user_image.png",
+      sellerName: "prasad zadokar",
+    ),
+    CreationInfoModel(
+      title: "Creatation title",
+      price: 400,
+      subtitle: lorem.loremIpsum(paragraphs: 3),
+      imagePath: "assets/images/c1.jpg",
+      rating: 4.8,
+      sellerImage: "assets/images/user_image.png",
+      sellerName: "prasad zadokar",
+    ),
+    CreationInfoModel(
+      title: "Creatation title",
+      price: 400,
+      subtitle: lorem.loremIpsum(paragraphs: 3),
+      imagePath: "assets/images/c1.jpg",
+      rating: 4.8,
+      sellerImage: "assets/images/user_image.png",
+      sellerName: "prasad zadokar",
+    ),
+    CreationInfoModel(
+      title: "Creatation title",
+      price: 400,
+      subtitle: lorem.loremIpsum(paragraphs: 3),
+      imagePath: "assets/images/c1.jpg",
+      rating: 4.8,
+      sellerImage: "assets/images/user_image.png",
+      sellerName: "prasad zadokar",
+    ),
+    CreationInfoModel(
+      title: "Demo Product2",
+      subtitle: "my demo product",
+      price: 400,
+      imagePath: "assets/images/d3.png",
+      rating: 4.8,
+      sellerName: "Prasad zadokar",
+      sellerImage: "assets/images/user_image.png",
+    ),
+    CreationInfoModel(
+      title: "Demo Product3",
+      subtitle: "my demo product",
+      price: 400,
+      imagePath: "assets/images/d3.png",
+      rating: 4.8,
+      sellerName: "Prasad zadokar",
+      sellerImage: "assets/images/user_image.png",
+    ),
+    CreationInfoModel(
+      title: "Demo Product4",
+      subtitle: "my demo product",
+      price: 400,
+      imagePath: "assets/images/d3.png",
+      rating: 4.8,
+      sellerName: "Prasad zadokar",
+      sellerImage: "assets/images/user_image.png",
+    ),
+    CreationInfoModel(
+      title: "Demo Product",
+      subtitle: "my demo product",
+      price: 400,
+      imagePath: "assets/images/d3.png",
+      rating: 4.8,
+      sellerName: "Prasad zadokar",
+      sellerImage: "assets/images/user_image.png",
+    )
+  ];
+  // ignore: prefer_final_fields
+  List<CreationInfoModel> _userPurchasedCreations = [
     CreationInfoModel(
       title: "Creatation title",
       price: 400,
@@ -347,4 +421,5 @@ class UserInfoProvider extends ChangeNotifier {
   ];
 
   List<CreationInfoModel> get userListedCreations => _userListedCreations;
+  List<CreationInfoModel> get userPerchedCreations => _userListedCreations;
 }

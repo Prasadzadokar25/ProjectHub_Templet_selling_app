@@ -7,6 +7,7 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/model/creation_info_model.dart';
+import 'package:projecthub/widgets/app_primary_button.dart';
 
 // ignore: must_be_immutable
 class ProductDetailsScreen extends StatefulWidget {
@@ -309,47 +310,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(
-                    flex: 1,
-                    child: InkWell(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      child: Container(
-                        height: Get.height * 0.06,
-                        decoration: BoxDecoration(
-                          color: AppColor.primaryColor,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 15),
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                            Text(
-                              "Add To Cart",
-                              style: AppText.heddingStyle2bWhite,
-                            )
-                          ],
-                        ),
-                      ),
-                      onTap: () {
-                        SnackBar snackBar = const SnackBar(
-                          content: Text("Product added"),
-                          duration: Duration(milliseconds: 500),
-                        );
-
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      },
+                  AppPrimaryButton(
+                    title: "Add To Cart",
+                    icon: const Icon(
+                      Icons.shopping_cart,
+                      color: Colors.white,
+                      size: 20,
                     ),
-                  )
+                    onTap: () {
+                      SnackBar snackBar = const SnackBar(
+                        content: Text("Product added"),
+                        duration: Duration(milliseconds: 500),
+                      );
+
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    },
+                  ),
                 ],
               ),
             ),

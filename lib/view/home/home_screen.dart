@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +10,7 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_info_model.dart';
-import 'package:projecthub/widgets/app_widgets.dart';
+import 'package:projecthub/widgets/creation_card.dart';
 import 'package:projecthub/view/home/categories_screen.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<CreationInfoModel> trendingCreations = [];
   List<CreationInfoModel> recentAddedCreations = [];
   List<CreationInfoModel> otherCreations = [];
-  List<Design> categories = [];
+  List<CategoryModel> categories = [];
 
   void getData() async {
     DataFileProvider dataFileProvider = Provider.of<DataFileProvider>(context);
@@ -109,13 +108,15 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
       child: Row(
         children: [
-          Text(leftTitle,
-              style: TextStyle(
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Gilroy',
-              )),
-          new Spacer(),
+          Text(
+            leftTitle,
+            style: TextStyle(
+              fontSize: 17.sp,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Gilroy',
+            ),
+          ),
+          const Spacer(),
           InkWell(
             child: Text(
               rightTitle,
@@ -582,7 +583,7 @@ class _AdverticmentSliderState extends State<AdverticmentSlider> {
 }
 
 class CategoryCard extends StatelessWidget {
-  final Design? subCategoryModel;
+  final CategoryModel? subCategoryModel;
   final double? cellHeight;
 
   const CategoryCard({super.key, this.subCategoryModel, this.cellHeight});
