@@ -3,14 +3,18 @@ import 'package:get/get.dart';
 import 'package:projecthub/constant/app_color.dart';
 
 class AppPrimaryButton extends StatelessWidget {
-  dynamic onTap;
+  dynamic onPressed;
   String title;
   Widget? icon;
+  double? height;
+  Color? backgroundImage;
   AppPrimaryButton({
     super.key,
     required this.title,
-    required this.onTap,
+    required this.onPressed,
     this.icon,
+    this.height,
+    this.backgroundImage,
   });
 
   @override
@@ -19,11 +23,13 @@ class AppPrimaryButton extends StatelessWidget {
       flex: 1,
       child: InkWell(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
-        onTap: onTap,
+        onTap: onPressed,
         child: Container(
-          height: Get.height * 0.06,
+          height: (height != null) ? height : Get.height * 0.06,
           decoration: BoxDecoration(
-            color: AppColor.primaryColor,
+            color: (backgroundImage != null)
+                ? backgroundImage
+                : AppColor.primaryColor,
             borderRadius: const BorderRadius.all(
               Radius.circular(10),
             ),
@@ -48,5 +54,41 @@ class AppPrimaryButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class AppPrimaryElevetedButton extends StatefulWidget {
+  dynamic onPressed;
+  String title;
+  Icon? icon;
+  AppPrimaryElevetedButton(
+      {super.key, required this.onPressed, required this.title, this.icon});
+
+  @override
+  State<AppPrimaryElevetedButton> createState() =>
+      _AppPrimaryElevetedButtonState();
+}
+
+class _AppPrimaryElevetedButtonState extends State<AppPrimaryElevetedButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(1.0),
+      child: ElevatedButton.icon(
+        onPressed: () {},
+        icon: widget.icon,
+        label: Text(
+          widget.title,
+          style: const TextStyle(color: Colors.white),
+        ),
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          backgroundColor: AppColor.iconPrimary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          minimumSize: const Size(double.infinity, 50),
+        ),
+      ),
+    );
+    ;
   }
 }

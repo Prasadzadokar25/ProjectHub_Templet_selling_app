@@ -1,14 +1,20 @@
 // ignore_for_file: non_constant_identifier_names, deprecated_member_use
 
+import 'dart:developer';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/utils/screen_size.dart';
+import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/constant/app_color.dart';
+import 'package:projecthub/controller/login_controller.dart';
+import 'package:projecthub/model/user_info_model.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
+import 'package:provider/provider.dart';
 import '../login/forgot_password.dart';
-import '../login/sign_up/sign_up_empty_screen.dart';
+import 'sign_up/sign_in_phonenumber.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,9 +25,63 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final formkey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final LoginController _loginController = LoginController();
+
+  bool _showCircularIndicater = false;
   bool ispassHiden = false;
+  bool _isSubmitPressedOnce = false;
+
+  checkLogindetails() async {
+    setState(() {
+      _isSubmitPressedOnce = true;
+    });
+    FocusScope.of(context).unfocus();
+    if (formkey.currentState!.validate()) {
+      setState(() {
+        _showCircularIndicater = true;
+      });
+      final res = await _loginController.checkLogindetails(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
+      setState(() {
+        _showCircularIndicater = false;
+      });
+      if (res['status'] == 'True') {
+        log(res['data'][0].toString());
+        // ignore: use_build_context_synchronously
+        Provider.of<UserInfoProvider>(context, listen: false).setUserInfo =
+            UserInfoModel.fromJson(res['data'][0]);
+        //PrefData.setLogin(true);
+
+        //PrefData.setVarification(true);
+        // Get.offAll(const AppNavigationScreen());
+        Get.to(const AppNavigationScreen());
+      } else {
+        String numberTitle = "Mobile number/Email or Password is wrong";
+        String emailTitle = "Email or Password is wrong";
+        Get.snackbar(
+            emailController.text.contains('@') ? emailTitle : numberTitle,
+            "Please enter correct details");
+      }
+    }
+  }
+
+  toggle() {
+    setState(() {
+      ispassHiden = !ispassHiden;
+    });
+  }
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    emailController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +141,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       login_google(),
                       SizedBox(height: 20.h),
                       login_facebook(),
-                      //SizedBox(height: 97.h),
+                      SizedBox(height: 30.h),
+                      if (_showCircularIndicater)
+                        Center(
+                          child: CircularProgressIndicator(
+                            color: AppColor.primaryColor,
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -95,12 +161,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  toggle() {
-    setState(() {
-      ispassHiden = !ispassHiden;
-    });
   }
 
   Widget forgotpassword() {
@@ -126,14 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget loginbutton() {
     return Center(
       child: GestureDetector(
-        onTap: () {
-          if (formkey.currentState!.validate()) {
-            PrefData.setLogin(true);
-
-            //PrefData.setVarification(true);
-            Get.to(const AppNavigationScreen());
-          }
-        },
+        onTap: checkLogindetails,
         child: Container(
           height: 56.h,
           width: 374.w,
@@ -221,14 +274,15 @@ class _LoginScreenState extends State<LoginScreen> {
             TextSpan(
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  Get.to(const SignInEmptyScreen());
+                  Get.to(const SignInPhonenumber());
                 },
               text: '  Sign up',
               style: TextStyle(
-                  color: const Color(0XFF000000),
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Gilroy'),
+                color: const Color(0XFF000000),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Gilroy',
+              ),
             )
           ])),
     );
@@ -274,11 +328,13 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           TextFormField(
             onChanged: (value) {
-              formkey.currentState!.validate();
+              if (_isSubmitPressedOnce) {
+                formkey.currentState!.validate();
+              }
             },
             controller: emailController,
             decoration: InputDecoration(
-              hintText: 'Email',
+              hintText: 'Mobile number / Email',
               hintStyle: TextStyle(
                   fontSize: 15.sp,
                   fontFamily: 'Gilroy',
@@ -306,12 +362,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             validator: (val) {
               if (val!.isEmpty) {
-                return 'Enter the  email';
+                return 'Enter Mobile number or email';
               } else {
-                if (!RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-                    .hasMatch(val)) {
-                  return 'Please enter valid email address';
-                }
+                // if (!RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+                //     .hasMatch(val)) {
+                //   return 'Please enter valid email address';
+                // }
               }
               return null;
             },

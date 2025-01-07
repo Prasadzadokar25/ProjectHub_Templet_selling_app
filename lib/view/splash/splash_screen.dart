@@ -49,13 +49,12 @@ class _SplashscreenState extends State<Splashscreen> {
               child: Container(
                   height: 95.h,
                   width: 95.h,
-                  child: Image(
-                    image:
-                        const AssetImage("assets/images/education_image.png"),
+                  child: Image.asset(
+                    "assets/images/education_image.png",
                     fit: BoxFit.cover,
                   ))),
           Text(
-            "Learn Management",
+            "PROJECT HUB",
             style: TextStyle(
                 fontSize: 28.sp,
                 color: const Color(0XFF23408F),

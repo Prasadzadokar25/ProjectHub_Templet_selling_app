@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
-import 'package:projecthub/config/data_file.dart';
+import 'package:projecthub/config/data_file_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
+import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
@@ -161,9 +162,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
               onPressed: () {
                 _showSaveConfirmationDialog(context);
               },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-              )),
+              icon:AppIcon.backIcon),
           title: const Text("List new creation"),
         ),
         body: Padding(
@@ -279,7 +278,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
               SizedBox(width: Get.width * 0.012),
               AppPrimaryButton(
                 title: "Pick ZIP file",
-                onTap: pickZipFile,
+                onPressed: pickZipFile,
                 icon: const Icon(
                   Icons.folder,
                   color: Colors.white,
@@ -419,7 +418,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         SizedBox(height: Get.height * 0.03),
         getHeaddinfText("Keywords"),
         const Text(
-          "Please press enter while specifying multiple skills. Skills separated by comma or space will be considered as a single entity.",
+          "Please press enter while specifying multiple keyword. Keyword separated by comma or space will be considered as a single entity.",
           style: TextStyle(fontSize: 11, color: Colors.black87),
         ),
         SizedBox(height: Get.height * 0.01),
@@ -471,7 +470,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   _getSubmitButton() {
     return Row(
       children: [
-        AppPrimaryButton(title: "Submit", onTap: () {}),
+        AppPrimaryButton(title: "Submit", onPressed: () {}),
       ],
     );
   }

@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +11,17 @@ import 'package:pinput/pinput.dart';
 import 'package:projecthub/controller/authentication.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
-import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
 import 'package:projecthub/view/home/home_screen.dart';
+import 'package:projecthub/view/login/sign_up/sign_up_add_user_screen.dart';
 
 class Verification extends StatefulWidget {
   final String number;
   final String verificationId;
-  const Verification(
-      {super.key, required this.number, required this.verificationId});
+  const Verification({
+    required this.number,
+    super.key,
+    required this.verificationId,
+  });
 
   @override
   State<Verification> createState() => _VerificationState();
@@ -32,12 +34,13 @@ class _VerificationState extends State<Verification> {
   bool submitPressedOnce = false;
   bool _showCircularIndicater = false;
   final _otpLength = 6;
-
   var userEnteredOtp = "";
 
-  verifyOTP() async {
+
+
+  verifyOTP(String verificationId, String userEnteredOtp) async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: widget.verificationId,
+      verificationId: verificationId,
       smsCode: userEnteredOtp,
     );
     try {
@@ -47,16 +50,15 @@ class _VerificationState extends State<Verification> {
         setState(() {
           _showCircularIndicater = false;
         });
-        PrefData.setLogin(true);
-        Get.offAll(() => const AppNavigationScreen());
+        Get.to(SignUpAddUserScreen(phoneNumber: widget.number));
       }).catchError((error) {
         setState(() {
           _showCircularIndicater = false;
         });
         Get.snackbar(
-          "Error during sign-in",
+          "Error during sign up",
           "OTP not match",
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
           backgroundColor: const Color.fromARGB(255, 233, 243, 252),
         );
       });
@@ -67,6 +69,71 @@ class _VerificationState extends State<Verification> {
       log(e.toString());
       log("error in verifyOTP method");
     }
+  }
+
+  onConfirmPressed() {
+    if (userEnteredOtp.length == _otpLength) {
+      setState(() {
+        _showCircularIndicater = true;
+      });
+      submitPressedOnce = true;
+      verifyOTP(widget.verificationId, userEnteredOtp);
+    } else {
+      Get.snackbar(
+        "OTP not entered",
+        "Please enter valid $_otpLength digit OTP",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: const Color.fromARGB(255, 233, 243, 252),
+      );
+    }
+
+    //   print("otp length ${otp!.length}");
+    //   otp != null
+    //       ? Get.defaultDialog(
+    //           title: '',
+    //           //middleText: '',
+    //           content: Padding(
+    //             padding: EdgeInsets.symmetric(horizontal: 20.w),
+    //             child: Column(
+    //               children: [
+    //                 Image(
+    //                   image: AssetImage("assets/User_Approved.png"),
+    //                   height: 90.h,
+    //                   width: 78.w,
+    //                 ),
+    //                 SizedBox(height: 30.h),
+    //                 Text(
+    //                   "Sucessful !",
+    //                   style: TextStyle(
+    //                       fontSize: 22.sp,
+    //                       fontFamily: 'Gilroy',
+    //                       fontWeight: FontWeight.bold),
+    //                 ),
+    //                 SizedBox(height: 20.h),
+    //                 Text(
+    //                   "Your password has been changed sucessfully ! ",
+    //                   style: TextStyle(
+    //                       fontSize: 15.sp,
+    //                       fontFamily: 'Gilroy',
+    //                       fontWeight: FontWeight.w700),
+    //                   textAlign: TextAlign.center,
+    //                 ),
+    //                 SizedBox(height: 32.h),
+    //                 ok_button(),
+    //               ],
+    //             ),
+    //           ),
+    //         )
+    //       : Fluttertoast.showToast(
+    //           msg: "Please enter the OTP",
+    //           toastLength: Toast.LENGTH_SHORT,
+    //           gravity: ToastGravity.CENTER,
+    //           timeInSecForIosWeb: 1,
+    //           backgroundColor: Colors.red,
+    //           textColor: Colors.white,
+    //           fontSize: 16.0.sp);
+
+    //   // Navigator.
   }
 
   @override
@@ -93,7 +160,7 @@ class _VerificationState extends State<Verification> {
                     style: TextStyle(
                         fontSize: 24.sp,
                         fontFamily: 'Gilroy',
-                        color: Color(0XFF000000),
+                        color: const Color(0XFF000000),
                         fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -107,7 +174,7 @@ class _VerificationState extends State<Verification> {
                         child: Text(
                           "OTP sent to the ${widget.number}",
                           style: TextStyle(
-                              color: Color(0XFF000000),
+                              color: const Color(0XFF000000),
                               fontSize: 15.sp,
                               fontFamily: 'Gilroy',
                               fontWeight: FontWeight.bold),
@@ -117,16 +184,16 @@ class _VerificationState extends State<Verification> {
                       SizedBox(height: 20.h),
                       otpformat(),
                       SizedBox(height: 30.h),
-                      Confirmbutton(),
+                      confirmbutton(),
                       SizedBox(height: 50.h),
                       if (_showCircularIndicater)
-                        Center(child: CircularProgressIndicator()),
+                        const Center(child: CircularProgressIndicator()),
                     ],
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 30.h),
-                  child: resend_otp_button(),
+                  child: resendOtpButton(),
                 )
               ],
             ),
@@ -151,7 +218,7 @@ class _VerificationState extends State<Verification> {
               setState(() {
                 _showCircularIndicater = true;
               });
-              verifyOTP();
+              verifyOTP(widget.verificationId, userEnteredOtp);
             }
           },
           length: _otpLength,
@@ -170,73 +237,10 @@ class _VerificationState extends State<Verification> {
         child: const Icon(Icons.arrow_back_ios, color: Color(0XFF000000)));
   }
 
-  Widget Confirmbutton() {
+  Widget confirmbutton() {
     return Center(
         child: GestureDetector(
-      onTap: () {
-        if (userEnteredOtp.length != _otpLength) {
-          Get.snackbar(
-            "OTP not entered",
-            "Please enter valid $_otpLength digit OTP",
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: const Color.fromARGB(255, 233, 243, 252),
-          );
-        } else {
-          setState(() {
-            _showCircularIndicater = true;
-          });
-          submitPressedOnce = true;
-          verifyOTP();
-        }
-
-        //   print("otp length ${otp!.length}");
-        //   otp != null
-        //       ? Get.defaultDialog(
-        //           title: '',
-        //           //middleText: '',
-        //           content: Padding(
-        //             padding: EdgeInsets.symmetric(horizontal: 20.w),
-        //             child: Column(
-        //               children: [
-        //                 Image(
-        //                   image: AssetImage("assets/User_Approved.png"),
-        //                   height: 90.h,
-        //                   width: 78.w,
-        //                 ),
-        //                 SizedBox(height: 30.h),
-        //                 Text(
-        //                   "Sucessful !",
-        //                   style: TextStyle(
-        //                       fontSize: 22.sp,
-        //                       fontFamily: 'Gilroy',
-        //                       fontWeight: FontWeight.bold),
-        //                 ),
-        //                 SizedBox(height: 20.h),
-        //                 Text(
-        //                   "Your password has been changed sucessfully ! ",
-        //                   style: TextStyle(
-        //                       fontSize: 15.sp,
-        //                       fontFamily: 'Gilroy',
-        //                       fontWeight: FontWeight.w700),
-        //                   textAlign: TextAlign.center,
-        //                 ),
-        //                 SizedBox(height: 32.h),
-        //                 ok_button(),
-        //               ],
-        //             ),
-        //           ),
-        //         )
-        //       : Fluttertoast.showToast(
-        //           msg: "Please enter the OTP",
-        //           toastLength: Toast.LENGTH_SHORT,
-        //           gravity: ToastGravity.CENTER,
-        //           timeInSecForIosWeb: 1,
-        //           backgroundColor: Colors.red,
-        //           textColor: Colors.white,
-        //           fontSize: 16.0.sp);
-
-        //   // Navigator.
-      },
+      onTap: onConfirmPressed,
       child: Container(
         height: 56.h,
         width: 374.w,
@@ -246,25 +250,28 @@ class _VerificationState extends State<Verification> {
           color: const Color(0XFF23408F),
         ),
         child: Center(
-          child: Text("Confirm",
-              style: TextStyle(
-                  color: const Color(0XFFFFFFFF),
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Gilroy')),
+          child: Text(
+            "Confirm",
+            style: TextStyle(
+              color: const Color(0XFFFFFFFF),
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Gilroy',
+            ),
+          ),
         ),
       ),
     ));
   }
 
-  Widget resend_otp_button() {
+  Widget resendOtpButton() {
     return Center(
       child: RichText(
-          text: TextSpan(
-              text: 'Don’t receive code?',
-              style: TextStyle(
-                  color: Colors.black, fontSize: 15.sp, fontFamily: 'Gilroy'),
-              children: [
+        text: TextSpan(
+          text: 'Don’t receive code?',
+          style: TextStyle(
+              color: Colors.black, fontSize: 15.sp, fontFamily: 'Gilroy'),
+          children: [
             TextSpan(
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
@@ -273,16 +280,18 @@ class _VerificationState extends State<Verification> {
               text: ' Resend',
               style: TextStyle(
                   fontFamily: 'Gilroy',
-                  color: Color(0XFF000000),
+                  color: const Color(0XFF000000),
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w700,
                   fontStyle: FontStyle.normal),
             )
-          ])),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget ok_button() {
+  Widget okButton() {
     return Padding(
       padding: EdgeInsets.only(bottom: 20.h),
       child: Center(
@@ -302,7 +311,7 @@ class _VerificationState extends State<Verification> {
             child: Center(
               child: Text("Ok",
                   style: TextStyle(
-                      color: Color(0XFFFFFFFF),
+                      color: const Color(0XFFFFFFFF),
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Gilroy')),

@@ -317,7 +317,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       color: Colors.white,
                       size: 20,
                     ),
-                    onTap: () {
+                    onPressed: () {
                       SnackBar snackBar = const SnackBar(
                         content: Text("Product added"),
                         duration: Duration(milliseconds: 500),

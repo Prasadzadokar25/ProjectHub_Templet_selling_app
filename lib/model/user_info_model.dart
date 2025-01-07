@@ -1,14 +1,103 @@
 class UserInfoModel {
-  int id;
-  String name;
-  String mail;
-  String phoneNo;
+  int userId;
+  String userName;
+  String userPassword;
+  String? userDescription;
+  String? userContact;
+  String? userEmail;
+  String? profilePhoto;
+  String role;
+  double walletMoney;
+  int boughthCreationNumber;
+  int listedCreationNumber;
 
   // Constructor
   UserInfoModel({
-    required this.id,
-    required this.name,
-    required this.mail,
-    required this.phoneNo,
+    required this.userId,
+    required this.userName,
+    required this.userPassword,
+    this.userDescription,
+    this.userContact,
+    this.userEmail,
+    this.profilePhoto,
+    required this.role,
+    required this.walletMoney,
+    required this.boughthCreationNumber,
+    required this.listedCreationNumber,
   });
+
+  // toJson Method
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'user_name': userName,
+      'user_password': userPassword,
+      'user_description': userDescription,
+      'user_contact': userContact,
+      'user_email': userEmail,
+      'profile_photo': profilePhoto,
+      'role': role,
+      'wallet_money': walletMoney,
+      'boughth_creation_number': boughthCreationNumber,
+      'listed_creation_number': listedCreationNumber,
+    };
+  }
+
+  // fromJson Method
+  factory UserInfoModel.fromJson(Map<String, dynamic> json) {
+    return UserInfoModel(
+      userId: json['user_id'],
+      userName: json['user_name'],
+      userPassword: json['user_password'],
+      userDescription: json['user_description'],
+      userContact: json['user_contact'],
+      userEmail: json['user_email'],
+      profilePhoto: json['profile_photo'],
+      role: json['role'],
+      walletMoney: double.parse(json['wallet_money']),
+      boughthCreationNumber: json['boughth_creation_number'],
+      listedCreationNumber: json['listed_creation_number'],
+    );
+  }
+}
+
+class NewUserInfo {
+  String userName;
+  String userPassword;
+  String userContact;
+  //String userEmail;
+  String? profilePhoto;
+  String role;
+
+  // Constructor
+  NewUserInfo({
+    required this.userName,
+    required this.userPassword,
+    required this.userContact,
+    //required this.userEmail,
+    required this.role,
+  });
+
+  // toJson Method
+  Map<String, dynamic> toJson() {
+    return {
+      'user_name': userName,
+      'user_password': userPassword,
+      'user_contact': userContact,
+      //'user_email': userEmail,
+      'profile_photo': profilePhoto,
+      'role': role,
+    };
+  }
+
+  // fromJson Method
+  factory NewUserInfo.fromJson(Map<String, dynamic> json) {
+    return NewUserInfo(
+      userName: json['user_name'],
+      userPassword: json['user_password'],
+      userContact: json['user_contact'],
+      //userEmail: json['user_email'],
+      role: json['role'],
+    );
+  }
 }

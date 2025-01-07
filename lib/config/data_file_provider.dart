@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart' as lorem;
+import 'package:projecthub/model/user_info_model.dart';
 
 class DataFileProvider extends ChangeNotifier {
   // ignore: prefer_final_fields
@@ -270,6 +272,8 @@ class DataFileProvider extends ChangeNotifier {
 }
 
 class UserInfoProvider extends ChangeNotifier {
+  UserInfoModel? _user;
+
   // ignore: prefer_final_fields
   List<CreationInfoModel> _userListedCreations = [
     CreationInfoModel(
@@ -420,7 +424,88 @@ class UserInfoProvider extends ChangeNotifier {
       sellerImage: "assets/images/user_image.png",
     )
   ];
+  List<CreationInfoModel> _userInCartCreation = [
+    CreationInfoModel(
+      title: "Creatation title",
+      price: 400,
+      subtitle: lorem.loremIpsum(paragraphs: 3),
+      imagePath: "assets/images/c1.jpg",
+      rating: 4.8,
+      sellerImage: "assets/images/user_image.png",
+      sellerName: "prasad zadokar",
+    ),
+    CreationInfoModel(
+      title: "Creatation title",
+      price: 400,
+      subtitle: lorem.loremIpsum(paragraphs: 3),
+      imagePath: "assets/images/c1.jpg",
+      rating: 4.8,
+      sellerImage: "assets/images/user_image.png",
+      sellerName: "prasad zadokar",
+    ),
+    CreationInfoModel(
+      title: "Creatation title",
+      price: 400,
+      subtitle: lorem.loremIpsum(paragraphs: 3),
+      imagePath: "assets/images/c1.jpg",
+      rating: 4.8,
+      sellerImage: "assets/images/user_image.png",
+      sellerName: "prasad zadokar",
+    ),
+    CreationInfoModel(
+      title: "Creatation title",
+      price: 400,
+      subtitle: lorem.loremIpsum(paragraphs: 3),
+      imagePath: "assets/images/c1.jpg",
+      rating: 4.8,
+      sellerImage: "assets/images/user_image.png",
+      sellerName: "prasad zadokar",
+    ),
+    CreationInfoModel(
+      title: "Demo Product2",
+      subtitle: "my demo product",
+      price: 400,
+      imagePath: "assets/images/d3.png",
+      rating: 4.8,
+      sellerName: "Prasad zadokar",
+      sellerImage: "assets/images/user_image.png",
+    ),
+    CreationInfoModel(
+      title: "Demo Product3",
+      subtitle: "my demo product",
+      price: 400,
+      imagePath: "assets/images/d3.png",
+      rating: 4.8,
+      sellerName: "Prasad zadokar",
+      sellerImage: "assets/images/user_image.png",
+    ),
+    CreationInfoModel(
+      title: "Demo Product4",
+      subtitle: "my demo product",
+      price: 400,
+      imagePath: "assets/images/d3.png",
+      rating: 4.8,
+      sellerName: "Prasad zadokar",
+      sellerImage: "assets/images/user_image.png",
+    ),
+    CreationInfoModel(
+      title: "Demo Product",
+      subtitle: "my demo product",
+      price: 400,
+      imagePath: "assets/images/d3.png",
+      rating: 4.8,
+      sellerName: "Prasad zadokar",
+      sellerImage: "assets/images/user_image.png",
+    )
+  ];
 
+  set setUserInfo(UserInfoModel userInfo) {
+    _user = userInfo;
+    notifyListeners();
+  }
+
+  UserInfoModel get getUserInfo => _user!;
   List<CreationInfoModel> get userListedCreations => _userListedCreations;
   List<CreationInfoModel> get userPerchedCreations => _userListedCreations;
+  List<CreationInfoModel> get userInCartCreation => _userInCartCreation;
 }

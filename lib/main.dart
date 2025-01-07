@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/config/data_file.dart';
+import 'package:projecthub/config/data_file_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
           iconTheme: IconThemeData(
             color:
                 AppColor.primaryColor, // Sets the default color for all icons
-            size: 21,
+            size: 21
+            ,
           ),
           appBarTheme: AppBarTheme(
             color: AppColor.bgColor,

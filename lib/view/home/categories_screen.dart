@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image/image.dart' as img;
 import 'package:palette_generator/palette_generator.dart';
-import 'package:projecthub/config/data_file.dart';
+import 'package:projecthub/config/data_file_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/model/categories_info_model.dart';
