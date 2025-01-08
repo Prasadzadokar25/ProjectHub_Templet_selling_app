@@ -20,15 +20,16 @@ class PrefData {
   }
 
   ///////////////////Ligin Screen////////////////////
-  static setLogin(bool login) async {
+  // this method save the id of user for, last login
+  static setLogin(int id) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setBool(isLogin, login);
+    sharedPreferences.setInt(isLogin, id);
   }
 
   static getLogin() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    bool Login = sharedPreferences.getBool(isLogin) ?? false;
-    return Login;
+    int id = sharedPreferences.getInt(isLogin) ?? -1;
+    return id;
   }
   /////////////////////varification/////////
   // static setVarification(bool varification) async {

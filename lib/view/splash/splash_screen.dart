@@ -3,20 +3,25 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/controller/user_controller.dart';
+import 'package:projecthub/model/user_info_model.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
 import 'package:projecthub/view/slider_screen/slider_screen.dart';
+import 'package:provider/provider.dart';
 import '../login/login_screen.dart';
 
 class Splashscreen extends StatefulWidget {
-  const Splashscreen({Key? key}) : super(key: key);
+  const Splashscreen({super.key});
 
   @override
   State<Splashscreen> createState() => _SplashscreenState();
 }
 
 class _SplashscreenState extends State<Splashscreen> {
+  final UserController _userController = UserController();
   @override
   void initState() {
     super.initState();
@@ -25,15 +30,28 @@ class _SplashscreenState extends State<Splashscreen> {
 
   getIntro() async {
     bool isIntro = await PrefData.getIntro();
-    bool isLogin = await PrefData.getLogin();
+    int isLoginId = await PrefData.getLogin();
 
     if (isIntro == false) {
       Timer(const Duration(seconds: 3), () => Get.to(const SlidePage()));
-    } else if (isLogin == false) {
+    } else if (isLoginId == -1) {
       Get.to(const LoginScreen());
     } else {
-      Get.to(const AppNavigationScreen());
+      final userDetails = await _userController.getUserDetailsById(isLoginId);
+      if (userDetails['status']) {
+        // ignore: use_build_context_synchronously
+        Provider.of<UserInfoProvider>(context, listen: false).setUserInfo =
+            UserInfoModel.fromJson(userDetails['responce']['data']);
+
+        Get.to(const AppNavigationScreen());
+      } else {
+        Get.snackbar("App server error", "Please clear app cache");
+      }
     }
+  }
+
+  getUserDetailsById(id) {
+    _userController.getUserDetailsById(id);
   }
 
   // PrefData.setVarification(true);
@@ -46,7 +64,7 @@ class _SplashscreenState extends State<Splashscreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-              child: Container(
+              child: SizedBox(
                   height: 95.h,
                   width: 95.h,
                   child: Image.asset(

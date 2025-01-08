@@ -5,6 +5,3 @@ class Sliders {
 
   Sliders({this.image, this.title, this.name});
 }
-
-
-

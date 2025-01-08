@@ -38,4 +38,11 @@ class AppText {
     color: const Color(0XFF9B9B9B),
     fontWeight: FontWeight.bold,
   );
+
+  static TextStyle errorMassageTextStyle = const TextStyle(
+    fontSize: 12,
+    fontFamily: 'Gilroy',
+    color: Color.fromARGB(255, 177, 22, 22),
+    fontWeight: FontWeight.w400,
+  );
 }

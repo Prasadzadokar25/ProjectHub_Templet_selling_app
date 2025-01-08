@@ -1,0 +1,58 @@
+# user table
+
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(100) NOT NULL,
+    user_password VARCHAR(255) NOT NULL,
+    user_description TEXT,
+    user_contact VARCHAR(20) UNIQUE DEFAULT NULL,
+    user_email VARCHAR(255) UNIQUE DEFAULT NULL,
+    role VARCHAR(50) NOT NULL,
+    wallet_money DECIMAL(10, 2) DEFAULT 0.00,
+    boughth_creation_number INT DEFAULT 0,
+    listed_creation_number INT DEFAULT 0,
+    reference_code VARCHAR(50),
+    profile_photo VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+# creation table
+
+CREATE TABLE creations (
+    creation_id INT AUTO_INCREMENT PRIMARY KEY,
+    creation_title VARCHAR(255) NOT NULL,
+    creation_description TEXT NOT NULL,
+    creation_price DECIMAL(10, 2) NOT NULL,
+    creation_thumbnail VARCHAR(255) NOT NULL,
+    creation_file VARCHAR(255) NOT NULL,
+    category_id INT NOT NULL,
+    keyword TEXT DEFAULT NULL,  -- Allowing keyword to be NULL
+    creation_other_images TEXT DEFAULT NULL,
+    total_copy_sell INT DEFAULT 0,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+# rating table
+
+CREATE TABLE ratings (
+    rating_id INT AUTO_INCREMENT PRIMARY KEY,
+    creation_id INT NOT NULL,
+    user_id INT NOT NULL,
+    rating DECIMAL(3, 2) NOT NULL CHECK (rating >= 0 AND rating <= 5),
+    comment TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (creation_id) REFERENCES creations(creation_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+# categories table
+
+CREATE TABLE categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(255) NOT NULL,
+    category_description TEXT DEFAULT NULL,
+    keywords TEXT DEFAULT NULL
+);

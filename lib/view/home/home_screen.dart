@@ -30,6 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<CreationInfoModel> otherCreations = [];
   List<CategoryModel> categories = [];
 
+
+
   void getData() async {
     DataFileProvider dataFileProvider = Provider.of<DataFileProvider>(context);
     adeverticmentIterm = dataFileProvider.adeverticmentIterm;
@@ -528,11 +530,7 @@ class AdverticmentSlider extends StatefulWidget {
 
 class _AdverticmentSliderState extends State<AdverticmentSlider> {
   List<Widget> adverticementSliderWidgets = [];
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+ 
 
   @override
   Widget build(BuildContext context) {

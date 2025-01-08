@@ -11,7 +11,7 @@ import '../login/reset_password.dart';
 import 'login_screen.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key}) : super(key: key);
+  const ForgotPassword({super.key});
 
   @override
   State<ForgotPassword> createState() => _ForgotPasswordState();
@@ -90,7 +90,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Center(
       child: GestureDetector(
         onTap: () {
-          Get.to(ResetPassword());
+          Get.to(const ResetPassword());
         },
         child: Container(
           height: 56.h,
@@ -103,7 +103,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           child: Center(
             child: Text("Submit",
                 style: TextStyle(
-                    color: Color(0XFFFFFFFF),
+                    color: const Color(0XFFFFFFFF),
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Gilroy')),
@@ -132,7 +132,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               text: ' Login',
               style: TextStyle(
                   fontFamily: 'Gilroy',
-                  color: Color(0XFF000000),
+                  color: const Color(0XFF000000),
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w700),
             )
@@ -172,7 +172,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       onPressed: () {
         Get.back();
       },
-      icon: Icon(
+      icon: const Icon(
         Icons.arrow_back_ios_rounded,
         size: 20,
       ),

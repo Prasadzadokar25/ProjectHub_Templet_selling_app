@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:projecthub/config/data_file_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
@@ -11,6 +15,7 @@ import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/model/categories_info_model.dart';
+import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
@@ -28,16 +33,20 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _keywordController = TextEditingController();
   final TextEditingController _filePathController = TextEditingController();
+  final _infoFormKey = GlobalKey<FormState>();
+  final _categoryInfoKey = GlobalKey<FormState>();
   List<CategoryModel> _categories = [];
   bool _showCategories = false;
   List<CategoryModel> _filteredCategories = [];
+  String thumbnailErrorMassage = '';
   List<String> _keywords = [];
-  String? selectedFileName;
+  bool _submitPressedOnce = false;
+  XFile? _thumbnailImage;
 
   @override
   void initState() {
     super.initState();
-    _filePathController.text = "No file selected";
+
     _filteredCategories = _categories;
     _categoryController.addListener(() {
       setState(() {
@@ -61,6 +70,31 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
     super.dispose();
   }
 
+  // Function to request permissions and pick an image
+  Future<void> _pickImage() async {
+    // Request permissions before picking the image
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    //PermissionStatus status = await Permission.photos.request();
+    if (true) {
+      if (pickedFile != null) {
+        setState(() {
+          _thumbnailImage = pickedFile;
+          thumbnailErrorMassage = "";
+        });
+      } else {
+        Get.snackbar(
+            "Thumbnail not selected", "Thumbanil selection was canceled");
+      }
+    }
+    // else {
+    //   // Handle the case when permission is denied
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text('Permission denied to access photos')),
+    //   );
+    // }
+  }
+
   Future<void> pickZipFile() async {
     // Use file_picker to pick a ZIP file
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -73,7 +107,6 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
 
       if (filePath != null && filePath.endsWith('.zip')) {
         setState(() {
-          selectedFileName = path.basename(filePath);
           _filePathController.text =
               path.basename(filePath); // Extract file name
         });
@@ -82,7 +115,6 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
           Get.snackbar("File not selected",
               "Invalid file type. Please select a ZIP file..");
 
-          selectedFileName = null;
           _filePathController.text = "";
         });
       }
@@ -108,32 +140,34 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   }
 
   Future<bool> _showSaveConfirmationDialog(BuildContext context) async {
-    bool? shouldSave = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Save Changes?'),
-          content: const Text(
-              'You have unsaved changes. Do you want to leave without saving?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // User does not want to save
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Get.back();
-                Get.back();
-              },
-              child: const Text('Discard'),
-            ),
-          ],
-        );
-      },
-    );
-    return shouldSave ?? false; // Default to false if null
+    bool allowBAck = false;
+    Get.defaultDialog(onCancel: () {
+      FocusScope.of(context).unfocus();
+    }, onConfirm: () {
+      Get.back();
+      Get.back();
+      allowBAck = true;
+    });
+
+    // Default to false if null
+    return allowBAck;
+  }
+
+  onSubmit() {
+    setState(() {
+      if (_thumbnailImage == null) {
+        thumbnailErrorMassage = "Please select thumbnail";
+      } else {
+        thumbnailErrorMassage = "";
+      }
+      _submitPressedOnce = true;
+    });
+    bool isBasicInfoFilled = _infoFormKey.currentState!.validate();
+    bool isCategorySelected = _categoryInfoKey.currentState!.validate();
+    if (isBasicInfoFilled || isCategorySelected) {
+
+
+    }
   }
 
   getData() {
@@ -146,14 +180,13 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
     return WillPopScope(
       onWillPop: () async {
         // Show the save confirmation dialog
-        bool shouldSave = await _showSaveConfirmationDialog(context);
-        if (shouldSave) {
-          // Perform save operation here
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Saving changes...')),
-          );
+        bool allowBAck = await _showSaveConfirmationDialog(context);
+        if (allowBAck) {
+          Get.back();
         }
-        return shouldSave; // Allow or block navigation
+        return allowBAck;
+
+        // Allow or block navigation
       },
       child: Scaffold(
         appBar: AppBar(
@@ -162,7 +195,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
               onPressed: () {
                 _showSaveConfirmationDialog(context);
               },
-              icon:AppIcon.backIcon),
+              icon: AppIcon.backIcon),
           title: const Text("List new creation"),
         ),
         body: Padding(
@@ -170,7 +203,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
           child: ListView(
             children: [
               SizedBox(height: Get.height * 0.02),
-              getThumbnailView(),
+              getThumbnailView(_thumbnailImage),
               SizedBox(height: Get.height * 0.04),
               getInformationForm(),
               SizedBox(height: Get.height * 0.04),
@@ -196,47 +229,92 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
     );
   }
 
-  getThumbnailView() {
+  getThumbnailView(image) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        getHeaddinfText("Thumbnail"),
+        getHeaddinfText("Thumbnail *"),
         SizedBox(height: Get.height * 0.01),
-        DottedBorder(
-          color: AppColor.primaryColor, // Border color
-          strokeWidth: 2, // Border width
-          dashPattern: const [6, 4], // Dash and space pattern
-          borderType: BorderType.RRect,
-          radius: const Radius.circular(12), // Rounded corners
-          child: Container(
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 234, 237, 250),
-                borderRadius: BorderRadius.circular(12)),
-            width: double.infinity, // Width of the container
-            height: Get.height * 0.18, // Height of the container
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.add_photo_alternate,
-                  size: 40,
-                  color: Colors.grey,
+        GestureDetector(
+          onTap: _pickImage,
+          child: (image != null)
+              ? Container(
+                  width: double.infinity, // Width of the container
+                  height: 210.h,
+                  decoration: BoxDecoration(
+                    //color: AppColor.primaryColor,
+                    image: DecorationImage(
+                        image: FileImage(File(image.path)), fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(16),
+                    border:
+                        Border.all(color: AppColor.primaryColor, width: 1.5),
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: const Stack(
+                    children: [
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            child: Icon(Icons.edit)),
+                      )
+                    ],
+                  ), // Height of the container
+                )
+              : DottedBorder(
+                  color: AppColor.primaryColor, // Border color
+                  strokeWidth: 2, // Border width
+                  dashPattern: const [6, 4], // Dash and space pattern
+                  borderType: BorderType.RRect,
+                  radius: const Radius.circular(12), // Rounded corners
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 234, 237, 250),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    width: double.infinity, // Width of the container
+                    height: 200.h, // Height of the container
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add_photo_alternate,
+                          size: 40,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Add Thumbnail',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                SizedBox(height: 8),
-                Text(
-                  'Add Thumbnail',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ],
-            ),
-          ),
         ),
+        SizedBox(
+          height: 10.h,
+        ),
+        if (thumbnailErrorMassage.isNotEmpty)
+          Row(
+            children: [
+              SizedBox(
+                width: 20.w,
+              ),
+              Text(
+                thumbnailErrorMassage,
+                style: AppText.errorMassageTextStyle,
+              ),
+            ],
+          ),
       ],
     );
   }
 
   getInformationForm() {
     return Form(
+      key: _infoFormKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -249,36 +327,57 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
             style: TextStyle(fontSize: 11, color: Colors.black87),
           ),
           SizedBox(height: Get.height * 0.028),
-          getHeaddinfText("Product name"),
+          getHeaddinfText("Product name *"),
           SizedBox(height: Get.height * 0.01),
-          _getInfoTextField(controller: _productNameController),
+          _getInfoTextField(
+            controller: _productNameController,
+            title: "Product name",
+          ),
           SizedBox(height: Get.height * 0.028),
           getHeaddinfText("Description"),
           SizedBox(height: Get.height * 0.01),
-          _getInfoTextField(controller: _descriptionController, maxLines: 4),
+          _getInfoTextField(
+            controller: _descriptionController,
+            maxLines: 4,
+            title: "Description",
+            canNull: true,
+          ),
           SizedBox(height: Get.height * 0.028),
-          getHeaddinfText("Price"),
-          SizedBox(height: Get.height * 0.01),
+          getHeaddinfText("Price *"),
+          SizedBox(
+            height: Get.height * 0.01,
+          ),
           _getInfoTextField(
             controller: _priceController,
             isNumeric: true,
             prfixIcon: const Text("₹"),
+            title: "Price",
           ),
           SizedBox(height: Get.height * 0.028),
-          getHeaddinfText("Select file"),
+          getHeaddinfText("Select file *"),
           SizedBox(height: Get.height * 0.01),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
                 width: (Get.width - 2 * AppPadding.edgePadding) * 0.6,
                 child: _getInfoTextField(
-                    controller: _filePathController, readOnly: true),
+                  controller: _filePathController,
+                  readOnly: true,
+                  title: "File",
+                  hintText: "No file selected",
+                ),
               ),
               SizedBox(width: Get.width * 0.012),
               AppPrimaryButton(
                 title: "Pick ZIP file",
-                onPressed: pickZipFile,
+                onPressed: () {
+                  if (_submitPressedOnce) {
+                    _infoFormKey.currentState!.validate();
+                  }
+                  pickZipFile();
+                },
                 icon: const Icon(
                   Icons.folder,
                   color: Colors.white,
@@ -291,12 +390,19 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
     );
   }
 
+  bool isInteger(String str) {
+    return int.tryParse(str) != null;
+  }
+
   _getInfoTextField({
-    TextEditingController? controller,
+    required TextEditingController controller,
     int? maxLines,
     Widget? prfixIcon,
     bool? isNumeric,
     bool? readOnly,
+    required String title,
+    bool canNull = false,
+    String? hintText,
   }) {
     return TextFormField(
       onTapOutside: (p) {
@@ -304,13 +410,18 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
           FocusScope.of(context).unfocus();
         });
       },
+      onChanged: (value) {
+        if (_submitPressedOnce) {
+          _infoFormKey.currentState!.validate();
+        }
+      },
       controller: controller,
       readOnly: (readOnly != null) ? readOnly : false,
       maxLines: maxLines,
       keyboardType:
           (isNumeric != null && isNumeric) ? TextInputType.number : null,
       decoration: InputDecoration(
-        //hintText: 'Password',
+        hintText: hintText,
         prefixIcon: (prfixIcon != null)
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -334,8 +445,15 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         ),
       ),
       validator: (value) {
-        if (value != null && value.isEmpty) {
-          return "Product name should not empty";
+        if (!canNull) {
+          if (value != null && value.isEmpty) {
+            return "$title should not empty";
+          }
+        }
+        if (isNumeric != null &&
+            isNumeric &&
+            !isInteger(controller.text.trim())) {
+          return "Please enter intiger value";
         }
         return null;
       },
@@ -355,42 +473,51 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
           style: TextStyle(fontSize: 11, color: Colors.black87),
         ),
         SizedBox(height: Get.height * 0.028),
-        getHeaddinfText("Category"),
+        getHeaddinfText("Category *"),
         SizedBox(height: Get.height * 0.01),
-        TextFormField(
-          onTapOutside: (p) {
-            setState(() {
-              //_showCategories = false;
-              // FocusScope.of(context).unfocus();
-            });
-          },
-          onTap: () {
-            setState(() {
-              _showCategories = true;
-            });
-          },
-          onChanged: (value) {
-            setState(() {
-              _showCategories = true;
-            });
-          },
-          //readOnly: true,
-          controller: _categoryController,
-          decoration: InputDecoration(
-              hintText: "--- Select ---",
-              focusedErrorBorder: AppTextfieldBorder.focusedErrorBorder,
-              errorBorder: AppTextfieldBorder.errorBorder,
-              focusedBorder: AppTextfieldBorder.focusedBorder,
-              enabledBorder: AppTextfieldBorder.enabledBorder,
-              filled: true,
-              fillColor: const Color(0xFFF5F5F5),
-              contentPadding: EdgeInsets.only(
-                left: 20.w,
-                top: 10.h,
-                bottom: 10.h,
-                right: 20.w,
-              ),
-              suffixIcon: const Icon(Icons.arrow_drop_down)),
+        Form(
+          key: _categoryInfoKey,
+          child: TextFormField(
+            validator: (value) {
+              if (value != null && value.isEmpty) {
+                return "Please select category";
+              }
+              return null;
+            },
+            onTapOutside: (p) {
+              setState(() {
+                _showCategories = false;
+                FocusScope.of(context).unfocus();
+              });
+            },
+            onTap: () {
+              setState(() {
+                _showCategories = true;
+              });
+            },
+            onChanged: (value) {
+              setState(() {
+                _showCategories = true;
+              });
+            },
+            //readOnly: true,
+            controller: _categoryController,
+            decoration: InputDecoration(
+                hintText: "--- Select ---",
+                focusedErrorBorder: AppTextfieldBorder.focusedErrorBorder,
+                errorBorder: AppTextfieldBorder.errorBorder,
+                focusedBorder: AppTextfieldBorder.focusedBorder,
+                enabledBorder: AppTextfieldBorder.enabledBorder,
+                filled: true,
+                fillColor: const Color(0xFFF5F5F5),
+                contentPadding: EdgeInsets.only(
+                  left: 20.w,
+                  top: 10.h,
+                  bottom: 10.h,
+                  right: 20.w,
+                ),
+                suffixIcon: const Icon(Icons.arrow_drop_down)),
+          ),
         ),
         if (_showCategories)
           Container(
@@ -470,7 +597,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   _getSubmitButton() {
     return Row(
       children: [
-        AppPrimaryButton(title: "Submit", onPressed: () {}),
+        AppPrimaryButton(title: "Submit", onPressed: onSubmit),
       ],
     );
   }

@@ -6,7 +6,7 @@ import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/utils/screen_size.dart';
 
 class TermCondition extends StatefulWidget {
-  const TermCondition({Key? key}) : super(key: key);
+  const TermCondition({super.key});
 
   @override
   State<TermCondition> createState() => _TermConditionState();
@@ -67,7 +67,7 @@ class _TermConditionState extends State<TermCondition> {
           fontSize: 18.sp,
           fontFamily: 'Gilroy',
           fontWeight: FontWeight.bold,
-          color: Color(0XFF000000)),
+          color: const Color(0XFF000000)),
     );
   }
 
@@ -79,7 +79,7 @@ class _TermConditionState extends State<TermCondition> {
           fontFamily: 'Gilroy',
           fontStyle: FontStyle.normal,
           fontWeight: FontWeight.w400,
-          color: Color(0XFF6E758A)),
+          color: const Color(0XFF6E758A)),
     );
   }
 }

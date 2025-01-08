@@ -54,11 +54,11 @@ class _LoginScreenState extends State<LoginScreen> {
         // ignore: use_build_context_synchronously
         Provider.of<UserInfoProvider>(context, listen: false).setUserInfo =
             UserInfoModel.fromJson(res['data'][0]);
-        //PrefData.setLogin(true);
+        PrefData.setLogin(res['data'][0]['user_id']);
 
-        //PrefData.setVarification(true);
-        // Get.offAll(const AppNavigationScreen());
-        Get.to(const AppNavigationScreen());
+        // PrefData.setVarification(true);
+        Get.offAll(const AppNavigationScreen());
+        //Get.to(const AppNavigationScreen());
       } else {
         String numberTitle = "Mobile number/Email or Password is wrong";
         String emailTitle = "Email or Password is wrong";

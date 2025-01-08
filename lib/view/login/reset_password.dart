@@ -7,7 +7,7 @@ import 'package:projecthub/utils/screen_size.dart';
 import 'login_screen.dart';
 
 class ResetPassword extends StatefulWidget {
-  const ResetPassword({Key? key}) : super(key: key);
+  const ResetPassword({super.key});
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();
@@ -40,7 +40,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       style: TextStyle(
                           fontSize: 24.sp,
                           fontFamily: 'Gilroy',
-                          color: Color(0XFF000000),
+                          color: const Color(0XFF000000),
                           fontWeight: FontWeight.w700),
                       textAlign: TextAlign.center),
                 ),
@@ -53,7 +53,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         child: Text(
                             "Enter password which are different from the previous paswords.",
                             style: TextStyle(
-                                color: Color(0XFF000000),
+                                color: const Color(0XFF000000),
                                 fontSize: 15.sp,
                                 fontFamily: 'Gilroy',
                                 fontWeight: FontWeight.w400),
@@ -63,7 +63,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       passwordtextfield('Password'),
                       SizedBox(height: 20.h),
                       confirmpasswordtextfield('Confirm password'),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
                       done_button(),
                     ],
                   ),
@@ -173,7 +173,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         onPressed: () {
           Get.back();
         },
-        child: Icon(
+        child: const Icon(
           Icons.arrow_back_ios_new,
           size: 20,
         ));
@@ -260,7 +260,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       child: Center(
         child: GestureDetector(
           onTap: () {
-            Get.off(LoginScreen());
+            Get.off(const LoginScreen());
           },
           child: Container(
             height: 56.h,

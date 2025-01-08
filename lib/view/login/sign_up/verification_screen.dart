@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:projecthub/controller/authentication.dart';
 import 'package:projecthub/utils/screen_size.dart';
-import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/home/home_screen.dart';
 import 'package:projecthub/view/login/sign_up/sign_up_add_user_screen.dart';
 
@@ -35,8 +34,6 @@ class _VerificationState extends State<Verification> {
   bool _showCircularIndicater = false;
   final _otpLength = 6;
   var userEnteredOtp = "";
-
-
 
   verifyOTP(String verificationId, String userEnteredOtp) async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -297,7 +294,7 @@ class _VerificationState extends State<Verification> {
       child: Center(
         child: GestureDetector(
           onTap: () {
-            PrefData.setLogin(true);
+            //PrefData.setLogin(true);
             Get.to(const HomeScreen());
           },
           child: Container(

@@ -8,7 +8,7 @@ import '../login/login_screen.dart';
 
 
 class SlidePage extends StatefulWidget {
-  const SlidePage({Key? key}) : super(key: key);
+  const SlidePage({super.key});
 
   @override
   State<SlidePage> createState() => _SlidePageState();
@@ -165,7 +165,7 @@ class _SlidePageState extends State<SlidePage> {
                           fontWeight: FontWeight.bold,
                           fontStyle: FontStyle.normal,
                           fontSize: 15.sp,
-                          color: Color(0xFF000000)),
+                          color: const Color(0xFF000000)),
                     )))),
           );
   }
@@ -192,7 +192,7 @@ class _SlidePageState extends State<SlidePage> {
                 style: TextStyle(
                     fontFamily: 'Gilroy',
                     fontWeight: FontWeight.w700,
-                    color: Color(0XFF000000),
+                    color: const Color(0XFF000000),
                     fontSize: 22.sp),
                 textAlign: TextAlign.center,
               ),
@@ -204,7 +204,7 @@ class _SlidePageState extends State<SlidePage> {
                   style: TextStyle(
                       fontFamily: 'Gilroy',
                       fontWeight: FontWeight.w700,
-                      color: Color(0XFF000000),
+                      color: const Color(0XFF000000),
                       fontSize: 15.sp),
                   textAlign: TextAlign.center,
                 ),

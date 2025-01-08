@@ -1,9 +1,12 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:developer';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/config/data_file_provider.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/controller/user_controller.dart';
@@ -11,6 +14,7 @@ import 'package:projecthub/model/user_info_model.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
+import 'package:provider/provider.dart';
 import '../sign_up/term_and_condition.dart';
 
 class SignUpAddUserScreen extends StatefulWidget {
@@ -36,33 +40,54 @@ class _SignUpAddUserScreenState extends State<SignUpAddUserScreen> {
   String passworderror = '';
 
   Future<void> addUserOnServer(NewUserInfo newUserInfo) async {
-    int statusCode = await _userController.addUser(newUserInfo);
-    if (statusCode == 200) {
-      PrefData.setLogin(true);
-      Get.offAll(() => const AppNavigationScreen());
-    } else {
+    try {
+      Map responce = await _userController.addUser(newUserInfo);
+      if (responce['isadded']) {
+        log(responce['data'].toString());
+        Provider.of<UserInfoProvider>(context, listen: false).setUserInfo =
+            UserInfoModel.fromJson({
+          'user_id': responce['data']['user_id'],
+          'user_name': newUserInfo.userName,
+          'user_password': newUserInfo.userPassword,
+          'user_contact': newUserInfo.userContact,
+          'role': newUserInfo.role,
+          'wallet_money': 0.00,
+          'boughth_creation_number': 0,
+          'listed_creation_number': 0
+        });
+        PrefData.setLogin(responce['data']['user_id']);
+        Get.offAll(() => const AppNavigationScreen());
+      } else {
+        Get.snackbar("Something went wrong", "Unable to create account");
+      }
+    } catch (e) {
       Get.snackbar("Something went wrong", "Unable to create account");
+      setState(() {
+        _showCircularIndicater = false;
+      });
     }
-    setState(() {
-      _showCircularIndicater = false;
-    });
   }
 
-  onSignUpPressed() {
+  onSignUpPressed() async {
     setState(() {
       FocusScope.of(context).unfocus();
-      _showCircularIndicater = true;
       isSubmitPressed = true;
     });
     if (formkey.currentState!.validate()) {
       if (confirmpassController.value == passwordController.value) {
+        setState(() {
+          _showCircularIndicater = true;
+        });
         NewUserInfo newUserInfo = NewUserInfo.fromJson({
           'user_name': nameController.text.trim(),
           'user_password': passwordController.text.trim(),
           'user_contact': widget.phoneNumber,
           'role': 'end_user',
         });
-        addUserOnServer(newUserInfo);
+        await addUserOnServer(newUserInfo);
+        setState(() {
+          _showCircularIndicater = false;
+        });
       }
     }
   }

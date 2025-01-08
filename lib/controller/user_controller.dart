@@ -6,14 +6,13 @@ import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/model/user_info_model.dart';
 
 class UserController {
-  Future<int> addUser(NewUserInfo newUserInfo) async {
+  Future<Map> addUser(NewUserInfo newUserInfo) async {
     log(newUserInfo.userName);
-    final basUrl = ApiConfig.baseURL;
-    final url = Uri.parse('$basUrl/addUser');
-    int statusCode = -1;
+    final basUrl = ApiConfig.addUser;
+    final url = Uri.parse(basUrl);
     //log('$basUrl/');
 
-    Map<String,String> header = {
+    Map<String, String> header = {
       'Content-Type': 'application/json',
     };
 
@@ -24,17 +23,40 @@ class UserController {
         headers: header,
         body: jsonEncode(body),
       );
-      statusCode = response.statusCode;
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Request was successful
         log('Response: ${response.body}');
+        return {"isadded": true, "data": jsonDecode(response.body)};
       } else {
         // Handle the error
-        log('Failed to send data: ${response.statusCode}');
+        return {"isadded": false, "data": jsonDecode(response.body)};
       }
     } catch (e) {
       log("error $e");
     }
-    return statusCode;
+    return {"isadded": false, "data": "user addition failed"};
+  }
+
+  Future<Map> getUserDetailsById(int id) async {
+    final basUrl = ApiConfig.getUserDetailsByID;
+    final url = Uri.parse('$basUrl/$id');
+    Map<String, String> header = {
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      final response = await http.get(
+        url,
+        headers: header,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        log('Response: ${response.body}');
+        return {"status": true, "responce": jsonDecode(response.body)};
+      } else {
+        return {"status": false, "responce": jsonDecode(response.body)};
+      }
+    } catch (e) {
+      log("error $e");
+    }
+    return {"status": false, "data": "user addition failed"};
   }
 }

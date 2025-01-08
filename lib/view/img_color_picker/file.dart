@@ -9,9 +9,9 @@ import 'color.dart';
 class FileImageBG extends StatefulWidget {
   final File? filePath;
 
-  const FileImageBG({Key? key, this.filePath}) : super(key: key);
+  const FileImageBG({super.key, this.filePath});
   @override
-  _FileImageBGState createState() => _FileImageBGState();
+  State createState() => _FileImageBGState();
 }
 
 class _FileImageBGState extends State<FileImageBG> {
@@ -21,24 +21,24 @@ class _FileImageBGState extends State<FileImageBG> {
   GlobalKey? currentKey;
 
   final StreamController<Color> stateController = StreamController<Color>();
-  Color color1 = Color(0xFFFFFFFF);
-  Color color2 = Color(0xFFFFFFFF);
+  Color color1 = const Color(0xFFFFFFFF);
+  Color color2 = const Color(0xFFFFFFFF);
   @override
   void initState() {
     currentKey = paintKey;
-    Timer.periodic(Duration(seconds: 1), (callback) async {
+    Timer.periodic(const Duration(seconds: 1), (callback) async {
       if (imageKey.currentState!.context.size!.height == 0.0) {
       } else {
         var cd1 = await ColorDetection(
           currentKey: currentKey,
           paintKey: paintKey,
           stateController: stateController,
-        ).searchPixel(Offset(18.2, 348.0));
+        ).searchPixel(const Offset(18.2, 348.0));
         var cd12 = await ColorDetection(
           currentKey: currentKey,
           paintKey: paintKey,
           stateController: stateController,
-        ).searchPixel(Offset(230.9, 549.8));
+        ).searchPixel(const Offset(230.9, 549.8));
         color1 = cd1;
         color2 = cd12;
 
@@ -57,7 +57,7 @@ class _FileImageBGState extends State<FileImageBG> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        title: Text("Image"),
+        title: const Text("Image"),
         centerTitle: true,
         backgroundColor: color1,
       ),
@@ -68,7 +68,7 @@ class _FileImageBGState extends State<FileImageBG> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
-                end: Alignment(
+                end: const Alignment(
                     0.8, 0.8), // 10% of the width, so there are ten blinds.
                 colors: [color1, color2], // whitish to gray
                 tileMode:

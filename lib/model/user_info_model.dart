@@ -54,7 +54,9 @@ class UserInfoModel {
       userEmail: json['user_email'],
       profilePhoto: json['profile_photo'],
       role: json['role'],
-      walletMoney: double.parse(json['wallet_money']),
+      walletMoney: (json['wallet_money'] is String)
+          ? double.parse(json['wallet_money'])
+          : json['wallet_money'],
       boughthCreationNumber: json['boughth_creation_number'],
       listedCreationNumber: json['listed_creation_number'],
     );
