@@ -3,10 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
-import 'package:projecthub/controller/user_controller.dart';
-import 'package:projecthub/model/user_info_model.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
@@ -22,7 +19,6 @@ class Splashscreen extends StatefulWidget {
 }
 
 class _SplashscreenState extends State<Splashscreen> {
-  final UserController _userController = UserController();
   @override
   void initState() {
     super.initState();

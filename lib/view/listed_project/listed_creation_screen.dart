@@ -8,8 +8,7 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
-import 'package:projecthub/controller/creation_controller.dart';
-import 'package:projecthub/model/creation_info_model.dart';
+
 import 'package:projecthub/view/listed_project/list_new_creation_screen.dart';
 import 'package:projecthub/widgets/creation_card.dart';
 import 'package:provider/provider.dart';
@@ -22,9 +21,7 @@ class ListedProjectScreen extends StatefulWidget {
 }
 
 class _ListedProjectScreenState extends State<ListedProjectScreen> {
-  List<ListedCreation> _userListedCreations = [];
   final ScrollController _scrollController = ScrollController();
-  final CreationController _creationController = CreationController();
   bool _isSearchVisible = true;
   double _lastScrollOffset = 0.0;
   @override
@@ -61,17 +58,7 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
     super.dispose();
   }
 
-  getDate() async {
-    await Future.delayed(Duration(seconds: 2), () {
-      setState(() {});
-    });
-    _userListedCreations =
-        await _creationController.fetchUserListedCreations(29);
-    setState(() {});
-
-    // _userListedCreations = Provider.of<UserInfoProvider>(context, listen: false)
-    //     .userListedCreations;
-  }
+  
 
   @override
   Widget build(BuildContext context) {

@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 import 'package:projecthub/constant/app_color.dart';
 
 class AppPrimaryButton extends StatefulWidget {
-  dynamic onPressed;
-  String title;
-  Widget? icon;
-  double? height;
-  Color? backgroundImage;
-  AppPrimaryButton({
+  final dynamic onPressed;
+  final String title;
+  final Widget? icon;
+  final double? height;
+  final Color? backgroundImage;
+  const AppPrimaryButton({
     super.key,
     required this.title,
     required this.onPressed,
@@ -66,10 +66,10 @@ class _AppPrimaryButtonState extends State<AppPrimaryButton> {
 }
 
 class AppPrimaryElevetedButton extends StatefulWidget {
-  dynamic onPressed;
-  String title;
-  Icon? icon;
-  AppPrimaryElevetedButton(
+  final dynamic onPressed;
+  final String title;
+  final Icon? icon;
+  const AppPrimaryElevetedButton(
       {super.key, required this.onPressed, required this.title, this.icon});
 
   @override
@@ -97,6 +97,5 @@ class _AppPrimaryElevetedButtonState extends State<AppPrimaryElevetedButton> {
         ),
       ),
     );
-    ;
   }
 }

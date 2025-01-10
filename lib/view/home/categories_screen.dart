@@ -135,7 +135,6 @@ class BackGroundTile extends StatelessWidget {
   Widget build(BuildContext context) {
     double imageSize = cellHeight! * 0.55;
     double radius = 15;
-    double bottomRemainSize = cellHeight! - imageSize;
 
     return InkWell(
       child: Container(

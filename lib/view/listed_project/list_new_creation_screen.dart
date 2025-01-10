@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -49,7 +48,6 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   File? _thumbnailImage;
   File? _sourceZipFile;
   List<String> _otherImages = [];
-  bool _isUploading = false;
   ValueNotifier<double> _uploadProgress = ValueNotifier<double>(0.0);
 
   @override
@@ -167,7 +165,6 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         thumbnailErrorMassage = "";
       }
       _submitPressedOnce = true;
-      _isUploading = true;
     });
 
     bool isBasicInfoFilled = _infoFormKey.currentState!.validate();
@@ -210,7 +207,6 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
           showErrorPopUp();
         }
         setState(() {
-          _isUploading = false;
           _uploadProgress.value = 0.0;
         });
       });

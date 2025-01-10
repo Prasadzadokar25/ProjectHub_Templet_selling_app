@@ -484,7 +484,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               child: Center(
                                   child: Text(
-                                recentAddedCreation.price!.toString(),
+                                recentAddedCreation.price.toString(),
                                 style: TextStyle(
                                     color: const Color(0XFF23408F),
                                     fontFamily: 'Gilroy',
