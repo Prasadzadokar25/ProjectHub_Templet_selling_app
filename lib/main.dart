@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/app_providers/creation_provider.dart';
+import 'package:projecthub/app_providers/data_file_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => DataFileProvider()),
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
+        ChangeNotifierProvider(create: (_) => CreationProvider()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
@@ -40,8 +43,7 @@ class MyApp extends StatelessWidget {
           iconTheme: IconThemeData(
             color:
                 AppColor.primaryColor, // Sets the default color for all icons
-            size: 21
-            ,
+            size: 21,
           ),
           appBarTheme: AppBarTheme(
             color: AppColor.bgColor,

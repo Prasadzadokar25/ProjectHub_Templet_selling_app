@@ -1,4 +1,4 @@
-class UserInfoModel {
+class UserModel {
   int userId;
   String userName;
   String userPassword;
@@ -12,7 +12,7 @@ class UserInfoModel {
   int listedCreationNumber;
 
   // Constructor
-  UserInfoModel({
+  UserModel({
     required this.userId,
     required this.userName,
     required this.userPassword,
@@ -44,11 +44,11 @@ class UserInfoModel {
   }
 
   // fromJson Method
-  factory UserInfoModel.fromJson(Map<String, dynamic> json) {
-    return UserInfoModel(
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
       userId: json['user_id'],
       userName: json['user_name'],
-      userPassword: json['user_password'],
+      userPassword: "json['user_password']",
       userDescription: json['user_description'],
       userContact: json['user_contact'],
       userEmail: json['user_email'],
@@ -57,7 +57,7 @@ class UserInfoModel {
       walletMoney: (json['wallet_money'] is String)
           ? double.parse(json['wallet_money'])
           : json['wallet_money'],
-      boughthCreationNumber: json['boughth_creation_number'],
+      boughthCreationNumber: json['bought_creation_number'],
       listedCreationNumber: json['listed_creation_number'],
     );
   }

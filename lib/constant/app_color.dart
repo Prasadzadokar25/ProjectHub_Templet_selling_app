@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColor {
-  static Color primaryColor = const Color(0XFF23408F);
+  static Color primaryColor = Color.fromARGB(255, 35, 64, 143);
   static Color secYello = const Color(0XFFFFC403);
   static Color bgColor = "#FBFBFB".toColor();
   static Color iconBlack = Color.fromARGB(255, 80, 80, 80);

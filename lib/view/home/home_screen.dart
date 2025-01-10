@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/app_providers/data_file_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/model/categories_info_model.dart';
@@ -24,13 +24,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<CreationInfoModel> adeverticmentIterm = [];
-  List<CreationInfoModel> trendingCreations = [];
-  List<CreationInfoModel> recentAddedCreations = [];
-  List<CreationInfoModel> otherCreations = [];
+  List<Creation> adeverticmentIterm = [];
+  List<Creation> trendingCreations = [];
+  List<Creation> recentAddedCreations = [];
+  List<Creation> otherCreations = [];
   List<CategoryModel> categories = [];
-
-
 
   void getData() async {
     DataFileProvider dataFileProvider = Provider.of<DataFileProvider>(context);
@@ -189,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget trendingCreationView() {
     return SizedBox(
       //color: Colors.red,
-      height: 234.h,
+      height: 240.h,
       width: double.infinity.w,
       child: ListView.separated(
           padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
@@ -200,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: trendingCreations.length,
           separatorBuilder: (context, index) => const SizedBox(width: 10),
           itemBuilder: (BuildContext context, index) {
-            CreationInfoModel trendingCreation = trendingCreations[index];
+            Creation trendingCreation = trendingCreations[index];
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 10.h),
               child: GestureDetector(
@@ -210,22 +208,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   ));
                 },
                 child: Container(
+                  width: 200.w,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(77, 157, 157, 163),
-                          blurRadius: 4,
-                          spreadRadius: 2,
-                        )
-                      ]),
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromARGB(77, 157, 157, 163),
+                        blurRadius: 4,
+                        spreadRadius: 2,
+                      )
+                    ],
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         height: 145.h,
-                        width: 175.w,
+                        width: 200.w,
+
                         decoration: BoxDecoration(
                           //color: Colors.red,
                           borderRadius: BorderRadius.circular(50),
@@ -274,9 +275,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               trendingCreation.title,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   fontFamily: 'Gilroy',
                                   fontWeight: FontWeight.w700,
@@ -286,6 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(height: 4.h),
                             Text(
                               trendingCreation.subtitle,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontFamily: 'Gilroy',
                                 fontWeight: FontWeight.w500,
@@ -319,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
           scrollDirection: Axis.horizontal,
           separatorBuilder: (context, index) => const SizedBox(width: 15),
           itemBuilder: (BuildContext context, index) {
-            CreationInfoModel recentAddedCreation = recentAddedCreations[index];
+            Creation recentAddedCreation = recentAddedCreations[index];
             return GestureDetector(
               onTap: () {
                 Get.to(ProductDetailsScreen(creation: recentAddedCreation));
@@ -449,20 +453,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Row(
                               children: [
-                                if (recentAddedCreation.sellerImage != null)
+                                if (recentAddedCreation.seller.image != null)
                                   ClipRRect(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(25)),
                                     child: Image(
                                       image: AssetImage(
-                                          recentAddedCreation.sellerImage!),
+                                          recentAddedCreation.seller.image!),
                                       height: 40.h,
                                       width: 40.w,
                                     ),
                                   ),
                                 SizedBox(width: 10.w),
                                 Text(
-                                  recentAddedCreation.sellerName!,
+                                  recentAddedCreation.seller.name,
                                   style: TextStyle(
                                       fontFamily: 'Gilroy',
                                       fontWeight: FontWeight.w400,
@@ -521,7 +525,7 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class AdverticmentSlider extends StatefulWidget {
-  final List<CreationInfoModel> item;
+  final List<Creation> item;
   const AdverticmentSlider({super.key, required this.item});
 
   @override
@@ -530,7 +534,6 @@ class AdverticmentSlider extends StatefulWidget {
 
 class _AdverticmentSliderState extends State<AdverticmentSlider> {
   List<Widget> adverticementSliderWidgets = [];
- 
 
   @override
   Widget build(BuildContext context) {

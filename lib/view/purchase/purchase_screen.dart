@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/app_providers/data_file_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
@@ -16,7 +17,7 @@ class PurchaseScreen extends StatefulWidget {
 }
 
 class _PurchaseScreenState extends State<PurchaseScreen> {
-  List<CreationInfoModel> _userListedCreations = [];
+  List<Creation> _userPurchasedCreations = [];
   final ScrollController _scrollController = ScrollController();
   bool _isSearchVisible = true;
   double _lastScrollOffset = 0.0;
@@ -52,7 +53,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   }
 
   getDate() {
-    _userListedCreations =
+    _userPurchasedCreations =
         Provider.of<UserInfoProvider>(context).userPerchedCreations;
   }
 
@@ -80,12 +81,12 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
               child: ListView.separated(
                   controller: _scrollController,
                   padding: EdgeInsets.all(AppPadding.edgePadding),
-                  itemCount: 6,
+                  itemCount: _userPurchasedCreations.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 15),
                   itemBuilder: (context, index) {
                     return CreatationCard(
-                        creation: _userListedCreations[index]);
+                        creation: _userPurchasedCreations[index]);
                   }),
             ),
           ],

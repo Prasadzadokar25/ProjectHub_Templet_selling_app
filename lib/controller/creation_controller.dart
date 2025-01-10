@@ -1,40 +1,71 @@
+/// This file defines the `CreationController` class, responsible for managing
+/// the process of listing new creations. It uses the Dio package to handle HTTP
+/// POST requests to the server. The class includes a method `listCreation`,
+/// which sends creation data such as title, description, price, category ID,
+/// keywords, additional images, and files (thumbnail and creation file) to the
+/// server. The method also tracks the upload progress and updates it through a
+/// callback function.
+library;
+
 import 'dart:convert';
 import 'dart:developer';
-
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:projecthub/config/api_config.dart';
-import 'package:projecthub/model/user_info_model.dart';
+import 'package:projecthub/model/creation_info_model.dart';
+import 'package:http/http.dart' as http;
 
 class CreationController {
-  Future<int> listCreation(NewUserInfo newUserInfo) async {
-    log(newUserInfo.userName);
-    final url = ApiConfig.listCreation;
-    final uri = Uri.parse(url);
-    int statusCode = -1;
-    //log('$basUrl/');
+  final Dio _dio = Dio();
 
-    Map<String, String> header = {
-      'Content-Type': 'application/json',
-    };
-
-    final body = newUserInfo.toJson();
+  Future<int> listCreation(
+      NewCreationModel creation, Function(double) onProgress) async {
     try {
-      final response = await http.post(
-        uri,
-        headers: header,
-        body: jsonEncode(body),
+      FormData formData = FormData.fromMap({
+        'creation_title': creation.creationTitle,
+        'creation_description': creation.creationDescription,
+        'creation_price': creation.creationPrice,
+        'category_id': creation.categoryId,
+        'keyword': json.encode(creation.keyword),
+        'otherImages': json.encode(creation.otherImages),
+        'user_id': creation.userId,
+        'creation_thumbnail': await MultipartFile.fromFile(
+            creation.creationThumbnail.path,
+            filename: creation.creationThumbnail.path),
+        'creation_file': await MultipartFile.fromFile(
+            creation.creationFile.path,
+            filename: creation.creationFile.path),
+      });
+
+      Response response = await _dio.post(
+        ApiConfig.listCreation,
+        data: formData,
+        onSendProgress: (int sent, int total) {
+          // Update the progress
+          double progress = sent / total;
+          onProgress(progress);
+        },
       );
-      statusCode = response.statusCode;
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // Request was successful
-        log('Response: ${response.body}');
+
+      return response.statusCode ?? 500;
+    } catch (e) {
+      return 500;
+    }
+  }
+
+  Future<List<ListedCreation>> fetchUserListedCreations(int userId) async {
+    try {
+      final response =
+          await http.get(Uri.parse("${ApiConfig.userListedCreations}/$userId"));
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body)['data'];
+
+        log(response.body);
+        return data.map((json) => ListedCreation.fromJson(json)).toList();
       } else {
-        // Handle the error
-        log('Failed to send data: ${response.statusCode}');
+        throw Exception('Failed to load creations');
       }
     } catch (e) {
-      log("error $e");
+      throw Exception('Failed to load creations: $e');
     }
-    return statusCode;
   }
 }

@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
@@ -22,7 +22,7 @@ class AddToCartPage extends StatefulWidget {
 }
 
 class _AddToCartPage extends State<AddToCartPage> {
-  List<CreationInfoModel> cartCreations = [];
+  List<Creation> cartCreations = [];
   double subTotal = 0;
   double platFromFees = 0;
   double gstTax = 0;
@@ -34,7 +34,7 @@ class _AddToCartPage extends State<AddToCartPage> {
     return Future.value(true);
   }
 
-  getCost(List<CreationInfoModel> creationList) {
+  getCost(List<Creation> creationList) {
     double cost = 0;
     for (int i = 0; i < creationList.length; i++) {
       cost = cost + creationList[i].price;
@@ -160,7 +160,7 @@ class _AddToCartPage extends State<AddToCartPage> {
     );
   }
 
-  void removeItem(CreationInfoModel index) {
+  void removeItem(Creation index) {
     cartCreations.remove(index);
     setState(() {});
   }
@@ -192,7 +192,7 @@ class _AddToCartPage extends State<AddToCartPage> {
     );
   }
 
-  getCreationCard(CreationInfoModel creation) {
+  getCreationCard(Creation creation) {
     return Slidable(
       // actionPane: SlidableDrawerActionPane(),
       endActionPane: ActionPane(

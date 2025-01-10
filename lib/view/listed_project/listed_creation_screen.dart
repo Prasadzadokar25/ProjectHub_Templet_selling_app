@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/app_providers/creation_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
+import 'package:projecthub/controller/creation_controller.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/view/listed_project/list_new_creation_screen.dart';
 import 'package:projecthub/widgets/creation_card.dart';
@@ -18,15 +22,19 @@ class ListedProjectScreen extends StatefulWidget {
 }
 
 class _ListedProjectScreenState extends State<ListedProjectScreen> {
-  List<CreationInfoModel> _userListedCreations = [];
+  List<ListedCreation> _userListedCreations = [];
   final ScrollController _scrollController = ScrollController();
+  final CreationController _creationController = CreationController();
   bool _isSearchVisible = true;
   double _lastScrollOffset = 0.0;
-
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+
+    // Fetch creations when the screen is loaded
+    Provider.of<CreationProvider>(context, listen: false).fetchCreations(
+        Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
   }
 
   void _onScroll() {
@@ -53,14 +61,20 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
     super.dispose();
   }
 
-  getDate() {
+  getDate() async {
+    await Future.delayed(Duration(seconds: 2), () {
+      setState(() {});
+    });
     _userListedCreations =
-        Provider.of<UserInfoProvider>(context).userListedCreations;
+        await _creationController.fetchUserListedCreations(29);
+    setState(() {});
+
+    // _userListedCreations = Provider.of<UserInfoProvider>(context, listen: false)
+    //     .userListedCreations;
   }
 
   @override
   Widget build(BuildContext context) {
-    getDate();
     return Scaffold(
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: FloatingActionButton.extended(
@@ -85,35 +99,74 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            getSearchField(),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: AppPadding.edgePadding,
-                  right: AppPadding.edgePadding,
-                  top: AppPadding.edgePadding,
-                  bottom: AppPadding.edgePadding * 0.6),
-              child: Text(
-                "My listed creations",
-                style: AppText.heddingStyle2bBlack,
+        child: Consumer<CreationProvider>(builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (provider.errorMessage.isNotEmpty) {
+            return Center(child: Text(provider.errorMessage));
+          }
+
+          if (provider.creations.isEmpty) {
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 150.h,
+                  width: 150.w,
+                  child:
+                      SvgPicture.asset("assets/images/no_creation_found.svg"),
+                ),
+                SizedBox(height: 20.h),
+                Text(
+                  "You don't have any creation listed yet",
+                  style: AppText.heddingStyle2bBlack,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(const ListNewCreationScreen());
+                  },
+                  child: Text(
+                    "Start listing now",
+                    style: AppText.appPrimaryText,
+                  ),
+                ),
+              ],
+            ));
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              getSearchField(),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: AppPadding.edgePadding,
+                    right: AppPadding.edgePadding,
+                    top: AppPadding.edgePadding,
+                    bottom: AppPadding.edgePadding * 0.6),
+                child: Text(
+                  "My listed creations",
+                  style: AppText.heddingStyle2bBlack,
+                ),
               ),
-            ),
-            Expanded(
-              child: ListView.separated(
-                  controller: _scrollController,
-                  padding: EdgeInsets.all(AppPadding.edgePadding),
-                  itemCount: 6,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 15),
-                  itemBuilder: (context, index) {
-                    return CreatationCard(
-                        creation: _userListedCreations[index]);
-                  }),
-            ),
-          ],
-        ),
+              Expanded(
+                child: ListView.separated(
+                    controller: _scrollController,
+                    padding: EdgeInsets.all(AppPadding.edgePadding),
+                    itemCount: provider.creations.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 15),
+                    itemBuilder: (context, index) {
+                      return ListedCreationCard(
+                          creation: provider.creations[index]);
+                    }),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }

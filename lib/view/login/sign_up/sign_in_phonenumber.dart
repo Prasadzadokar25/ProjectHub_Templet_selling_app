@@ -1,8 +1,4 @@
-// ignore_for_file: deprecated_member_use, non_constant_identifier_names
-
 import 'dart:developer';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,6 +7,7 @@ import 'package:intl_phone_field/phone_number.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/controller/app_phone_number_controller.dart';
+import 'package:projecthub/controller/authentication.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/view/login/login_screen.dart';
 import '../sign_up/verification_screen.dart';
@@ -37,61 +34,42 @@ class _SignInPhonenumberState extends State<SignInPhonenumber> {
 
   String phoneNumberErrorMassege = "";
 
-  sendOTP(String number) async {
-    try {
-      log("Attempting to send OTP to $number");
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: number,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          log("Phone number auto-verified");
-          await FirebaseAuth.instance.signInWithCredential(credential);
-          Get.snackbar(
-            "Verification Complete",
-            "Phone number verified successfully!",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: const Color.fromARGB(255, 233, 243, 252),
-          );
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          setState(() {
-            _showCircularIndicater = false;
-          });
+  void onVerificationFailed(e) {
+    setState(() {
+      _showCircularIndicater = false;
+    });
 
-          log("Verification failed: ${e.message}");
-          if (e.code == 'invalid-phone-number') {
-            Get.snackbar(
-              "Error",
-              "The provided phone number is not valid.",
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: const Color.fromARGB(255, 233, 243, 252),
-            );
-          } else {
-            Get.snackbar(
-              "Error",
-              e.message ?? "Phone verification failed.",
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: const Color.fromARGB(255, 233, 243, 252),
-            );
-          }
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          log("Code sent. Verification ID: $verificationId");
-          setState(() {
-            _showCircularIndicater = false;
-          });
-
-          Get.to(Verification(
-            number: number,
-            verificationId: verificationId,
-          ));
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          log("Auto retrieval timeout for verification ID: $verificationId");
-        },
+    log("Verification failed: ${e.message}");
+    if (e.code == 'invalid-phone-number') {
+      Get.snackbar(
+        "Error",
+        "The provided phone number is Invalid.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: const Color.fromARGB(255, 233, 243, 252),
       );
-    } catch (e) {
-      log("Error in sending OTP: $e");
+    } else {
+      Get.snackbar(
+        "Error",
+        e.message ?? "Phone verification failed.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: const Color.fromARGB(255, 233, 243, 252),
+      );
     }
+  }
+
+  void onCodeSend(String verificationId, int? resendToken) {
+    log("Code sent. Verification ID: $verificationId");
+    setState(() {
+      _showCircularIndicater = false;
+    });
+    Get.to(Verification(
+      number: phoneNumber!.completeNumber.toString(),
+      verificationId: verificationId,
+    ));
+  }
+
+  void codeAutoRetrievalTimeout(String verificationId) {
+    log("Auto retrieval timeout for verification ID: $verificationId");
   }
 
   onSubmit() async {
@@ -107,7 +85,12 @@ class _SignInPhonenumberState extends State<SignInPhonenumber> {
       });
       if (!await _appPhoneNumberController.checkPhoneNumberAlreadyExit(
           phoneNumber!.completeNumber.toString())) {
-        sendOTP(phoneNumber!.completeNumber.toString());
+        AppAuthentication().sendOTP(
+          number: phoneNumber!.completeNumber.toString(),
+          onVerificationFailed: onVerificationFailed,
+          onCodeSent: onCodeSend,
+          onCodeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+        );
       } else {
         setState(() {
           _showCircularIndicater = false;
@@ -346,26 +329,23 @@ class _SignInPhonenumberState extends State<SignInPhonenumber> {
   Widget alreadyLoginButton() {
     return Align(
       alignment: Alignment.center,
-      child: RichText(
-        text: TextSpan(
-          text: 'Already have an account? ',
-          style: TextStyle(
-              color: Colors.black, fontSize: 15.sp, fontFamily: 'Gilroy'),
-          children: [
-            TextSpan(
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  Get.off(const LoginScreen());
-                },
-              text: 'Login',
-              style: TextStyle(
-                  color: const Color(0XFF000000),
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Gilroy'),
-            )
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("Already have an account?"),
+          GestureDetector(
+              onTap: () {
+                Get.off(const LoginScreen());
+              },
+              child: Text(
+                ' Login',
+                style: TextStyle(
+                    color: const Color(0XFF000000),
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Gilroy'),
+              ))
+        ],
       ),
     );
   }

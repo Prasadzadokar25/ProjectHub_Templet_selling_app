@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/controller/user_controller.dart';
 import 'package:projecthub/model/user_info_model.dart';
 import 'package:projecthub/utils/screen_size.dart';
@@ -34,24 +35,21 @@ class _SplashscreenState extends State<Splashscreen> {
 
     if (isIntro == false) {
       Timer(const Duration(seconds: 3), () => Get.to(const SlidePage()));
-    } else if (isLoginId == -1) {
+    } else if (-1 == -1) {
       Get.to(const LoginScreen());
     } else {
-      final userDetails = await _userController.getUserDetailsById(isLoginId);
-      if (userDetails['status']) {
-        // ignore: use_build_context_synchronously
-        Provider.of<UserInfoProvider>(context, listen: false).setUserInfo =
-            UserInfoModel.fromJson(userDetails['responce']['data']);
+      await Provider.of<UserInfoProvider>(context, listen: false)
+          .fetchUserDetails(isLoginId);
+      // if (userDetails['status']) {
+      //   // ignore: use_build_context_synchronously
+      //   Provider.of<UserInfoProvider>(context, listen: false).setUserInfo =
+      //       UserModel.fromJson(userDetails['responce']['data']);
 
-        Get.to(const AppNavigationScreen());
-      } else {
-        Get.snackbar("App server error", "Please clear app cache");
-      }
+      Get.to(const AppNavigationScreen());
+      // } else {
+      //   Get.snackbar("App server error", "Please clear app cache");
+      // }
     }
-  }
-
-  getUserDetailsById(id) {
-    _userController.getUserDetailsById(id);
   }
 
   // PrefData.setVarification(true);

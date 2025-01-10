@@ -1,19 +1,22 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:projecthub/app_providers/creation_provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/app_providers/data_file_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
+import 'package:projecthub/controller/creation_controller.dart';
+import 'package:projecthub/controller/files_controller.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
@@ -27,12 +30,14 @@ class ListNewCreationScreen extends StatefulWidget {
 }
 
 class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
-  final TextEditingController _productNameController = TextEditingController();
+  final TextEditingController _creationTitleController =
+      TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _keywordController = TextEditingController();
   final TextEditingController _filePathController = TextEditingController();
+  final FilesController _filesController = FilesController();
   final _infoFormKey = GlobalKey<FormState>();
   final _categoryInfoKey = GlobalKey<FormState>();
   List<CategoryModel> _categories = [];
@@ -41,7 +46,11 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   String thumbnailErrorMassage = '';
   List<String> _keywords = [];
   bool _submitPressedOnce = false;
-  XFile? _thumbnailImage;
+  File? _thumbnailImage;
+  File? _sourceZipFile;
+  List<String> _otherImages = [];
+  bool _isUploading = false;
+  ValueNotifier<double> _uploadProgress = ValueNotifier<double>(0.0);
 
   @override
   void initState() {
@@ -61,7 +70,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
 
   @override
   void dispose() {
-    _productNameController.dispose();
+    _creationTitleController.dispose();
     _descriptionController.dispose();
     _priceController.dispose();
     _categoryController.dispose();
@@ -73,40 +82,29 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   // Function to request permissions and pick an image
   Future<void> _pickImage() async {
     // Request permissions before picking the image
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final thumbnailFile = await _filesController.pickThumbnail();
     //PermissionStatus status = await Permission.photos.request();
-    if (true) {
-      if (pickedFile != null) {
-        setState(() {
-          _thumbnailImage = pickedFile;
-          thumbnailErrorMassage = "";
-        });
-      } else {
-        Get.snackbar(
-            "Thumbnail not selected", "Thumbanil selection was canceled");
-      }
+
+    if (thumbnailFile != null) {
+      setState(() {
+        _thumbnailImage = thumbnailFile;
+        thumbnailErrorMassage = "";
+      });
+    } else {
+      Get.snackbar(
+          "Thumbnail not selected", "Thumbanil selection was canceled");
     }
-    // else {
-    //   // Handle the case when permission is denied
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('Permission denied to access photos')),
-    //   );
-    // }
   }
 
   Future<void> pickZipFile() async {
     // Use file_picker to pick a ZIP file
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['zip'], // Restrict file type to ZIP
-    );
-
+    File? result = await _filesController.pickZipFile();
     if (result != null) {
-      String? filePath = result.files.single.path;
+      String filePath = result.path;
 
-      if (filePath != null && filePath.endsWith('.zip')) {
+      if (filePath.endsWith('.zip')) {
         setState(() {
+          _sourceZipFile = result;
           _filePathController.text =
               path.basename(filePath); // Extract file name
         });
@@ -114,7 +112,6 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         setState(() {
           Get.snackbar("File not selected",
               "Invalid file type. Please select a ZIP file..");
-
           _filePathController.text = "";
         });
       }
@@ -141,19 +138,28 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
 
   Future<bool> _showSaveConfirmationDialog(BuildContext context) async {
     bool allowBAck = false;
-    Get.defaultDialog(onCancel: () {
-      FocusScope.of(context).unfocus();
-    }, onConfirm: () {
-      Get.back();
-      Get.back();
-      allowBAck = true;
-    });
+    Get.defaultDialog(
+      title: "Alert !",
+      titleStyle: AppText.heddingStyle2bBlack,
+      middleText: 'The information is not saved. Do you want to discard it?',
+      textConfirm: '  Discard  ',
+      textCancel: '  Cancel  ',
+      onCancel: () {
+        FocusScope.of(context).unfocus();
+      },
+      onConfirm: () {
+        Get.back();
+        Get.back();
+        allowBAck = true;
+      },
+    );
 
     // Default to false if null
     return allowBAck;
   }
 
-  onSubmit() {
+  onSubmit() async {
+    FocusScope.of(context).unfocus();
     setState(() {
       if (_thumbnailImage == null) {
         thumbnailErrorMassage = "Please select thumbnail";
@@ -161,13 +167,102 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         thumbnailErrorMassage = "";
       }
       _submitPressedOnce = true;
+      _isUploading = true;
     });
+
     bool isBasicInfoFilled = _infoFormKey.currentState!.validate();
     bool isCategorySelected = _categoryInfoKey.currentState!.validate();
-    if (isBasicInfoFilled || isCategorySelected) {
 
+    if (isBasicInfoFilled && isCategorySelected) {
+      int userid = Provider.of<UserInfoProvider>(context, listen: false)
+          .getUserInfo
+          .userId;
 
+      Map<String, dynamic> data = {
+        'creation_title': _creationTitleController.text.trim(),
+        'creation_description': _descriptionController.text.trim(),
+        'creation_price': double.parse(_priceController.text.trim()),
+        'creation_thumbnail': _thumbnailImage,
+        'creation_file': _sourceZipFile,
+        'category_id': 1,
+        'keyword': _keywords,
+        'otherImages': _otherImages,
+        'user_id': userid,
+      };
+
+      NewCreationModel newCreation = NewCreationModel.fromJson(data);
+
+      CreationController creationController = CreationController();
+      showProgresPopUP();
+      // Listen for progress updates
+      await creationController.listCreation(newCreation, (double progress) {
+        _uploadProgress.value = progress;
+      }).then((statuscode) {
+        Get.back(); // this will close progress pop up
+        if (statuscode == 200) {
+          showSuccefullPopUp();
+          Provider.of<UserInfoProvider>(context, listen: false)
+              .fetchUserDetails(
+                  Provider.of<UserInfoProvider>(context, listen: false)
+                      .user!
+                      .userId);
+        } else {
+          showErrorPopUp();
+        }
+        setState(() {
+          _isUploading = false;
+          _uploadProgress.value = 0.0;
+        });
+      });
     }
+  }
+
+  showSuccefullPopUp() {
+    Get.defaultDialog(
+      onWillPop: () async {
+        return false;
+      },
+      onConfirm: () {
+        Provider.of<CreationProvider>(context, listen: false).fetchCreations(
+            Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+
+        Get.back();
+        Get.back();
+      },
+      title: "Successful",
+      titleStyle: AppText.appPrimaryText,
+      middleText:
+          "Your creation has been submitted for review. Once the status is updated, you will be notified.",
+    );
+  }
+
+  showErrorPopUp() {
+    Get.defaultDialog(
+      title: "Uploading failed !",
+      titleStyle: AppText.heddingStyle2bBlack,
+      middleText: "creation not uploaded",
+    );
+  }
+
+  showProgresPopUP() {
+    Get.defaultDialog(
+      barrierDismissible: false,
+      title: "Uploading ...",
+      titleStyle: AppText.heddingStyle2bBlack,
+      onWillPop: () async {
+        return false;
+      },
+      content: Column(
+        children: [
+          ValueListenableBuilder<double>(
+            valueListenable: _uploadProgress,
+            builder: (context, progress, child) {
+              return LinearProgressIndicator(value: progress);
+            },
+          )
+        ],
+      ),
+    );
   }
 
   getData() {
@@ -210,7 +305,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
               _getCategoryForm(),
               SizedBox(height: Get.height * 0.02),
               _getSubmitButton(),
-              const SizedBox(height: 30)
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -330,19 +425,21 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
           getHeaddinfText("Product name *"),
           SizedBox(height: Get.height * 0.01),
           _getInfoTextField(
-            controller: _productNameController,
-            title: "Product name",
+              controller: _creationTitleController,
+              title: "Product name",
+              maxLength: 100),
+          SizedBox(height: Get.height * 0.012),
+          getHeaddinfText(
+            "Description",
           ),
-          SizedBox(height: Get.height * 0.028),
-          getHeaddinfText("Description"),
           SizedBox(height: Get.height * 0.01),
           _getInfoTextField(
-            controller: _descriptionController,
-            maxLines: 4,
-            title: "Description",
-            canNull: true,
-          ),
-          SizedBox(height: Get.height * 0.028),
+              controller: _descriptionController,
+              maxLines: 4,
+              title: "Description",
+              canNull: true,
+              maxLength: 4000),
+          SizedBox(height: Get.height * 0.012),
           getHeaddinfText("Price *"),
           SizedBox(
             height: Get.height * 0.01,
@@ -394,16 +491,16 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
     return int.tryParse(str) != null;
   }
 
-  _getInfoTextField({
-    required TextEditingController controller,
-    int? maxLines,
-    Widget? prfixIcon,
-    bool? isNumeric,
-    bool? readOnly,
-    required String title,
-    bool canNull = false,
-    String? hintText,
-  }) {
+  _getInfoTextField(
+      {required TextEditingController controller,
+      int? maxLines,
+      Widget? prfixIcon,
+      bool? isNumeric,
+      bool? readOnly,
+      required String title,
+      bool canNull = false,
+      String? hintText,
+      int? maxLength}) {
     return TextFormField(
       onTapOutside: (p) {
         setState(() {
@@ -418,6 +515,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
       controller: controller,
       readOnly: (readOnly != null) ? readOnly : false,
       maxLines: maxLines,
+      maxLength: maxLength,
       keyboardType:
           (isNumeric != null && isNumeric) ? TextInputType.number : null,
       decoration: InputDecoration(
@@ -486,8 +584,8 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
             },
             onTapOutside: (p) {
               setState(() {
-                _showCategories = false;
-                FocusScope.of(context).unfocus();
+                // _showCategories = false;
+                // FocusScope.of(context).unfocus();
               });
             },
             onTap: () {

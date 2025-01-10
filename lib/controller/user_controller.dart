@@ -36,7 +36,7 @@ class UserController {
     return {"isadded": false, "data": "user addition failed"};
   }
 
-  Future<Map> getUserDetailsById(int id) async {
+  Future<UserModel> fetchUserDetailsById(int id) async {
     final basUrl = ApiConfig.getUserDetailsByID;
     final url = Uri.parse('$basUrl/$id');
     Map<String, String> header = {
@@ -49,14 +49,13 @@ class UserController {
         headers: header,
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        log('Response: ${response.body}');
-        return {"status": true, "responce": jsonDecode(response.body)};
+        log(response.body);
+        return UserModel.fromJson(jsonDecode(response.body)['data']);
       } else {
-        return {"status": false, "responce": jsonDecode(response.body)};
+        throw Exception("Failed to load user details");
       }
     } catch (e) {
-      log("error $e");
+      throw Exception("Failed to load user details $e");
     }
-    return {"status": false, "data": "user addition failed"};
   }
 }

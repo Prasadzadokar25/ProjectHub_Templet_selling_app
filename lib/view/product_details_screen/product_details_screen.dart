@@ -9,7 +9,7 @@ import 'package:projecthub/widgets/app_primary_button.dart';
 
 // ignore: must_be_immutable
 class ProductDetailsScreen extends StatefulWidget {
-  CreationInfoModel creation;
+  Creation creation;
   ProductDetailsScreen({super.key, required this.creation});
 
   @override
@@ -100,17 +100,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               color: Color.fromARGB(201, 190, 190, 190),
                               shape: BoxShape.circle,
                             ),
-                            child: (widget.creation.sellerImage != null)
+                            child: (widget.creation.seller.image != null)
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(25),
                                     child: Image.asset(
-                                        widget.creation.sellerImage!),
+                                        widget.creation.seller.image!),
                                   )
                                 : const Icon(Icons.person),
                           ),
                           const SizedBox(width: 15),
                           Text(
-                            widget.creation.sellerName,
+                            widget.creation.seller.name,
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: AppColor.primaryColor,
@@ -195,16 +195,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       color: Color.fromARGB(201, 190, 190, 190),
                       shape: BoxShape.circle,
                     ),
-                    child: (widget.creation.sellerImage != null)
+                    child: (widget.creation.seller.image != null)
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(25),
-                            child: Image.asset(widget.creation.sellerImage!),
+                            child: Image.asset(widget.creation.seller.image!),
                           )
                         : const Icon(Icons.person),
                   ),
                   const SizedBox(width: 15),
                   Text(
-                    widget.creation.sellerName,
+                    widget.creation.seller.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       color: Color.fromARGB(255, 72, 72, 72),
@@ -347,7 +347,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         itemCount: 6,
         separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (BuildContext context, index) {
-          CreationInfoModel creation = widget.creation;
+          Creation creation = widget.creation;
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 10.h),
             child: GestureDetector(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projecthub/constant/app_color.dart';
 
 class AppText {
   static double font12Px = 12;
@@ -35,7 +36,7 @@ class AppText {
   static TextStyle textFieldHintTextStyle = const TextStyle(
     fontSize: 15,
     fontFamily: 'Gilroy',
-    color: const Color(0XFF9B9B9B),
+    color: Color(0XFF9B9B9B),
     fontWeight: FontWeight.bold,
   );
 
@@ -44,5 +45,11 @@ class AppText {
     fontFamily: 'Gilroy',
     color: Color.fromARGB(255, 177, 22, 22),
     fontWeight: FontWeight.w400,
+  );
+  static TextStyle appPrimaryText = TextStyle(
+    fontSize: 17,
+    fontFamily: 'Gilroy',
+    color: AppColor.primaryColor,
+    fontWeight: FontWeight.w600,
   );
 }

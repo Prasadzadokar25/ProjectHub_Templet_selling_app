@@ -7,4 +7,5 @@ class ApiConfig {
   static String checkLogindetails = "$baseURL/checkLogin";
   static String listCreation = "$baseURL/listCreation";
   static String getUserDetailsByID = "$baseURL/getUser";
+  static String userListedCreations = "$baseURL/userListedCreations";
 }

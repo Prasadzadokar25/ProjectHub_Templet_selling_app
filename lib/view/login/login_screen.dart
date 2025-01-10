@@ -6,7 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/app_providers/data_file_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/login_controller.dart';
 import 'package:projecthub/model/user_info_model.dart';
@@ -52,13 +53,13 @@ class _LoginScreenState extends State<LoginScreen> {
       if (res['status'] == 'True') {
         log(res['data'][0].toString());
         // ignore: use_build_context_synchronously
-        Provider.of<UserInfoProvider>(context, listen: false).setUserInfo =
-            UserInfoModel.fromJson(res['data'][0]);
+        Provider.of<UserInfoProvider>(context, listen: false)
+            .fetchUserDetails(res['data'][0]['user_id']);
         PrefData.setLogin(res['data'][0]['user_id']);
 
         // PrefData.setVarification(true);
-        Get.offAll(const AppNavigationScreen());
-        //Get.to(const AppNavigationScreen());
+        //Get.offAll(const AppNavigationScreen());
+        Get.to(const AppNavigationScreen());
       } else {
         String numberTitle = "Mobile number/Email or Password is wrong";
         String emailTitle = "Email or Password is wrong";

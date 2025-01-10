@@ -1,11 +1,16 @@
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AppAuthentication {
-  static sendOTP(String number) async {
+  sendOTP(
+      {required String number,
+      required void Function(FirebaseAuthException) onVerificationFailed,
+      required void Function(String verificationId, int? resendToken)
+          onCodeSent,
+      required void Function(String verificationId)
+          onCodeAutoRetrievalTimeout}) async {
     try {
       log("Attempting to send OTP to $number");
       await FirebaseAuth.instance.verifyPhoneNumber(
@@ -20,36 +25,32 @@ class AppAuthentication {
             backgroundColor: const Color.fromARGB(255, 233, 243, 252),
           );
         },
-        verificationFailed: (FirebaseAuthException e) {
-          log("Verification failed: ${e.message}");
-          if (e.code == 'invalid-phone-number') {
-            Get.snackbar(
-              "Error",
-              "The provided phone number is not valid.",
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: const Color.fromARGB(255, 233, 243, 252),
-            );
-          } else {
-            Get.snackbar(
-              "Error",
-              e.message ?? "Phone verification failed.",
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: const Color.fromARGB(255, 233, 243, 252),
-            );
-          }
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          log("Code sent. Verification ID: $verificationId");
-
-          Get.snackbar(
-              "OTP sended succefully", "OTP has been sended on $number");
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          log("Auto retrieval timeout for verification ID: $verificationId");
-        },
+        verificationFailed: onVerificationFailed,
+        codeSent: onCodeSent,
+        codeAutoRetrievalTimeout: onCodeAutoRetrievalTimeout,
       );
     } catch (e) {
       log("Error in sending OTP: $e");
+    }
+  }
+
+  verifyOTP(
+      {required String verificationId,
+      required String userEnteredOtp,
+      required Function(UserCredential) onsignInWithCredential,
+      required Function(dynamic) catchError,
+      required Function() onErrorInOtpVerification}) async {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: userEnteredOtp,
+    );
+    try {
+      await FirebaseAuth.instance
+          .signInWithCredential(credential)
+          .then(onsignInWithCredential)
+          .catchError(catchError);
+    } catch (e) {
+      onErrorInOtpVerification();
     }
   }
 }

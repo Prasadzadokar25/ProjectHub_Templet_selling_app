@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/view/cart/cart_page.dart';
@@ -18,18 +18,34 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 20),
-              ProfileHeader(),
-              WalletRow(),
-              OptionList(),
-            ],
-          ),
-        ),
+        child: Consumer<UserInfoProvider>(builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (provider.errorMessage.isNotEmpty) {
+            return Center(child: Text(provider.errorMessage));
+          }
+
+          if (provider.user == null) {
+            return Center(
+                child:
+                    Text("error occur\nplease clear all cache and try again"));
+          }
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                ProfileHeader(user: provider.user),
+                WalletRow(user: provider.user),
+                OptionList(user: provider.user),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
@@ -37,115 +53,113 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 // Profile Header Section
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
+  final user;
+  const ProfileHeader({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserInfoProvider>(builder: (context, value, child) {
-      final userInfo = value.getUserInfo;
-
-      return Padding(
-        padding: EdgeInsets.all(AppPadding.edgePadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: Get.height * 0.05,
-                  backgroundImage: (userInfo.profilePhoto != null)
-                      ? AssetImage(
-                          userInfo.profilePhoto!,
-                        )
-                      : null,
-                  child: (userInfo.profilePhoto == null)
-                      ? const Icon(
-                          Icons.person,
-                          size: 40,
-                          color: Colors.black45,
-                        )
-                      : null,
-                ),
-                SizedBox(width: Get.width * 0.042),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        userInfo.userName,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+    return Padding(
+      padding: EdgeInsets.all(AppPadding.edgePadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: Get.height * 0.05,
+                backgroundImage: (user.profilePhoto != null)
+                    ? AssetImage(
+                        user.profilePhoto!,
+                      )
+                    : null,
+                child: (user.profilePhoto == null)
+                    ? const Icon(
+                        Icons.person,
+                        size: 40,
+                        color: Colors.black45,
+                      )
+                    : null,
+              ),
+              SizedBox(width: Get.width * 0.042),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user.userName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 8),
-                      (userInfo.userDescription != null)
-                          ? Text(userInfo.userDescription!)
-                          : const Text("No description added"),
-                      const SizedBox(height: 8),
-                      //Text('Mobile: +91 9876543210\nEmail: johndoe@gmail.com'),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 8),
+                    (user.userDescription != null)
+                        ? Text(user.userDescription!)
+                        : const Text("No description added"),
+                    const SizedBox(height: 8),
+                    //Text('Mobile: +91 9876543210\nEmail: johndoe@gmail.com'),
+                  ],
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          if (user.userContact != null)
+            getContactSection(
+              const Icon(
+                Icons.phone,
+                size: 18,
+              ),
+              user.userContact!,
             ),
-            const SizedBox(height: 15),
-            if (userInfo.userContact != null)
-              getContactSection(
-                const Icon(
-                  Icons.phone,
-                  size: 18,
-                ),
-                userInfo.userContact!,
+          const SizedBox(height: 4),
+          if (user.userEmail != null)
+            getContactSection(
+              const Icon(
+                Icons.mail,
+                size: 18,
               ),
-            const SizedBox(height: 4),
-            if (userInfo.userEmail != null)
-              getContactSection(
-                const Icon(
-                  Icons.mail,
-                  size: 18,
-                ),
-                userInfo.userEmail!,
+              user.userEmail!,
+            ),
+          SizedBox(height: Get.height * 0.02),
+          Row(
+            children: [
+              AppPrimaryButton(
+                title: "Edit profile",
+                onPressed: () {},
+                height: Get.height * 0.05,
               ),
-            SizedBox(height: Get.height * 0.02),
-            Row(
-              children: [
-                AppPrimaryButton(
-                  title: "Edit profile",
-                  onPressed: () {},
-                  height: Get.height * 0.05,
-                ),
-                SizedBox(width: Get.width * 0.03),
-                AppPrimaryButton(
-                  title: "Share profile",
-                  onPressed: () {},
-                  height: Get.height * 0.05,
-                ),
-              ],
-            )
-          ],
-        ),
-      );
-    });
-  }
-
-  getContactSection(Widget icon, String value) {
-    return Row(
-      children: [
-        icon,
-        SizedBox(width: Get.width * 0.02),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 13, color: Colors.black87),
-        ),
-      ],
+              SizedBox(width: Get.width * 0.03),
+              AppPrimaryButton(
+                title: "Share profile",
+                onPressed: () {},
+                height: Get.height * 0.05,
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }
 
+getContactSection(Widget icon, String value) {
+  return Row(
+    children: [
+      icon,
+      SizedBox(width: Get.width * 0.02),
+      Text(
+        value,
+        style: const TextStyle(fontSize: 13, color: Colors.black87),
+      ),
+    ],
+  );
+}
+
 // Wallet and Stats Section
 class WalletRow extends StatelessWidget {
-  const WalletRow({super.key});
+  final user;
+  const WalletRow({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +174,7 @@ class WalletRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildWalletColumn('₹1500', 'Wallet'),
+              _buildWalletColumn('₹ ${user.walletMoney}', 'Wallet'),
               VerticalDivider(
                 indent: 8,
                 endIndent: 8,
@@ -168,7 +182,7 @@ class WalletRow extends StatelessWidget {
                 width: 20, // Space taken by the divider horizontally
                 color: AppColor.primaryColor,
               ),
-              _buildWalletColumn('12', 'Bought'),
+              _buildWalletColumn('${user.boughthCreationNumber}', 'Bought'),
               VerticalDivider(
                 indent: 8,
                 endIndent: 8,
@@ -176,7 +190,7 @@ class WalletRow extends StatelessWidget {
                 width: 20, // Space taken by the divider horizontally
                 color: AppColor.primaryColor,
               ),
-              _buildWalletColumn('8', 'Listed'),
+              _buildWalletColumn('${user.listedCreationNumber}', 'Listed'),
             ],
           ),
         ),
@@ -215,7 +229,8 @@ class WalletRow extends StatelessWidget {
 
 // Options List
 class OptionList extends StatelessWidget {
-  const OptionList({super.key});
+  final user;
+  const OptionList({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

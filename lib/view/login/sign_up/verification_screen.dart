@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:developer';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,37 +34,30 @@ class _VerificationState extends State<Verification> {
   final _otpLength = 6;
   var userEnteredOtp = "";
 
-  verifyOTP(String verificationId, String userEnteredOtp) async {
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: verificationId,
-      smsCode: userEnteredOtp,
+  void onsignInWithCredential(value) {
+    setState(() {
+      _showCircularIndicater = false;
+    });
+    Get.to(SignUpAddUserScreen(phoneNumber: widget.number));
+  }
+
+  void catchError(error) {
+    setState(() {
+      _showCircularIndicater = false;
+    });
+    Get.snackbar(
+      "Error during sign up",
+      "OTP not match",
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: const Color.fromARGB(255, 233, 243, 252),
     );
-    try {
-      await FirebaseAuth.instance
-          .signInWithCredential(credential)
-          .then((value) {
-        setState(() {
-          _showCircularIndicater = false;
-        });
-        Get.to(SignUpAddUserScreen(phoneNumber: widget.number));
-      }).catchError((error) {
-        setState(() {
-          _showCircularIndicater = false;
-        });
-        Get.snackbar(
-          "Error during sign up",
-          "OTP not match",
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: const Color.fromARGB(255, 233, 243, 252),
-        );
-      });
-    } catch (e) {
-      setState(() {
-        _showCircularIndicater = false;
-      });
-      log(e.toString());
-      log("error in verifyOTP method");
-    }
+  }
+
+  onErrorInOtpVerification() {
+    setState(() {
+      _showCircularIndicater = false;
+    });
+    log("error in verifyOTP method");
   }
 
   onConfirmPressed() {
@@ -74,11 +66,21 @@ class _VerificationState extends State<Verification> {
         _showCircularIndicater = true;
       });
       submitPressedOnce = true;
-      verifyOTP(widget.verificationId, userEnteredOtp);
+      try {
+        AppAuthentication().verifyOTP(
+          verificationId: widget.verificationId,
+          userEnteredOtp: userEnteredOtp,
+          onsignInWithCredential: onsignInWithCredential,
+          catchError: catchError,
+          onErrorInOtpVerification: onErrorInOtpVerification,
+        );
+      } catch (e) {
+        Get.snackbar("Error", "verification failed");
+      }
     } else {
       Get.snackbar(
         "OTP not entered",
-        "Please enter valid $_otpLength digit OTP",
+        "Plcease enter valid $_otpLength digit OTP",
         snackPosition: SnackPosition.TOP,
         backgroundColor: const Color.fromARGB(255, 233, 243, 252),
       );
@@ -215,7 +217,17 @@ class _VerificationState extends State<Verification> {
               setState(() {
                 _showCircularIndicater = true;
               });
-              verifyOTP(widget.verificationId, userEnteredOtp);
+              try {
+                AppAuthentication().verifyOTP(
+                  verificationId: widget.verificationId,
+                  userEnteredOtp: userEnteredOtp,
+                  onsignInWithCredential: onsignInWithCredential,
+                  catchError: catchError,
+                  onErrorInOtpVerification: onErrorInOtpVerification,
+                );
+              } catch (e) {
+                Get.snackbar("Error", "verification failed");
+              }
             }
           },
           length: _otpLength,
@@ -272,7 +284,7 @@ class _VerificationState extends State<Verification> {
             TextSpan(
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  AppAuthentication.sendOTP(widget.number);
+                  // AppAuthentication.sendOTP(widget.number);
                 },
               text: ' Resend',
               style: TextStyle(

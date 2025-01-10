@@ -6,7 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/config/data_file_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/controller/user_controller.dart';
@@ -44,17 +44,9 @@ class _SignUpAddUserScreenState extends State<SignUpAddUserScreen> {
       Map responce = await _userController.addUser(newUserInfo);
       if (responce['isadded']) {
         log(responce['data'].toString());
-        Provider.of<UserInfoProvider>(context, listen: false).setUserInfo =
-            UserInfoModel.fromJson({
-          'user_id': responce['data']['user_id'],
-          'user_name': newUserInfo.userName,
-          'user_password': newUserInfo.userPassword,
-          'user_contact': newUserInfo.userContact,
-          'role': newUserInfo.role,
-          'wallet_money': 0.00,
-          'boughth_creation_number': 0,
-          'listed_creation_number': 0
-        });
+        Provider.of<UserInfoProvider>(context, listen: false)
+            .fetchUserDetails(responce['data']['user_id']);
+       
         PrefData.setLogin(responce['data']['user_id']);
         Get.offAll(() => const AppNavigationScreen());
       } else {
