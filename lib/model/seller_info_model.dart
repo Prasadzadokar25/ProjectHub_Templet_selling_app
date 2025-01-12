@@ -10,7 +10,7 @@ class Seller {
   });
 
   // From JSON
-  factory Seller.fromJson(Map<String, dynamic> json) {
+  factory Seller.fromJson2(Map<String, dynamic> json) {
     return Seller(
       id: json['id'],
       name: json['name'],

@@ -1,14 +1,16 @@
 import 'dart:async';
-
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
-import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
 import 'package:projecthub/view/slider_screen/slider_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:projecthub/view/splash/loading_screen.dart';
 import '../login/login_screen.dart';
 
 class Splashscreen extends StatefulWidget {
@@ -19,36 +21,62 @@ class Splashscreen extends StatefulWidget {
 }
 
 class _SplashscreenState extends State<Splashscreen> {
+  bool _isLoading = true;
+  bool? isIntro;
+  int? isLoginId;
+
   @override
   void initState() {
     super.initState();
-    getIntro();
+    _loadInitialData();
   }
 
-  getIntro() async {
-    bool isIntro = await PrefData.getIntro();
-    int isLoginId = await PrefData.getLogin();
+  Future<void> _loadInitialData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      isIntro = await PrefData.getIntro();
+      isLoginId = await PrefData.getLogin();
+      _navigateAfterSplash();
 
+      if (isLoginId != null && isLoginId! > 0 && isIntro == true) {
+        // await Future.delayed(Duration(seconds: 2));
+        await Provider.of<UserInfoProvider>(context, listen: false)
+            .fetchUserDetails(isLoginId!);
+        await Provider.of<GeneralCreationProvider>(context, listen: false)
+            .fetchGeneralCreations(isLoginId!, 1, 5);
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      log("$e");
+      Get.snackbar("Error with app server url", "Please notify developer team");
+    }
+
+    Get.to(() => const AppNavigationScreen());
+  }
+
+  void _navigateAfterSplash() {
     if (isIntro == false) {
-      Timer(const Duration(seconds: 3), () => Get.to(const SlidePage()));
-    } else if (-1 == -1) {
-      Get.to(const LoginScreen());
+      Timer(
+        const Duration(seconds: 3),
+        () => Get.to(() => const SlidePage()),
+      );
+    } else if (isLoginId == null || isLoginId == -1) {
+      Get.to(() => const LoginScreen());
+    } else if (!_isLoading) {
+      Get.to(() => const AppNavigationScreen());
     } else {
-      await Provider.of<UserInfoProvider>(context, listen: false)
-          .fetchUserDetails(isLoginId);
-      // if (userDetails['status']) {
-      //   // ignore: use_build_context_synchronously
-      //   Provider.of<UserInfoProvider>(context, listen: false).setUserInfo =
-      //       UserModel.fromJson(userDetails['responce']['data']);
-
-      Get.to(const AppNavigationScreen());
-      // } else {
-      //   Get.snackbar("App server error", "Please clear app cache");
-      // }
+      Timer(
+        const Duration(seconds: 3),
+        () {
+          if (_isLoading) Get.to(() => LoadingScreen());
+        },
+      );
     }
   }
-
-  // PrefData.setVarification(true);
 
   @override
   Widget build(BuildContext context) {
@@ -58,20 +86,23 @@ class _SplashscreenState extends State<Splashscreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-              child: SizedBox(
-                  height: 95.h,
-                  width: 95.h,
-                  child: Image.asset(
-                    "assets/images/education_image.png",
-                    fit: BoxFit.cover,
-                  ))),
+            child: SizedBox(
+              height: 95.h,
+              width: 95.h,
+              child: Image.asset(
+                "assets/images/education_image.png",
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
           Text(
             "PROJECT HUB",
             style: TextStyle(
-                fontSize: 28.sp,
-                color: const Color(0XFF23408F),
-                fontFamily: 'AvenirLTPro',
-                fontWeight: FontWeight.w700),
+              fontSize: 28.sp,
+              color: const Color(0XFF23408F),
+              fontFamily: 'AvenirLTPro',
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ],
       ),

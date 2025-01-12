@@ -1,9 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_info_model.dart';
-import 'package:lorem_ipsum/lorem_ipsum.dart' as lorem;
-import 'package:projecthub/model/user_info_model.dart';
 
 class DataFileProvider extends ChangeNotifier {
   // ignore: prefer_final_fields
@@ -207,4 +204,3 @@ class DataFileProvider extends ChangeNotifier {
   List<Creation> get otherCreations => _otherCreations;
   List<CategoryModel> get categories => _categories;
 }
-

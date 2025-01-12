@@ -13,6 +13,7 @@ import 'package:dio/dio.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:projecthub/model/new.dart';
 
 class CreationController {
   final Dio _dio = Dio();
@@ -61,6 +62,26 @@ class CreationController {
 
         log(response.body);
         return data.map((json) => ListedCreation.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load creations');
+      }
+    } catch (e) {
+      throw Exception('Failed to load creations: $e');
+    }
+  }
+
+  Future<List<Creation2>> fetchGeneralCreations(
+      int userId, int page, int perPage) async {
+    log("pppppp");
+    try {
+      final response = await http.get(Uri.parse(
+          "${ApiConfig.getGeneralCreationsUrl(page, perPage)}/$userId"));
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body)['creations'];
+
+        log(response.body);
+
+        return data.map((json) => Creation2.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load creations');
       }

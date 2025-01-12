@@ -1,7 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:projecthub/config/api_config.dart';
-import 'package:projecthub/model/seller_info_model.dart';
+import 'package:projecthub/model/seller_info_model.dart' ;
 
 class Creation {
   String title;
@@ -29,7 +30,7 @@ class Creation {
       imagePath: json['imagePath'],
       price: json['price'],
       rating: json['rating'],
-      seller: Seller.fromJson(json['seller']),
+      seller: Seller.fromJson2(json['seller']),
     );
   }
 
@@ -45,6 +46,8 @@ class Creation {
     };
   }
 }
+
+
 
 class ListedCreation {
   final int? creationId;

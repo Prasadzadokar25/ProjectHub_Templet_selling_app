@@ -219,8 +219,11 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         return false;
       },
       onConfirm: () {
-        Provider.of<CreationProvider>(context, listen: false).fetchCreations(
-            Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+        Provider.of<ListedCreationProvider>(context, listen: false)
+            .fetchUserListedCreations(
+                Provider.of<UserInfoProvider>(context, listen: false)
+                    .user!
+                    .userId);
 
         Get.back();
         Get.back();

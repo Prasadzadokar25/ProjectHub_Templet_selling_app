@@ -6,6 +6,7 @@ import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 import 'view/splash/splash_screen.dart';
 
@@ -21,6 +22,9 @@ void main() async {
       projectId: 'projecthu-shop',
     ));
   }
+  FirebaseUIAuth.configureProviders([
+    EmailAuthProvider(),
+  ]);
 
   runApp(const MyApp());
 }
@@ -34,7 +38,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => DataFileProvider()),
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
-        ChangeNotifierProvider(create: (_) => CreationProvider()),
+        ChangeNotifierProvider(create: (_) => ListedCreationProvider()),
+        ChangeNotifierProvider(create: (_) => GeneralCreationProvider()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,

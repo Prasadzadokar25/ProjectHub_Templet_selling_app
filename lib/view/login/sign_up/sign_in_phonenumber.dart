@@ -1,7 +1,10 @@
 import 'dart:developer';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 import 'package:projecthub/constant/app_text.dart';
@@ -33,6 +36,42 @@ class _SignInPhonenumberState extends State<SignInPhonenumber> {
   int otpLength = 6;
 
   String phoneNumberErrorMassege = "";
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  Future<User?> _signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    try {
+      // Trigger the Google Sign-In flow
+      log("pppppppppppppppppppppppppppppppppppppppppppppp");
+
+      // If user cancels the login, return null
+      if (googleUser == null) {
+        return null;
+      }
+
+      // Get the authentication details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential for Firebase Authentication
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the Google credential
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      // Return the signed-in user
+      return userCredential.user;
+    } catch (e) {
+      Get.snackbar("error", "$e");
+      log("Error signing in with Google: $e");
+      return null;
+    }
+  }
 
   void onVerificationFailed(e) {
     setState(() {
@@ -158,7 +197,7 @@ class _SignInPhonenumberState extends State<SignInPhonenumber> {
                     SizedBox(height: 30.h),
                     otherSignUp(
                       title: "Login with Google",
-                      onTap: () {},
+                      onTap: _signInWithGoogle,
                       image: "assets/images/google.png",
                     ),
                     SizedBox(height: 20.h),
@@ -225,6 +264,8 @@ class _SignInPhonenumberState extends State<SignInPhonenumber> {
         initialCountryCode: 'IN',
         onChanged: (phone) {
           phoneNumber = phone;
+          phoneNumberErrorMassege = "";
+          setState(() {});
         },
         validator: (val) {
           if (val!.toString().isEmpty || val.toString().length != 10) {

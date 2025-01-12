@@ -30,8 +30,9 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
     _scrollController.addListener(_onScroll);
 
     // Fetch creations when the screen is loaded
-    Provider.of<CreationProvider>(context, listen: false).fetchCreations(
-        Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+    Provider.of<ListedCreationProvider>(context, listen: false)
+        .fetchUserListedCreations(
+            Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
   }
 
   void _onScroll() {
@@ -57,8 +58,6 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
     _scrollController.dispose();
     super.dispose();
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +85,7 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
         ),
       ),
       body: SafeArea(
-        child: Consumer<CreationProvider>(builder: (context, provider, child) {
+        child: Consumer<ListedCreationProvider>(builder: (context, provider, child) {
           if (provider.isLoading) {
             return Center(child: CircularProgressIndicator());
           }
@@ -95,7 +94,7 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
             return Center(child: Text(provider.errorMessage));
           }
 
-          if (provider.creations.isEmpty) {
+          if (provider.userListedcreations.isEmpty) {
             return Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -143,12 +142,12 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
                 child: ListView.separated(
                     controller: _scrollController,
                     padding: EdgeInsets.all(AppPadding.edgePadding),
-                    itemCount: provider.creations.length,
+                    itemCount: provider.userListedcreations.length,
                     separatorBuilder: (context, index) =>
                         const SizedBox(height: 15),
                     itemBuilder: (context, index) {
                       return ListedCreationCard(
-                          creation: provider.creations[index]);
+                          creation: provider.userListedcreations[index]);
                     }),
               ),
             ],

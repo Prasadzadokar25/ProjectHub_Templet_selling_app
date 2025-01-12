@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "812047731231-46eaiqmp027v0tm0lvr2246janj19e7p.apps.googleusercontent.com",
+          "client_id": "812047731231-ui1ebjtg4lup9ttsf68j6116c5248beq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.lsoys.projecthub",
-            "certificate_hash": "973e1742def5afe2a2ec3d3d28f50cbbd6ff087a"
+            "certificate_hash": "a896f5d4736b8dedaa8e9c7221a680ffdd25f5f0"
           }
         },
         {
