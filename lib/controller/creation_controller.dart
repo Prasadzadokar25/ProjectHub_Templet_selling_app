@@ -79,7 +79,45 @@ class CreationController {
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['creations'];
 
-        log(response.body);
+        // log(response.body);
+
+        return data.map((json) => Creation2.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load creations');
+      }
+    } catch (e) {
+      throw Exception('Failed to load creations: $e');
+    }
+  }
+
+  Future<List<Creation2>> fetchRecentCreations(
+      int userId, int page, int perPage) async {
+    log("pppppp");
+    try {
+      final response = await http.get(Uri.parse(
+          "${ApiConfig.getRecentaddedCreationUrl(page, perPage)}/$userId"));
+      log(response.body);
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body)['creations'];
+
+        return data.map((json) => Creation2.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load creations');
+      }
+    } catch (e) {
+      throw Exception('Failed to load creations: $e');
+    }
+  }
+
+  Future<List<Creation2>> fetchTrendingCreations(
+      int userId, int page, int perPage) async {
+    log("pppppp");
+    try {
+      final response = await http.get(Uri.parse(
+          "${ApiConfig.getTrendingCreations(page, perPage)}/$userId"));
+      log(response.body);
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body)['creations'];
 
         return data.map((json) => Creation2.fromJson(json)).toList();
       } else {

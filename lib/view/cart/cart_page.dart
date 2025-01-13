@@ -212,7 +212,7 @@ class _AddToCartPage extends State<AddToCartPage> {
       ),
       child: InkWell(
         onTap: () {
-          Get.to(ProductDetailsScreen(creation: creation));
+          //Get.to(ProductDetailsScreen(creation: creation));
         },
         child: Container(
           margin: const EdgeInsets.only(top: 10, bottom: 10),

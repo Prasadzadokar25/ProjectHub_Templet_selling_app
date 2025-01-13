@@ -8,9 +8,20 @@ class ApiConfig {
   static String listCreation = "$baseURL/listCreation";
   static String getUserDetailsByID = "$baseURL/getUser";
   static String userListedCreations = "$baseURL/userListedCreations";
-  static String getGeneralCreations = "$baseURL/creations";
 
   static String getGeneralCreationsUrl(int pageNo, [int perPage = 10]) {
-    return "$getGeneralCreations/page/$pageNo/perPage/$perPage/uid";
+    return "$baseURL/creations/page/$pageNo/perPage/$perPage/uid";
+  }
+
+  static String getRecentaddedCreationUrl(int pageNo, [int perPage = 10]) {
+    return "$baseURL/recentCreations/page/$pageNo/perPage/$perPage/uid";
+  }
+
+  static String getTrendingCreations(int pageNo, [int perPage = 10]) {
+    return "$baseURL/trendingCreations/page/$pageNo/perPage/$perPage/uid";
+  }
+
+  static String getFileUrl(String path) {
+    return "$baseURL/$path";
   }
 }

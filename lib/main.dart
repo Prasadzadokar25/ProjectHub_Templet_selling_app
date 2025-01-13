@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/data_file_provider.dart';
@@ -12,6 +13,21 @@ import 'view/splash/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Hide the status bar
+  // SystemChrome.setSystemUIOverlayStyle(
+  //   SystemUiOverlayStyle(
+  //     statusBarColor: Colors.transparent, // Transparent status bar
+  //     statusBarBrightness:
+  //         Brightness.light, // Adjust brightness for better visibility
+  //     statusBarIconBrightness: Brightness.light, // Adjust icon brightness
+  //   ),
+  // );
+
+  // // Hide the status bar
+  // SystemChrome.setEnabledSystemUIMode(
+  //   SystemUiMode.manual,
+  //   overlays: [SystemUiOverlay.bottom], // Only show the navigation bar
+  // );
 
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
@@ -22,9 +38,6 @@ void main() async {
       projectId: 'projecthu-shop',
     ));
   }
-  FirebaseUIAuth.configureProviders([
-    EmailAuthProvider(),
-  ]);
 
   runApp(const MyApp());
 }
@@ -40,6 +53,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
         ChangeNotifierProvider(create: (_) => ListedCreationProvider()),
         ChangeNotifierProvider(create: (_) => GeneralCreationProvider()),
+        ChangeNotifierProvider(create: (_) => RecentCreationProvider()),
+        ChangeNotifierProvider(create: (_) => TreandingCreationProvider()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,

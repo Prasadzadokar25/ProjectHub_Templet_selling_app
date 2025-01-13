@@ -12,23 +12,26 @@ class Creation2 {
   String? creationTitle;
   String? keyword;
   int? numberOfReviews;
+  String? createtime;
   Seller? seller;
   int? totalCopySell;
 
-  Creation2(
-      {this.averageRating,
-      this.categoryId,
-      this.creationDescription,
-      this.creationFile,
-      this.creationId,
-      this.creationOtherImages,
-      this.creationPrice,
-      this.creationThumbnail,
-      this.creationTitle,
-      this.keyword,
-      this.numberOfReviews,
-      this.seller,
-      this.totalCopySell});
+  Creation2({
+    this.averageRating,
+    this.categoryId,
+    this.creationDescription,
+    this.creationFile,
+    this.creationId,
+    this.creationOtherImages,
+    this.creationPrice,
+    this.creationThumbnail,
+    this.creationTitle,
+    this.keyword,
+    this.numberOfReviews,
+    this.seller,
+    this.totalCopySell,
+    this.createtime,
+  });
 
   Creation2.fromJson(Map<String, dynamic> json) {
     averageRating = json['average_rating'];
@@ -44,6 +47,7 @@ class Creation2 {
     numberOfReviews = json['number_of_reviews'];
     seller = json['seller'] != null ? Seller.fromJson(json['seller']) : null;
     totalCopySell = json['total_copy_sell'];
+    createtime = json['createtime'];
   }
 
   Map<String, dynamic> toJson() {

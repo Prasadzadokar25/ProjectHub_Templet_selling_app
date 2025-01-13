@@ -45,7 +45,11 @@ class _SplashscreenState extends State<Splashscreen> {
         await Provider.of<UserInfoProvider>(context, listen: false)
             .fetchUserDetails(isLoginId!);
         await Provider.of<GeneralCreationProvider>(context, listen: false)
-            .fetchGeneralCreations(isLoginId!, 1, 5);
+            .fetchGeneralCreations(isLoginId!, 1, 10);
+        await Provider.of<RecentCreationProvider>(context, listen: false)
+            .fetchRecentCreations(isLoginId!, 1, 10);
+        await Provider.of<TreandingCreationProvider>(context, listen: false)
+            .fetchTrendingCreations(isLoginId!, 1, 10);
       }
       setState(() {
         _isLoading = false;

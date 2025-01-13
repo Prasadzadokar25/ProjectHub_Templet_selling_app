@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/model/creation_info_model.dart';
+import 'package:projecthub/model/new.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 
 // ignore: must_be_immutable
 class ProductDetailsScreen extends StatefulWidget {
-  Creation creation;
+  Creation2 creation;
   ProductDetailsScreen({super.key, required this.creation});
 
   @override
@@ -30,10 +32,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 Stack(
                   children: [
                     SizedBox(
-                      height: Get.height * 0.4,
+                      height: Get.height * 0.3,
                       width: Get.width,
-                      child: Image.asset(
-                        widget.creation.imagePath,
+                      child: Image.network(
+                        ApiConfig.getFileUrl(
+                            widget.creation.creationThumbnail!),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -81,11 +84,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.creation.title,
+                        widget.creation.creationTitle!,
                         style: AppText.bigHeddingStyle1a,
                       ),
                       Text(
-                        widget.creation.subtitle,
+                        widget.creation.creationDescription!,
                         style: AppText.subHeddingStyle,
                       ),
                       SizedBox(
@@ -100,17 +103,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               color: Color.fromARGB(201, 190, 190, 190),
                               shape: BoxShape.circle,
                             ),
-                            child: (widget.creation.seller.image != null)
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(25),
-                                    child: Image.asset(
-                                        widget.creation.seller.image!),
-                                  )
-                                : const Icon(Icons.person),
+                            child:
+                                (widget.creation.seller!.sellerProfilePhoto !=
+                                        null)
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(25),
+                                        child: Image.network(
+                                            ApiConfig.getFileUrl(widget.creation
+                                                .seller!.sellerProfilePhoto!)),
+                                      )
+                                    : const Icon(Icons.person),
                           ),
                           const SizedBox(width: 15),
                           Text(
-                            widget.creation.seller.name,
+                            widget.creation.seller!.sellerName!,
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: AppColor.primaryColor,
@@ -134,12 +140,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                             SizedBox(width: Get.height * 0.01),
                             Text(
-                              widget.creation.rating.toString(),
+                              widget.creation.averageRating!.substring(0, 4),
                               style: const TextStyle(fontSize: 12),
                             ),
                             SizedBox(width: Get.height * 0.01),
-                            const Text(
-                              "(3 Reviews)",
+                            Text(
+                              "(${widget.creation.numberOfReviews} Reviews)",
                               style: TextStyle(fontSize: 12),
                             ),
                             (showReview)
@@ -195,16 +201,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       color: Color.fromARGB(201, 190, 190, 190),
                       shape: BoxShape.circle,
                     ),
-                    child: (widget.creation.seller.image != null)
+                    child: (widget.creation.seller!.sellerProfilePhoto != null)
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(25),
-                            child: Image.asset(widget.creation.seller.image!),
+                            child: Image.asset(
+                                widget.creation.seller!.sellerProfilePhoto!),
                           )
                         : const Icon(Icons.person),
                   ),
                   const SizedBox(width: 15),
                   Text(
-                    widget.creation.seller.name,
+                    widget.creation.seller!.sellerName!,
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       color: Color.fromARGB(255, 72, 72, 72),
@@ -263,7 +270,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               children: [
                 const Text("Price"),
                 Text(
-                  "₹ ${widget.creation.price.toString()}",
+                  "₹ ${widget.creation.creationPrice!}",
                   style: AppText.bigHeddingStyle1b,
                 ),
               ],
@@ -347,7 +354,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         itemCount: 6,
         separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (BuildContext context, index) {
-          Creation creation = widget.creation;
+          Creation2 creation = widget.creation;
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 10.h),
             child: GestureDetector(
@@ -383,8 +390,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(15),
                             topLeft: Radius.circular(15)),
-                        child: Image.asset(
-                          creation.imagePath,
+                        child: Image.network(
+                          ApiConfig.getFileUrl(creation.creationThumbnail!),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -427,7 +434,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            creation.title,
+                            creation.creationTitle!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -441,7 +448,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           Text(
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
-                            creation.subtitle,
+                            creation.creationDescription!,
                             style: TextStyle(
                               fontFamily: 'Gilroy',
                               fontWeight: FontWeight.w500,

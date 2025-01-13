@@ -84,8 +84,9 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 15),
                   itemBuilder: (context, index) {
-                    return CreatationCard(
-                        creation: _userPurchasedCreations[index]);
+                    return Text("data");
+                    // return CreatationCard(
+                    //     creation: _userPurchasedCreations[index]);
                   }),
             ),
           ],

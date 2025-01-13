@@ -134,7 +134,8 @@ class DataFileProvider extends ChangeNotifier {
   // ignore: prefer_final_fields
   List<Creation> _recentlyaddedCreations = [
     Creation.fromJson({
-      'title': 'Modern Template',
+      'title':
+          'Modern Template,Modern Template,Modern Template,Modern Template',
       'subtitle': 'A stunning modern template for websites.',
       'imagePath': 'assets/images/c1.jpg',
       'price': 29.99,

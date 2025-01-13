@@ -5,11 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/data_file_provider.dart';
+import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_info_model.dart';
+import 'package:projecthub/model/new.dart';
 import 'package:projecthub/widgets/creation_card.dart';
 import 'package:projecthub/view/home/categories_screen.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
@@ -26,7 +29,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Creation> adeverticmentIterm = [];
   List<Creation> trendingCreations = [];
-  List<Creation> recentAddedCreations = [];
   List<Creation> otherCreations = [];
   List<CategoryModel> categories = [];
 
@@ -34,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
     DataFileProvider dataFileProvider = Provider.of<DataFileProvider>(context);
     adeverticmentIterm = dataFileProvider.adeverticmentIterm;
     trendingCreations = dataFileProvider.trendingCreations;
-    recentAddedCreations = dataFileProvider.recentlyAddedCreations;
     otherCreations = dataFileProvider.otherCreations;
     categories = dataFileProvider.categories;
 
@@ -185,157 +186,160 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget trendingCreationView() {
-    return SizedBox(
-      //color: Colors.red,
-      height: 240.h,
-      width: double.infinity.w,
-      child: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
-          physics: const BouncingScrollPhysics(),
-          primary: false,
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: trendingCreations.length,
-          separatorBuilder: (context, index) => const SizedBox(width: 10),
-          itemBuilder: (BuildContext context, index) {
-            Creation trendingCreation = trendingCreations[index];
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              child: GestureDetector(
-                onTap: () {
-                  Get.to(ProductDetailsScreen(
-                    creation: trendingCreation,
-                  ));
-                },
-                child: Container(
-                  width: 200.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromARGB(77, 157, 157, 163),
-                        blurRadius: 4,
-                        spreadRadius: 2,
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 145.h,
-                        width: 200.w,
+    return Consumer<TreandingCreationProvider>(
+        builder: (context, value, child) {
+      return SizedBox(
+        //color: Colors.red,
+        height: 240.h,
+        width: double.infinity.w,
+        child: ListView.separated(
+            padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
+            physics: const BouncingScrollPhysics(),
+            primary: false,
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: value.threandingCreations!.length,
+            separatorBuilder: (context, index) => const SizedBox(width: 10),
+            itemBuilder: (BuildContext context, index) {
+              Creation2 trendingCreation = value.threandingCreations![index];
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                child: GestureDetector(
+                  onTap: () {
+                    Get.to(ProductDetailsScreen(
+                      creation: trendingCreation,
+                    ));
+                  },
+                  child: Container(
+                    width: 200.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromARGB(77, 157, 157, 163),
+                          blurRadius: 4,
+                          spreadRadius: 2,
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 145.h,
+                          width: 200.w,
 
-                        decoration: BoxDecoration(
-                          //color: Colors.red,
-                          borderRadius: BorderRadius.circular(50),
+                          decoration: BoxDecoration(
+                            //color: Colors.red,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(15),
+                                topLeft: Radius.circular(15)),
+                            child: Image.network(
+                              ApiConfig.getFileUrl(
+                                  trendingCreation.creationThumbnail!),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          //alignment: Alignment.topLeft,
+                          // child: Padding(
+                          //   padding: EdgeInsets.only(
+                          //       left: 10.w, right: 147.w, bottom: 142.h),
+                          //   child: Container(
+                          //       height: 20.h,
+                          //       width: 20.w,
+                          //       decoration: const BoxDecoration(
+                          //           shape: BoxShape.circle, color: Colors.white),
+                          //       child: Center(
+                          //         child: GestureDetector(
+                          //           onTap: () {
+                          //             // toggle(index);
+                          //           },
+                          //           child: (true)
+                          //               ? Image(
+                          //                   image: AssetImage(
+                          //                       "assets/saveboldblue.png"),
+                          //                   height: 10.h,
+                          //                   width: 9.w,
+                          //                 )
+                          //               : Image(
+                          //                   image:
+                          //                       AssetImage("assets/savebold.png"),
+                          //                   height: 10.h,
+                          //                   width: 9.w,
+                          //                 ),
+                          //         ),
+                          //       )),
+                          // ),
                         ),
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(15),
-                              topLeft: Radius.circular(15)),
-                          child: Image.asset(
-                            trendingCreation.imagePath,
-                            fit: BoxFit.cover,
+                        SizedBox(height: 8.h),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                trendingCreation.creationTitle!,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontFamily: 'Gilroy',
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15.sp,
+                                    color: const Color(0XFF000000)),
+                              ),
+                              Text(
+                                "by ${trendingCreation.seller!.sellerName!}",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily: 'Gilroy',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12.sp,
+                                  color: Color.fromARGB(255, 92, 91, 91),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        //alignment: Alignment.topLeft,
-                        // child: Padding(
-                        //   padding: EdgeInsets.only(
-                        //       left: 10.w, right: 147.w, bottom: 142.h),
-                        //   child: Container(
-                        //       height: 20.h,
-                        //       width: 20.w,
-                        //       decoration: const BoxDecoration(
-                        //           shape: BoxShape.circle, color: Colors.white),
-                        //       child: Center(
-                        //         child: GestureDetector(
-                        //           onTap: () {
-                        //             // toggle(index);
-                        //           },
-                        //           child: (true)
-                        //               ? Image(
-                        //                   image: AssetImage(
-                        //                       "assets/saveboldblue.png"),
-                        //                   height: 10.h,
-                        //                   width: 9.w,
-                        //                 )
-                        //               : Image(
-                        //                   image:
-                        //                       AssetImage("assets/savebold.png"),
-                        //                   height: 10.h,
-                        //                   width: 9.w,
-                        //                 ),
-                        //         ),
-                        //       )),
-                        // ),
-                      ),
-                      SizedBox(height: 8.h),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              trendingCreation.title,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontFamily: 'Gilroy',
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 15.sp,
-                                  color: const Color(0XFF000000)),
-                            ),
-                            SizedBox(height: 4.h),
-                            Text(
-                              trendingCreation.subtitle,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontFamily: 'Gilroy',
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13.sp,
-                                color: const Color.fromARGB(255, 74, 74, 74),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          }),
-    );
+              );
+            }),
+      );
+    });
   }
 
   Widget getRecentlyAddedCreationView() {
-    return SizedBox(
-      //color: const Color(0XFFFFFFFF),
-      height: 323.h,
-      width: double.infinity.w,
-      child: ListView.separated(
-          padding: EdgeInsets.all(AppPadding.edgePadding),
-          physics: const BouncingScrollPhysics(),
-          primary: false,
-          shrinkWrap: true,
-          itemCount: recentAddedCreations.length,
-          scrollDirection: Axis.horizontal,
-          separatorBuilder: (context, index) => const SizedBox(width: 15),
-          itemBuilder: (BuildContext context, index) {
-            Creation recentAddedCreation = recentAddedCreations[index];
-            return GestureDetector(
-              onTap: () {
-                Get.to(ProductDetailsScreen(creation: recentAddedCreation));
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(),
+    return Consumer<RecentCreationProvider>(builder: (context, value, child) {
+      return SizedBox(
+        //color: const Color(0XFFFFFFFF),
+        height: 323.h,
+        width: double.infinity.w,
+        child: ListView.separated(
+            padding: EdgeInsets.all(AppPadding.edgePadding),
+            physics: const BouncingScrollPhysics(),
+            primary: false,
+            shrinkWrap: true,
+            itemCount: value.recentlyAddedCreations!.length,
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (context, index) => const SizedBox(width: 15),
+            itemBuilder: (BuildContext context, index) {
+              Creation2 recentAddedCreation =
+                  value.recentlyAddedCreations![index];
+              return GestureDetector(
+                onTap: () {
+                  Get.to(ProductDetailsScreen(creation: recentAddedCreation));
+                },
                 child: Container(
                   //height: 323,
                   width: 276.w,
-
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(9.h),
                       boxShadow: [
                         BoxShadow(
                           color: const Color(0XFF23408F).withOpacity(0.14),
@@ -349,54 +353,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Container(
                         height: 158.h,
-                        width: 276.w,
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(12),
-                              topRight: Radius.circular(12)),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(9.h),
+                              topRight: Radius.circular(9.h)),
                           image: DecorationImage(
-                              image: AssetImage(
-                                recentAddedCreation.imagePath,
+                            image: NetworkImage(
+                              ApiConfig.getFileUrl(
+                                recentAddedCreation.creationThumbnail!,
                               ),
-                              fit: BoxFit.cover),
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        // child: Padding(
-                        //   padding: EdgeInsets.only(
-                        //       right: 230.w, bottom: 120.h, top: 10.h),
-                        //   child: Container(
-                        //       height: 20.h,
-                        //       width: 20.w,
-                        //       decoration: const BoxDecoration(
-                        //           shape: BoxShape.circle, color: Colors.white),
-                        //       child: IconButton(
-                        //           splashRadius: 10,
-                        //           onPressed: () {
-                        //             //toggleRecent(index);
-                        //           },
-                        //           icon: Center(
-                        //             child:
-                        //                 recentAdded[index].buttonStatus == true
-                        //                     ? Image(
-                        //                         image: AssetImage(
-                        //                             "assets/saveboldblue.png"),
-                        //                         height: 10.h,
-                        //                         width: 9.w,
-                        //                       )
-                        //                     : Image(
-                        //                         image: AssetImage(
-                        //                             "assets/savebold.png"),
-                        //                         height: 10.h,
-                        //                         width: 9.w,
-                        //                       ),
-                        //           ))),
-                        // ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 10.w, top: 10.h),
-                            child: Container(
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 8.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
                               height: 25.h,
                               width: 58.w,
                               decoration: BoxDecoration(
@@ -413,113 +390,123 @@ class _HomeScreenState extends State<HomeScreen> {
                                     size: 15,
                                   ),
                                   Text(
-                                    recentAddedCreation.rating.toString(),
+                                    recentAddedCreation.averageRating!
+                                        .substring(0, 3),
                                     style: TextStyle(
-                                        fontFamily: 'Gilroy',
-                                        color: AppColor.secYello,
-                                        fontSize: 15.sp),
+                                      fontFamily: 'Gilroy',
+                                      color: AppColor.secYello,
+                                      fontSize: 15.sp,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 5.w),
-                            child: Row(
-                              children: [
-                                SizedBox(width: 4.w),
-                              ],
+                            SizedBox(height: 11.h),
+                            Text(
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              recentAddedCreation.creationTitle!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 15.sp,
+                                  color: const Color(0XFF000000),
+                                  fontFamily: 'Gilroy'),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 11.h),
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.w, right: 10.w),
-                        child: Text(
-                          recentAddedCreation.title,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15.sp,
-                              color: const Color(0XFF000000),
-                              fontFamily: 'Gilroy'),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 11.h),
+                      const Spacer(),
                       Padding(
-                        padding: EdgeInsets.only(left: 10.w, right: 10.w),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
-                                if (recentAddedCreation.seller.image != null)
+                                if (recentAddedCreation
+                                        .seller!.sellerProfilePhoto !=
+                                    null)
                                   ClipRRect(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(25)),
                                     child: Image(
-                                      image: AssetImage(
-                                          recentAddedCreation.seller.image!),
+                                      image: AssetImage(recentAddedCreation
+                                          .seller!.sellerProfilePhoto!),
                                       height: 40.h,
                                       width: 40.w,
                                     ),
                                   ),
-                                SizedBox(width: 10.w),
-                                Text(
-                                  recentAddedCreation.seller.name,
-                                  style: TextStyle(
-                                      fontFamily: 'Gilroy',
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color(0XFF23408F),
-                                      fontSize: 15.sp),
+                                SizedBox(
+                                  width: 100,
+                                  child: Text(
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    recentAddedCreation.seller!.sellerName!,
+                                    style: TextStyle(
+                                        fontFamily: 'Gilroy',
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color(0XFF23408F),
+                                        fontSize: 15.sp),
+                                  ),
                                 ),
                               ],
                             ),
                             Container(
-                              height: 33.h,
-                              width: 76.w,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8.w, vertical: 2),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: const Color(0XFFE5ECFF),
                               ),
                               child: Center(
                                   child: Text(
-                                recentAddedCreation.price.toString(),
+                                "₹ ${recentAddedCreation.creationPrice!}",
                                 style: TextStyle(
                                     color: const Color(0XFF23408F),
                                     fontFamily: 'Gilroy',
-                                    fontSize: 19.sp,
+                                    fontSize: 15.sp,
                                     fontWeight: FontWeight.bold),
                               )),
                             )
                           ],
                         ),
+                      ),
+                      SizedBox(
+                        height: 8.h,
                       )
                     ],
                   ),
                 ),
-              ),
-            );
-          }),
-    );
+              );
+            }),
+      );
+    });
   }
 
   Widget getOtherCreationView() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
-      child: Column(
-        children: List.generate(
-            otherCreations.length,
-            (index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: GestureDetector(
-                      onTap: () {
-                        Get.to(ProductDetailsScreen(
-                            creation: otherCreations[index]));
-                      },
-                      child: CreatationCard(creation: otherCreations[index])),
-                )),
-      ),
+    return Consumer<GeneralCreationProvider>(
+      builder: (context, value, child) {
+        log("${value.generalCreations!.length}mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
+          child: Column(
+            children: List.generate(
+                value.generalCreations!.length,
+                (index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: GestureDetector(
+                          onTap: () {
+                            Get.to(ProductDetailsScreen(
+                                creation: value.generalCreations![index]));
+                          },
+                          child: CreatationCard(
+                              creation: value.generalCreations![index])),
+                    )),
+          ),
+        );
+      },
     );
   }
 }

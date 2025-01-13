@@ -61,3 +61,59 @@ class GeneralCreationProvider with ChangeNotifier {
     notifyListeners();
   }
 }
+
+class RecentCreationProvider extends ChangeNotifier {
+  List<Creation2>? _recentlyAddedCreations;
+
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  List<Creation2>? get recentlyAddedCreations => _recentlyAddedCreations;
+  bool get isLoading => _isLoading;
+  String get errorMessage => _errorMessage;
+
+  Future<void> fetchRecentCreations(int userId, int page, int perPage) async {
+    _isLoading = true;
+    await Future.delayed(const Duration(microseconds: 10));
+    notifyListeners();
+    try {
+      _recentlyAddedCreations = await CreationController()
+          .fetchRecentCreations(userId, page, perPage);
+      _errorMessage = ''; // Clear any previous error
+    } catch (e) {
+      _errorMessage = 'Failed to fetch creations: $e';
+      log("errror111111111111111111");
+    }
+    //log("${_generalCreations!.length}");
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+
+class TreandingCreationProvider extends ChangeNotifier {
+  List<Creation2>? _treandingCreations;
+
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  List<Creation2>? get threandingCreations => _treandingCreations;
+  bool get isLoading => _isLoading;
+  String get errorMessage => _errorMessage;
+
+  Future<void> fetchTrendingCreations(int userId, int page, int perPage) async {
+    _isLoading = true;
+    await Future.delayed(const Duration(microseconds: 10));
+    notifyListeners();
+    try {
+      _treandingCreations = await CreationController()
+          .fetchTrendingCreations(userId, page, perPage);
+      _errorMessage = ''; // Clear any previous error
+    } catch (e) {
+      _errorMessage = 'Failed to fetch creations: $e';
+      log("errror11222222222222222222222222221");
+    }
+    //log("${_generalCreations!.length}");
+    _isLoading = false;
+    notifyListeners();
+  }
+}
