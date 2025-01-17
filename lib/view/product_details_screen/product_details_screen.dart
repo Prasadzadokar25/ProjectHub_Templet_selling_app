@@ -5,7 +5,6 @@ import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
-import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/new.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 
@@ -32,7 +31,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 Stack(
                   children: [
                     SizedBox(
-                      height: Get.height * 0.3,
+                      height: Get.height * 0.27,
                       width: Get.width,
                       child: Image.network(
                         ApiConfig.getFileUrl(
@@ -87,9 +86,45 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         widget.creation.creationTitle!,
                         style: AppText.bigHeddingStyle1a,
                       ),
+                      SizedBox(height: 14.h),
+                      const Text(
+                        "About This Creation",
+                        style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(height: 10.h),
                       Text(
                         widget.creation.creationDescription!,
                         style: AppText.subHeddingStyle,
+                      ),
+                      SizedBox(height: 10.h),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.lock_clock),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Lifetime Access",
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500),
+                              ), Text(
+                                "Buy once and access till whenever you want. N",
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                       SizedBox(
                         height: Get.height * 0.02,
@@ -100,7 +135,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             height: Get.height * 0.045,
                             width: Get.height * 0.045,
                             decoration: const BoxDecoration(
-                              color: Color.fromARGB(201, 190, 190, 190),
+                              color: Color.fromARGB(207, 225, 225, 241),
                               shape: BoxShape.circle,
                             ),
                             child:
@@ -146,7 +181,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             SizedBox(width: Get.height * 0.01),
                             Text(
                               "(${widget.creation.numberOfReviews} Reviews)",
-                              style: TextStyle(fontSize: 12),
+                              style: const TextStyle(fontSize: 12),
                             ),
                             (showReview)
                                 ? const Icon(Icons.arrow_drop_up)

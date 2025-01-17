@@ -28,15 +28,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Creation> adeverticmentIterm = [];
-  List<Creation> trendingCreations = [];
-  List<Creation> otherCreations = [];
+
   List<CategoryModel> categories = [];
 
   void getData() async {
     DataFileProvider dataFileProvider = Provider.of<DataFileProvider>(context);
     adeverticmentIterm = dataFileProvider.adeverticmentIterm;
-    trendingCreations = dataFileProvider.trendingCreations;
-    otherCreations = dataFileProvider.otherCreations;
+
     categories = dataFileProvider.categories;
 
     setState(() {});
