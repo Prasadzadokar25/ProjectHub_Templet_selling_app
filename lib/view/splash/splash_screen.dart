@@ -51,7 +51,7 @@ class _SplashscreenState extends State<Splashscreen> {
             .fetchTrendingCreations(isLoginId!, 1, 10);
       }
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 10));
       setState(() {
         _isLoading = false;
       });
