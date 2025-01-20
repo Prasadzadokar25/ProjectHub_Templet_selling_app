@@ -83,7 +83,7 @@ class _AppPrimaryElevetedButtonState extends State<AppPrimaryElevetedButton> {
     return Padding(
       padding: const EdgeInsets.all(1.0),
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: widget.onPressed,
         icon: widget.icon,
         label: Text(
           widget.title,

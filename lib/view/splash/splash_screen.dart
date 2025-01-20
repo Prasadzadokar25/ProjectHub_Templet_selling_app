@@ -41,7 +41,6 @@ class _SplashscreenState extends State<Splashscreen> {
       _navigateAfterSplash();
 
       if (isLoginId != null && isLoginId! > 0 && isIntro == true) {
-        // await Future.delayed(Duration(seconds: 2));
         await Provider.of<UserInfoProvider>(context, listen: false)
             .fetchUserDetails(isLoginId!);
         await Provider.of<GeneralCreationProvider>(context, listen: false)
@@ -51,15 +50,17 @@ class _SplashscreenState extends State<Splashscreen> {
         await Provider.of<TreandingCreationProvider>(context, listen: false)
             .fetchTrendingCreations(isLoginId!, 1, 10);
       }
+
+      await Future.delayed(Duration(seconds: 2));
       setState(() {
         _isLoading = false;
       });
+      _navigateAfterSplash();
+      // Get.to(() => const AppNavigationScreen());
     } catch (e) {
       log("$e");
       Get.snackbar("Error with app server url", "Please notify developer team");
     }
-
-    Get.to(() => const AppNavigationScreen());
   }
 
   void _navigateAfterSplash() {

@@ -11,7 +11,10 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/login_controller.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
+import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
+import '../../constant/app_text.dart';
+import '../../constant/app_textfield_border.dart';
 import '../login/forgot_password.dart';
 import 'sign_up/sign_in_phonenumber.dart';
 
@@ -133,7 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: 21.h),
                       forgotpassword(),
                       SizedBox(height: 40.h),
-                      loginbutton(),
+                      AppPrimaryElevetedButton(
+                        onPressed: checkLogindetails,
+                        title: "Log in",
+                      ),
                       SizedBox(height: 40.h),
                       or_sign_in_with_text(),
                       SizedBox(height: 41.h),
@@ -176,31 +182,6 @@ class _LoginScreenState extends State<LoginScreen> {
             fontWeight: FontWeight.w700,
             fontSize: 15.sp,
             color: const Color(0XFF23408F),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget loginbutton() {
-    return Center(
-      child: GestureDetector(
-        onTap: checkLogindetails,
-        child: Container(
-          height: 56.h,
-          width: 374.w,
-          //color: Color(0XFF23408F),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: const Color(0XFF23408F),
-          ),
-          child: Center(
-            child: Text("Log In",
-                style: TextStyle(
-                    color: const Color(0XFFFFFFFF),
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'Gilroy')),
           ),
         ),
       ),
@@ -334,26 +315,11 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: emailController,
             decoration: InputDecoration(
               hintText: 'Mobile number / Email',
-              hintStyle: TextStyle(
-                  fontSize: 15.sp,
-                  fontFamily: 'Gilroy',
-                  color: const Color(0XFF9B9B9B),
-                  fontWeight: FontWeight.w700),
-              border: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: const Color(0XFFDEDEDE), width: 1.w),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: const Color(0XFF23408F), width: 1.w),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: const Color(0XFFDEDEDE), width: 1.w),
-                borderRadius: BorderRadius.circular(12),
-              ),
+              hintStyle: AppText.textFieldHintTextStyle,
+              focusedErrorBorder: AppTextfieldBorder.focusedErrorBorder,
+              errorBorder: AppTextfieldBorder.errorBorder,
+              focusedBorder: AppTextfieldBorder.focusedBorder,
+              enabledBorder: AppTextfieldBorder.enabledBorder,
               filled: true,
               fillColor: const Color(0xFFF5F5F5),
               contentPadding:
@@ -380,24 +346,11 @@ class _LoginScreenState extends State<LoginScreen> {
             obscureText: ispassHiden,
             decoration: InputDecoration(
                 hintText: 'Password',
-                hintStyle: TextStyle(
-                    fontSize: 15.sp,
-                    fontFamily: 'Gilroy',
-                    color: const Color(0XFF9B9B9B),
-                    fontWeight: FontWeight.w700),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: const Color(0XFF23408F), width: 1.w),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: const Color(0XFFDEDEDE), width: 1.w),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                hintStyle: AppText.textFieldHintTextStyle,
+                focusedErrorBorder: AppTextfieldBorder.focusedErrorBorder,
+                errorBorder: AppTextfieldBorder.errorBorder,
+                focusedBorder: AppTextfieldBorder.focusedBorder,
+                enabledBorder: AppTextfieldBorder.enabledBorder,
                 filled: true,
                 fillColor: const Color(0xFFF5F5F5),
                 contentPadding:
