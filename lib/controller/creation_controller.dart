@@ -15,6 +15,8 @@ import 'package:projecthub/model/creation_info_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:projecthub/model/new.dart';
 
+import '../model/purched_creation_model.dart';
+
 class CreationController {
   final Dio _dio = Dio();
 
@@ -120,6 +122,48 @@ class CreationController {
         List<dynamic> data = jsonDecode(response.body)['creations'];
 
         return data.map((json) => Creation2.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load creations');
+      }
+    } catch (e) {
+      throw Exception('Failed to load creations: $e');
+    }
+  }
+
+  Future<List<PurchedCreationModel>> fetchPurchedCreations(
+      int userId, int page, int perPage) async {
+    try {
+      final response = await http.get(
+          Uri.parse("${ApiConfig.getPurchedCreations(page, perPage)}/$userId"));
+      log(response.body);
+      if (response.statusCode == 200) {
+        log("pppppp");
+        List<dynamic> data = jsonDecode(response.body)['data'];
+
+        return data.map((json) => PurchedCreationModel.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load creations');
+      }
+    } catch (e) {
+      throw Exception('Failed to load creations: $e');
+    }
+  }
+
+  Future<List<PurchedCreationModel>> addCreationInCard(
+      int userId, int creationId) async {
+    final data = {"userId": userId, "creationId": creationId};
+    final header = {
+      'Content-Type': 'application/json',
+    };
+    try {
+      final response = await http.post(Uri.parse(ApiConfig.addCreationToCard),
+          body: jsonEncode(data), headers: header);
+      log(response.body);
+      if (response.statusCode == 200) {
+        log("pppppp");
+        List<dynamic> data = jsonDecode(response.body)['data'];
+
+        return data.map((json) => PurchedCreationModel.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load creations');
       }

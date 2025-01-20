@@ -4,6 +4,7 @@ import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/new.dart';
+import 'package:projecthub/model/purched_creation_model.dart';
 import 'package:share_plus/share_plus.dart';
 
 class CreatationCard extends StatefulWidget {
@@ -389,6 +390,185 @@ class _ListedCreationCardState extends State<ListedCreationCard> {
                                   fontWeight: FontWeight.w700),
                             ),
                           ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text("Status : "),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10.w),
+                          height: 30.h,
+                          //width: 74.w,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.h),
+                              color: const Color(0XFFE5ECFF)),
+                          child: Center(
+                            child: Text(
+                              "UnderReview",
+                              style: AppText.subHeddingStyle,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PurchedCreationCard extends StatefulWidget {
+  final PurchedCreationModel purchedCreationModel;
+  const PurchedCreationCard({super.key, required this.purchedCreationModel});
+
+  @override
+  State<PurchedCreationCard> createState() => _PurchedCreationCardState();
+}
+
+class _PurchedCreationCardState extends State<PurchedCreationCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.h),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0XFF23408F).withOpacity(0.24),
+              offset: const Offset(-4, 5),
+              blurRadius: 16.h,
+            ),
+          ],
+          color: Colors.white),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.h),
+              boxShadow: [
+                BoxShadow(
+                    color: const Color(0XFF23408F).withOpacity(0.14),
+                    offset: const Offset(-4, 5),
+                    blurRadius: 16.h),
+              ],
+              color: Colors.white,
+            ),
+            child: Stack(
+              children: [
+                Container(
+                  height: 210.h,
+                  width: double.infinity.w,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.h),
+                      color: Colors.white),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12.h),
+                        topRight: Radius.circular(12.h)),
+                    child: Image(
+                      image: NetworkImage(ApiConfig.getFileUrl(widget
+                          .purchedCreationModel.creation.creationThumbnail!)),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.w, top: 10.h),
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 33.h,
+                    width: 32.w,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: IconButton(
+                      splashRadius: 10.h,
+                      onPressed: () {},
+                      icon: const Center(
+                        child: Icon(
+                          Icons.save_as,
+                          size: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 55.w, top: 10.h),
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 33.h,
+                    width: 32.w,
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: Center(
+                      child: IconButton(
+                        onPressed: () {
+                          //share();
+                        },
+                        icon: const Icon(
+                          Icons.share,
+                          size: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 11.h),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 0.w),
+                      child: Text(
+                        widget.purchedCreationModel.creation.creationTitle!,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 15.sp,
+                            fontFamily: 'Gilroy',
+                            color: const Color.fromARGB(255, 0, 0, 0)),
+                      ),
+                    ),
+                    SizedBox(height: 11.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text("Listed Price : "),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10.w),
+                          height: 30.h,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.h),
+                              color: const Color(0XFFE5ECFF)),
+                          child: Center(
+                              // child: Text(
+                              //   "₹ ${widget.purchedCreationModel.creation.creationPrice.toString()}",
+                              //   style: TextStyle(
+                              //       color: const Color(0XFF23408F),
+                              //       fontFamily: 'Gilroy',
+                              //       fontSize: 17.sp,
+                              //       fontWeight: FontWeight.w700),
+                              // ),
+                              ),
                         ),
                       ],
                     ),

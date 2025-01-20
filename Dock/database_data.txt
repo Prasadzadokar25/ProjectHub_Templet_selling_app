@@ -56,3 +56,12 @@ CREATE TABLE categories (
     category_description TEXT DEFAULT NULL,
     keywords TEXT DEFAULT NULL
 );
+
+CREATE TABLE carditems (
+    carditem_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique ID for each card item
+    user_id INT NOT NULL,  -- Foreign key to link the card item with the user
+    creation_id INT NOT NULL,  -- Foreign key to the creation or product added to the cart
+    added_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Timestamp when the item was added
+    FOREIGN KEY (user_id) REFERENCES users(user_id),  -- Assuming you have a users table
+    FOREIGN KEY (creation_id) REFERENCES creations(creation_id)  -- Assuming you have a creations table
+);

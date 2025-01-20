@@ -99,35 +99,41 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         widget.creation.creationDescription!,
                         style: AppText.subHeddingStyle,
                       ),
-                      SizedBox(height: 10.h),
-                      const Row(
+                      SizedBox(height: 30.h),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.lock_clock),
+                          const Icon(Icons.lock_clock),
+                          const SizedBox(width: 10),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 "Lifetime Access",
                                 style: TextStyle(
                                     color: Colors.black87,
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500),
-                              ), Text(
-                                "Buy once and access till whenever you want. N",
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(
+                                width: Get.width * 0.8,
+                                child: const Text(
+                                  overflow: TextOverflow.ellipsis,
+                                  "Buy once and access till whenever you want.",
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400),
+                                ),
                               ),
                             ],
                           )
                         ],
                       ),
                       SizedBox(
-                        height: Get.height * 0.02,
+                        height: 25.h,
                       ),
                       Row(
                         children: [
@@ -159,7 +165,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           )
                         ],
                       ),
-                      SizedBox(height: Get.height * 0.02),
+                      SizedBox(height: 50.h),
                       GestureDetector(
                         onTap: () {
                           setState(() {

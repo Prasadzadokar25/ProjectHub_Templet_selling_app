@@ -6,6 +6,8 @@ import 'package:projecthub/controller/creation_controller.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/new.dart';
 
+import '../model/purched_creation_model.dart';
+
 class ListedCreationProvider with ChangeNotifier {
   List<ListedCreation> _userListedcreations = [];
 
@@ -113,6 +115,36 @@ class TreandingCreationProvider extends ChangeNotifier {
       log("errror11222222222222222222222222221");
     }
     //log("${_generalCreations!.length}");
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+
+class PurchedCreationProvider extends ChangeNotifier {
+  List<PurchedCreationModel>? _purchedCreations;
+
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  List<PurchedCreationModel>? get purchedCreations => _purchedCreations;
+  bool get isLoading => _isLoading;
+  String get errorMessage => _errorMessage;
+
+  Future<void> fetchUserPurchedCreation(
+      int userId, int page, int perPage) async {
+    log("=======================================");
+    _isLoading = true;
+    await Future.delayed(const Duration(microseconds: 10));
+    notifyListeners();
+    try {
+      _purchedCreations = await CreationController()
+          .fetchPurchedCreations(userId, page, perPage);
+      _errorMessage = ''; // Clear any previous error
+    } catch (e) {
+      _errorMessage = 'Failed to fetch creations: $e';
+      log("errror33333333333333333333333333333333");
+    }
+    log("${_purchedCreations!.length}0000000000000000000000000000000000000000000000000");
     _isLoading = false;
     notifyListeners();
   }

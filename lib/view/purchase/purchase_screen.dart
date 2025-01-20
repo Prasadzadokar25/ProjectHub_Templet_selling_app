@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
@@ -16,7 +19,6 @@ class PurchaseScreen extends StatefulWidget {
 }
 
 class _PurchaseScreenState extends State<PurchaseScreen> {
-  List<Creation> _userPurchasedCreations = [];
   final ScrollController _scrollController = ScrollController();
   bool _isSearchVisible = true;
   double _lastScrollOffset = 0.0;
@@ -25,6 +27,11 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    Provider.of<PurchedCreationProvider>(context, listen: false)
+        .fetchUserPurchedCreation(
+            Provider.of<UserInfoProvider>(context, listen: false).user!.userId,
+            1,
+            10);
   }
 
   void _onScroll() {
@@ -51,14 +58,8 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     super.dispose();
   }
 
-  getDate() {
-    _userPurchasedCreations =
-        Provider.of<UserInfoProvider>(context).userPerchedCreations;
-  }
-
   @override
   Widget build(BuildContext context) {
-    getDate();
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -77,17 +78,47 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
               ),
             ),
             Expanded(
-              child: ListView.separated(
-                  controller: _scrollController,
-                  padding: EdgeInsets.all(AppPadding.edgePadding),
-                  itemCount: _userPurchasedCreations.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 15),
-                  itemBuilder: (context, index) {
-                    return Text("data");
-                    // return CreatationCard(
-                    //     creation: _userPurchasedCreations[index]);
-                  }),
+              child: Consumer<PurchedCreationProvider>(
+                  builder: (context, provider, child) {
+                if (provider.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (provider.errorMessage.isNotEmpty) {
+                  return Center(child: Text(provider.errorMessage));
+                }
+
+                if (provider.purchedCreations!.isEmpty) {
+                  return Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 150.h,
+                        width: 150.w,
+                        child: SvgPicture.asset(
+                            "assets/images/no_creation_found.svg"),
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        "You don't have any creation listed yet",
+                        style: AppText.heddingStyle2bBlack,
+                      ),
+                    ],
+                  ));
+                }
+                return ListView.separated(
+                    controller: _scrollController,
+                    padding: EdgeInsets.all(AppPadding.edgePadding),
+                    itemCount: provider.purchedCreations!.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 15),
+                    itemBuilder: (context, index) {
+                      return PurchedCreationCard(
+                          purchedCreationModel:
+                              provider.purchedCreations![index]);
+                    });
+              }),
             ),
           ],
         ),
@@ -131,13 +162,14 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
 
   showFilters() {
     Get.defaultDialog(
-        title: "Filters",
-        content: const Column(
-          children: [
-            ListTile(title: Text("Latest first")),
-            ListTile(title: Text("Oldest first")),
-            ListTile(title: Text("Most popular first")),
-          ],
-        ));
+      title: "Filters",
+      content: const Column(
+        children: [
+          ListTile(title: Text("Latest first")),
+          ListTile(title: Text("Oldest first")),
+          ListTile(title: Text("Most popular first")),
+        ],
+      ),
+    );
   }
 }

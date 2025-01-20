@@ -8,6 +8,7 @@ class ApiConfig {
   static String listCreation = "$baseURL/listCreation";
   static String getUserDetailsByID = "$baseURL/getUser";
   static String userListedCreations = "$baseURL/userListedCreations";
+  static String addCreationToCard = "$baseURL/creation/card/add";
 
   static String getGeneralCreationsUrl(int pageNo, [int perPage = 10]) {
     return "$baseURL/creations/page/$pageNo/perPage/$perPage/uid";
@@ -19,6 +20,10 @@ class ApiConfig {
 
   static String getTrendingCreations(int pageNo, [int perPage = 10]) {
     return "$baseURL/trendingCreations/page/$pageNo/perPage/$perPage/uid";
+  }
+
+  static String getPurchedCreations(int pageNo, [int perPage = 10]) {
+    return "$baseURL/creation/purched/page/$pageNo/perPage/$perPage/uid";
   }
 
   static String getFileUrl(String path) {
