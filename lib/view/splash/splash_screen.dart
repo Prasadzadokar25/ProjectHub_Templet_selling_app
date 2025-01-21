@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
+import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';

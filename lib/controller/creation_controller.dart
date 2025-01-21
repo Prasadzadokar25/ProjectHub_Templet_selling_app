@@ -177,8 +177,7 @@ class CreationController {
     }
   }
 
-  Future<List<PurchedCreationModel>> addCreationInCard(
-      int userId, int creationId) async {
+  Future<void> addCreationInCard(int userId, int creationId) async {
     final data = {"userId": userId, "creationId": creationId};
     final header = {
       'Content-Type': 'application/json',
@@ -189,9 +188,6 @@ class CreationController {
       log(response.body);
       if (response.statusCode == 200) {
         log("pppppp");
-        List<dynamic> data = jsonDecode(response.body)['data'];
-
-        return data.map((json) => PurchedCreationModel.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load creations');
       }

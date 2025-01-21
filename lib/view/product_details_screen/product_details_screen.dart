@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,6 +9,7 @@ import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
+import 'package:projecthub/controller/creation_controller.dart';
 import 'package:projecthub/model/new.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
@@ -399,13 +402,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       color: Colors.white,
                       size: 20,
                     ),
-                    onPressed: () {
-                      SnackBar snackBar = const SnackBar(
-                        content: Text("Product added"),
-                        duration: Duration(milliseconds: 500),
-                      );
+                    onPressed: () async {
+                      try {
+                        await CreationController().addCreationInCard(
+                            Provider.of<UserInfoProvider>(context,
+                                    listen: false)
+                                .user!
+                                .userId,
+                            widget.creation.creationId!);
+                        SnackBar snackBar = const SnackBar(
+                          content: Text("Product added"),
+                          duration: Duration(milliseconds: 500),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      } catch (e) {
+                        SnackBar snackBar = const SnackBar(
+                          content: Text("Failed to add creation in card"),
+                          duration: Duration(milliseconds: 500),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        log("$e");
+                      }
                     },
                   ),
                 ],

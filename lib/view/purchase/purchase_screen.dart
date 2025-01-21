@@ -100,7 +100,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                       ),
                       SizedBox(height: 20.h),
                       Text(
-                        "You don't have any creation listed yet",
+                        "You don't purched anything",
                         style: AppText.heddingStyle2bBlack,
                       ),
                     ],

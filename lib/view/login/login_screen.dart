@@ -10,7 +10,7 @@ import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/login_controller.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
-import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
+import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 import '../../app_providers/creation_provider.dart';
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Get.offAll(() => LoadingScreen());
 
 // Fetch data asynchronously
-        await Future.delayed(Duration(microseconds: 10));
+        await Future.delayed(Duration(microseconds: 100));
         await fetchData(res['data'][0]['user_id']);
 
 // Once data is fetched, navigate to the next screen

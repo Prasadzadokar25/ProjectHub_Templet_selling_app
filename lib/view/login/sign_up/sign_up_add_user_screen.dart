@@ -13,7 +13,7 @@ import 'package:projecthub/controller/user_controller.dart';
 import 'package:projecthub/model/user_info_model.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/utils/screen_size.dart';
-import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
+import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:projecthub/view/loading_screen.dart/loading_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../app_providers/creation_provider.dart';

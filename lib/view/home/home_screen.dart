@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:image/image.dart' as img;
 
 import '../../app_providers/user_provider.dart';
+import '../all_creation_screen/all_creation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
             getSectionHedding(
               leftTitle: "Trending Creations",
               rightTitle: "See All",
-              navigateTo: const CategoriesPage(),
+              navigateTo: const AllCreationScreen(type: "trending"),
             ),
             SizedBox(height: Get.height * 0.008),
             trendingCreationView(),
@@ -109,22 +110,14 @@ class _HomeScreenState extends State<HomeScreen> {
             getSectionHedding(
               leftTitle: "Recently Added Creations",
               rightTitle: "See All",
-              navigateTo: const CategoriesPage(),
+              navigateTo: const AllCreationScreen(type: "recent"),
             ),
             getRecentlyAddedCreationView(),
             SizedBox(height: Get.height * 0.012),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
-              child: Row(
-                children: [
-                  Text("Others",
-                      style: TextStyle(
-                        fontSize: 17.sp,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Gilroy',
-                      ))
-                ],
-              ),
+            getSectionHedding(
+              leftTitle: "Other",
+              rightTitle: "See All",
+              navigateTo: const AllCreationScreen(type: "other"),
             ),
             SizedBox(height: Get.height * 0.012),
             getOtherCreationView(),
@@ -527,8 +520,8 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
           child: Column(
             children:
-                List.generate(value.generalCreations!.length + 1, (index) {
-              if (index == value.generalCreations!.length) {
+                List.generate(value.generalCreations!.length + 3, (index) {
+              if (index >= value.generalCreations!.length) {
                 return _isLoadingMore
                     ? Center(child: CreationCardPlaceholder())
                     : const SizedBox.shrink();
