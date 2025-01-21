@@ -13,8 +13,10 @@ import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
+import '../../app_providers/creation_provider.dart';
 import '../../constant/app_text.dart';
 import '../../constant/app_textfield_border.dart';
+import '../loading_screen.dart/loading_screen.dart';
 import '../login/forgot_password.dart';
 import 'sign_up/sign_in_phonenumber.dart';
 
@@ -34,6 +36,16 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _showCircularIndicater = false;
   bool ispassHiden = false;
   bool _isSubmitPressedOnce = false;
+  fetchData(int uid) async {
+    await Provider.of<UserInfoProvider>(context, listen: false)
+        .fetchUserDetails(uid);
+    await Provider.of<GeneralCreationProvider>(context, listen: false)
+        .fetchGeneralCreations(uid, 1, 10);
+    await Provider.of<RecentCreationProvider>(context, listen: false)
+        .fetchRecentCreations(uid, 1, 10);
+    await Provider.of<TreandingCreationProvider>(context, listen: false)
+        .fetchTrendingCreations(uid, 1, 10);
+  }
 
   checkLogindetails() async {
     setState(() {
@@ -54,13 +66,22 @@ class _LoginScreenState extends State<LoginScreen> {
       if (res['status'] == 'True') {
         log(res['data'][0].toString());
         // ignore: use_build_context_synchronously
-        Provider.of<UserInfoProvider>(context, listen: false)
-            .fetchUserDetails(res['data'][0]['user_id']);
+
         PrefData.setLogin(res['data'][0]['user_id']);
+        PrefData.setIntro(true);
 
         // PrefData.setVarification(true);
         //Get.offAll(const AppNavigationScreen());
-        Get.to(const AppNavigationScreen());
+        // Navigate to the loading screen
+        Get.offAll(() => LoadingScreen());
+
+// Fetch data asynchronously
+        await Future.delayed(Duration(microseconds: 10));
+        await fetchData(res['data'][0]['user_id']);
+
+// Once data is fetched, navigate to the next screen
+        print("Navigating to AppNavigationScreen");
+        Get.offAll(() => const AppNavigationScreen());
       } else {
         String numberTitle = "Mobile number/Email or Password is wrong";
         String emailTitle = "Email or Password is wrong";

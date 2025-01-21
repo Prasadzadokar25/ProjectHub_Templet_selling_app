@@ -1,44 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/data_file_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
+import 'package:projecthub/controller/initialization_controller.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 import 'view/splash/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Hide the status bar
-  // SystemChrome.setSystemUIOverlayStyle(
-  //   SystemUiOverlayStyle(
-  //     statusBarColor: Colors.transparent, // Transparent status bar
-  //     statusBarBrightness:
-  //         Brightness.light, // Adjust brightness for better visibility
-  //     statusBarIconBrightness: Brightness.light, // Adjust icon brightness
-  //   ),
-  // );
-
-  // // Hide the status bar
-  // SystemChrome.setEnabledSystemUIMode(
-  //   SystemUiMode.manual,
-  //   overlays: [SystemUiOverlay.bottom], // Only show the navigation bar
-  // );
-
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-        options: const FirebaseOptions(
-      apiKey: 'AIzaSyAGu-IqmaAGi8hnnhNs4F0XqVdX5fkdUeU',
-      appId: '1:812047731231:android:1eef5f19208e209eeda32a',
-      messagingSenderId: '812047731231',
-      projectId: 'projecthu-shop',
-    ));
-  }
-
+  await AppInilization().initializeFirebase();
+  await AppInilization().initializeNotifications();
   runApp(const MyApp());
 }
 
@@ -56,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RecentCreationProvider()),
         ChangeNotifierProvider(create: (_) => TreandingCreationProvider()),
         ChangeNotifierProvider(create: (_) => PurchedCreationProvider()),
+        ChangeNotifierProvider(create: (_) => RecomandedCreationProvider()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,

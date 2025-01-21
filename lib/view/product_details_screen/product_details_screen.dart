@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/app_providers/creation_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/model/new.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
+import 'package:provider/provider.dart';
+
+import '../app_shimmer.dart';
 
 // ignore: must_be_immutable
 class ProductDetailsScreen extends StatefulWidget {
@@ -19,6 +24,17 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   bool showReview = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<RecomandedCreationProvider>(context, listen: false)
+        .feachRecommandedCreation(
+            Provider.of<UserInfoProvider>(context, listen: false).user!.userId,
+            widget.creation);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,7 +149,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ],
                       ),
                       SizedBox(
-                        height: 25.h,
+                        height: 50.h,
                       ),
                       Row(
                         children: [
@@ -165,7 +181,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           )
                         ],
                       ),
-                      SizedBox(height: 50.h),
+                      SizedBox(height: 30.h),
                       GestureDetector(
                         onTap: () {
                           setState(() {
@@ -207,8 +223,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                   ),
                 ),
-                SizedBox(height: Get.height * 0.02),
-                suggestCreationView()
+                SizedBox(height: 20.h),
+                Consumer<RecomandedCreationProvider>(
+                    builder: (context, value, child) {
+                  if (value.isLoading) {
+                    return SizedBox(
+                      height: 210.h,
+                      child: ListView.builder(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 6,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RecommandationCreationCardPlacHolder(),
+                            );
+                          }),
+                    );
+                  } else {
+                    return suggestCreationView(value);
+                  }
+                }),
+                // suggestCreationView()
               ],
             ),
           ),
@@ -381,10 +417,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget suggestCreationView() {
+  Widget suggestCreationView(value) {
     return SizedBox(
       //color: Colors.red,
-      height: 260.h,
+      height: 230.h,
       width: double.infinity.w,
       child: ListView.separated(
         padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
@@ -392,10 +428,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         primary: false,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: 6,
+        itemCount: value.recomandedCreationProvider.length,
         separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (BuildContext context, index) {
-          Creation2 creation = widget.creation;
+          Creation2 creation = value.recomandedCreationProvider[index];
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 10.h),
             child: GestureDetector(
@@ -405,7 +441,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ));
               },
               child: Container(
-                width: 175.w,
+                width: 200.w,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.white,
@@ -421,8 +457,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      height: 145.h,
-                      width: 175.w,
+                      height: 120.h,
+                      width: 200.w,
                       decoration: BoxDecoration(
                         //color: Colors.red,
                         borderRadius: BorderRadius.circular(50),
@@ -436,35 +472,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      // child: Padding(
-                      //   padding: EdgeInsets.only(
-                      //       left: 10.w, right: 147.w, bottom: 142.h),
-                      //   child: Container(
-                      //       height: 20.h,
-                      //       width: 20.w,
-                      //       decoration: const BoxDecoration(
-                      //           shape: BoxShape.circle, color: Colors.white),
-                      //       child: Center(
-                      //         child: GestureDetector(
-                      //           onTap: () {
-                      //             // toggle(index);
-                      //           },
-                      //           child: (true)
-                      //               ? Image(
-                      //                   image: AssetImage(
-                      //                       "assets/saveboldblue.png"),
-                      //                   height: 10.h,
-                      //                   width: 9.w,
-                      //                 )
-                      //               : Image(
-                      //                   image:
-                      //                       AssetImage("assets/savebold.png"),
-                      //                   height: 10.h,
-                      //                   width: 9.w,
-                      //                 ),
-                      //         ),
-                      //       )),
-                      // ),
                     ),
                     SizedBox(height: 8.h),
                     Padding(
@@ -489,10 +496,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           Text(
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
-                            creation.creationDescription!,
+                            "by ${creation.seller!.sellerName!}",
                             style: TextStyle(
                               fontFamily: 'Gilroy',
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w400,
                               fontSize: 13.sp,
                               color: const Color.fromARGB(255, 74, 74, 74),
                             ),

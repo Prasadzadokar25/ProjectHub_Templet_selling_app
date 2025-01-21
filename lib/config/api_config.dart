@@ -22,6 +22,10 @@ class ApiConfig {
     return "$baseURL/trendingCreations/page/$pageNo/perPage/$perPage/uid";
   }
 
+  static String getRecomandedCreations(int pageNo, [int perPage = 10]) {
+    return "$baseURL/recomandedCreations/page/$pageNo/perPage/$perPage/uid";
+  }
+
   static String getPurchedCreations(int pageNo, [int perPage = 10]) {
     return "$baseURL/creation/purched/page/$pageNo/perPage/$perPage/uid";
   }

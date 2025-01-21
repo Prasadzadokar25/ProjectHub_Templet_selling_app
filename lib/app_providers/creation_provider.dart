@@ -38,7 +38,8 @@ class ListedCreationProvider with ChangeNotifier {
 
 class GeneralCreationProvider with ChangeNotifier {
   List<Creation2>? _generalCreations;
-
+  int currentPage = 1;
+  int perPage = 10;
   bool _isLoading = false;
   String _errorMessage = '';
 
@@ -53,13 +54,34 @@ class GeneralCreationProvider with ChangeNotifier {
     try {
       _generalCreations = await CreationController()
           .fetchGeneralCreations(userId, page, perPage);
-      _errorMessage = ''; // Clear any previous error
+      _errorMessage = '';
+      currentPage++; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
       log("errroroooooooooooo");
     }
     //log("${_generalCreations!.length}");
     _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> fetchMoreGeneralCreations(
+    int userId,
+  ) async {
+    List<Creation2> newFetchedCreation = [];
+    await Future.delayed(const Duration(microseconds: 10));
+    try {
+      newFetchedCreation = await CreationController()
+          .fetchGeneralCreations(userId, currentPage, perPage);
+      _generalCreations!.addAll(newFetchedCreation);
+
+      _errorMessage = '';
+    } catch (e) {
+      _errorMessage = 'Failed to fetch creations: $e';
+      log("errroroooooooooooo");
+    }
+    currentPage++; // Clear any previous error
+    if (newFetchedCreation.length >= perPage) {}
     notifyListeners();
   }
 }
@@ -145,6 +167,37 @@ class PurchedCreationProvider extends ChangeNotifier {
       log("errror33333333333333333333333333333333");
     }
     log("${_purchedCreations!.length}0000000000000000000000000000000000000000000000000");
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+
+class RecomandedCreationProvider extends ChangeNotifier {
+  List<Creation2>? _recomandedCreationProvider;
+  int page = 1;
+  int perPage = 10;
+
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  List<Creation2>? get recomandedCreationProvider =>
+      _recomandedCreationProvider;
+  bool get isLoading => _isLoading;
+  String get errorMessage => _errorMessage;
+
+  Future<void> feachRecommandedCreation(int userId, Creation2 creation) async {
+    log("=======================================");
+    _isLoading = true;
+    await Future.delayed(const Duration(microseconds: 10));
+    notifyListeners();
+    try {
+      _recomandedCreationProvider = await CreationController()
+          .fetchRecomandedCreations(userId, page, perPage, creation);
+      _errorMessage = ''; // Clear any previous error
+    } catch (e) {
+      _errorMessage = 'Failed to fetch creations: $e';
+      log("$e");
+    }
     _isLoading = false;
     notifyListeners();
   }

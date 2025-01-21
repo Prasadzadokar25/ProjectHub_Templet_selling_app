@@ -5,8 +5,13 @@ class PrefData {
 
   static String isIntro = prefName + "isIntro";
   static String isLogin = prefName + "isLigin";
-  static String isVarification = prefName+'isVarification';
-  static String isFirstLogin = prefName+'isFirstLogin';
+  static String isVarification = prefName + 'isVarification';
+  static String isFirstLogin = prefName + 'isFirstLogin';
+
+  static clearAppSharedPref() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.clear();
+  }
 
   static setIntro(bool intro) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -53,6 +58,4 @@ class PrefData {
   //   bool FirstLogin = sharedPreferences.getBool(isFirstLogin) ?? false;
   //   return FirstLogin;
   // }
-
-
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projecthub/constant/app_color.dart';
+import 'package:projecthub/controller/app_permission_controller.dart';
 import 'package:projecthub/view/home/home_screen.dart';
 import 'package:projecthub/view/listed_project/listed_creation_screen.dart';
 import 'package:projecthub/view/profile/profile_screen.dart';
@@ -19,6 +20,14 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
   int _selectedIndex = 0; // Current index of the selected button
   final PageController _pageController =
       PageController(); // Page controller to manage PageView
+  AppPermissionController appPermissionController = AppPermissionController();
+
+  @override
+  void initState() {
+    super.initState();
+    appPermissionController.requestNotificationPermission();
+    appPermissionController.requestStoragePermission();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -29,8 +38,6 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final appLocal = AppLocalizations.of(context)!;
-
     return Scaffold(
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),

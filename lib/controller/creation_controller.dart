@@ -149,6 +149,34 @@ class CreationController {
     }
   }
 
+  Future<List<Creation2>> fetchRecomandedCreations(
+      int userId, int pageNo, int perPage, Creation2 creation) async {
+    final data = {"userId": userId, "creation": creation.toJson()};
+    final header = {
+      'Content-Type': 'application/json',
+    };
+
+    log(data.toString());
+    try {
+      final response = await http.post(
+          Uri.parse(
+              "${ApiConfig.getRecomandedCreations(pageNo, perPage)}/$userId"),
+          body: jsonEncode(data),
+          headers: header);
+      log(response.body);
+      if (response.statusCode == 200) {
+        log("pppppp");
+        List<dynamic> data = jsonDecode(response.body)['creations'];
+
+        return data.map((json) => Creation2.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load creations');
+      }
+    } catch (e) {
+      throw Exception('Failed to load creations: $e');
+    }
+  }
+
   Future<List<PurchedCreationModel>> addCreationInCard(
       int userId, int creationId) async {
     final data = {"userId": userId, "creationId": creationId};

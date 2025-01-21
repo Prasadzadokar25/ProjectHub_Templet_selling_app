@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_text.dart';
+import 'package:projecthub/controller/files_download_controller.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/new.dart';
 import 'package:projecthub/model/purched_creation_model.dart';
@@ -482,49 +484,6 @@ class _PurchedCreationCardState extends State<PurchedCreationCard> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.w, top: 10.h),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 33.h,
-                    width: 32.w,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: IconButton(
-                      splashRadius: 10.h,
-                      onPressed: () {},
-                      icon: const Center(
-                        child: Icon(
-                          Icons.save_as,
-                          size: 14,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 55.w, top: 10.h),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 33.h,
-                    width: 32.w,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.white),
-                    child: Center(
-                      child: IconButton(
-                        onPressed: () {
-                          //share();
-                        },
-                        icon: const Icon(
-                          Icons.share,
-                          size: 14,
-                        ),
-                      ),
-                    ),
-                  ),
-                )
               ],
             ),
           ),
@@ -533,68 +492,71 @@ class _PurchedCreationCardState extends State<PurchedCreationCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 11.h),
+                SizedBox(height: 5.h),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 0.w),
-                      child: Text(
-                        widget.purchedCreationModel.creation.creationTitle!,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 15.sp,
-                            fontFamily: 'Gilroy',
-                            color: const Color.fromARGB(255, 0, 0, 0)),
-                      ),
-                    ),
-                    SizedBox(height: 11.h),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Listed Price : "),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10.w),
-                          height: 30.h,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.h),
-                              color: const Color(0XFFE5ECFF)),
-                          child: Center(
-                              // child: Text(
-                              //   "₹ ${widget.purchedCreationModel.creation.creationPrice.toString()}",
-                              //   style: TextStyle(
-                              //       color: const Color(0XFF23408F),
-                              //       fontFamily: 'Gilroy',
-                              //       fontSize: 17.sp,
-                              //       fontWeight: FontWeight.w700),
-                              // ),
-                              ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const Text("Status : "),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10.w),
-                          height: 30.h,
-                          //width: 74.w,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.h),
-                              color: const Color(0XFFE5ECFF)),
-                          child: Center(
-                            child: Text(
-                              "UnderReview",
-                              style: AppText.subHeddingStyle,
+                        SizedBox(
+                          width: Get.width * 0.7,
+                          child: Text(
+                            widget.purchedCreationModel.creation.creationTitle!,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17.sp,
+                              fontFamily: 'Gilroy',
+                              color: const Color.fromARGB(255, 0, 0, 0),
                             ),
                           ),
                         ),
+                        IconButton(
+                            onPressed: () {
+                              FilesDownloadController().downloadZipFile(
+                                widget.purchedCreationModel.creation,
+                              );
+                            },
+                            icon: const Icon(Icons.download))
                       ],
-                    )
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          "Purched for : ",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54),
+                        ),
+                        Text(
+                          "₹${widget.purchedCreationModel.purchasePrice.toString()}",
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          "Purched date : ",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54),
+                        ),
+                        Text(
+                          (widget.purchedCreationModel.orderDate).split(" ")[0],
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 11.h),
                   ],
                 ),
               ],

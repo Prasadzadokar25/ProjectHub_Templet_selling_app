@@ -4,9 +4,12 @@ import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/view/cart/cart_page.dart';
+import 'package:projecthub/view/login/login_screen.dart';
 import 'package:projecthub/view/profile/bank_account_page.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
+
+import '../../utils/app_shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -230,32 +233,36 @@ class WalletRow extends StatelessWidget {
 // Options List
 class OptionList extends StatelessWidget {
   final user;
-  const OptionList({super.key, required this.user});
+  OptionList({super.key, required this.user});
+  final options = [
+    {
+      'icon': Icons.shopping_cart_outlined,
+      'text': 'Cart',
+      "navigateTo": const AddToCartPage(),
+    },
+    {
+      'icon': Icons.account_balance_outlined,
+      'text': 'Bank Accounts',
+      "navigateTo": const BankAccountPage()
+    },
+    {'icon': Icons.money_outlined, 'text': 'Withdraw Money'},
+    {'icon': Icons.analytics_outlined, 'text': 'Sell Analysis'},
+    {'icon': Icons.history_outlined, 'text': 'Purchase History'},
+    {'icon': Icons.swap_horiz_outlined, 'text': 'Transaction Histoty'},
+    {'icon': Icons.campaign_outlined, 'text': 'Advertisement'},
+    {'icon': Icons.card_giftcard, 'text': 'Refer and Earn'},
+    {'icon': Icons.info_outline, 'text': 'About Us'},
+    {'icon': Icons.feedback_outlined, 'text': 'Feedback'},
+    {'icon': Icons.logout_outlined, 'text': 'Logout'},
+  ];
+
+  logOut() {
+    PrefData.clearAppSharedPref();
+    Get.offAll(const LoginScreen());
+  }
 
   @override
   Widget build(BuildContext context) {
-    final options = [
-      {
-        'icon': Icons.shopping_cart_outlined,
-        'text': 'Cart',
-        "navigateTo": const AddToCartPage(),
-      },
-      {
-        'icon': Icons.account_balance_outlined,
-        'text': 'Bank Accounts',
-        "navigateTo": const BankAccountPage()
-      },
-      {'icon': Icons.money_outlined, 'text': 'Withdraw Money'},
-      {'icon': Icons.analytics_outlined, 'text': 'Sell Analysis'},
-      {'icon': Icons.history_outlined, 'text': 'Purchase History'},
-      {'icon': Icons.swap_horiz_outlined, 'text': 'Transaction Histoty'},
-      {'icon': Icons.campaign_outlined, 'text': 'Advertisement'},
-      {'icon': Icons.card_giftcard, 'text': 'Refer and Earn'},
-      {'icon': Icons.info_outline, 'text': 'About Us'},
-      {'icon': Icons.feedback_outlined, 'text': 'Feedback'},
-      {'icon': Icons.logout_outlined, 'text': 'Logout'},
-    ];
-
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -295,7 +302,7 @@ class OptionList extends StatelessWidget {
             TextButton(
               onPressed: () {
                 // Perform Logout Logic
-                Navigator.of(context).pop();
+                logOut();
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Logged out successfully')));
               },

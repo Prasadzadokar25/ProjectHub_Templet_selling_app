@@ -10,7 +10,7 @@ import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/slider_screen/slider_screen.dart';
-import 'package:projecthub/view/splash/loading_screen.dart';
+import 'package:projecthub/view/loading_screen.dart/loading_screen.dart';
 import '../login/login_screen.dart';
 
 class Splashscreen extends StatefulWidget {
@@ -69,14 +69,14 @@ class _SplashscreenState extends State<Splashscreen> {
         () => Get.to(() => const SlidePage()),
       );
     } else if (isLoginId == null || isLoginId == -1) {
-      Get.to(() => const LoginScreen());
+      Get.offAll(() => const LoginScreen());
     } else if (!_isLoading) {
-      Get.to(() => const AppNavigationScreen());
+      Get.offAll(() => const AppNavigationScreen());
     } else {
       Timer(
         const Duration(seconds: 3),
         () {
-          if (_isLoading) Get.to(() => LoadingScreen());
+          if (_isLoading) Get.offAll(() => LoadingScreen());
         },
       );
     }

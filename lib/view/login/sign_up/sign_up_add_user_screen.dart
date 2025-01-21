@@ -14,7 +14,9 @@ import 'package:projecthub/model/user_info_model.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/view/app_navigation_bar.dart/app_navigation_bar.dart';
+import 'package:projecthub/view/loading_screen.dart/loading_screen.dart';
 import 'package:provider/provider.dart';
+import '../../../app_providers/creation_provider.dart';
 import '../sign_up/term_and_condition.dart';
 
 class SignUpAddUserScreen extends StatefulWidget {
@@ -39,15 +41,28 @@ class _SignUpAddUserScreenState extends State<SignUpAddUserScreen> {
   bool isSubmitPressed = false;
   String passworderror = '';
 
+  fetchData(int uid) async {
+    await Provider.of<UserInfoProvider>(context, listen: false)
+        .fetchUserDetails(uid);
+    await Provider.of<GeneralCreationProvider>(context, listen: false)
+        .fetchGeneralCreations(uid, 1, 10);
+    await Provider.of<RecentCreationProvider>(context, listen: false)
+        .fetchRecentCreations(uid, 1, 10);
+    await Provider.of<TreandingCreationProvider>(context, listen: false)
+        .fetchTrendingCreations(uid, 1, 10);
+  }
+
   Future<void> addUserOnServer(NewUserInfo newUserInfo) async {
     try {
       Map responce = await _userController.addUser(newUserInfo);
       if (responce['isadded']) {
         log(responce['data'].toString());
-        Provider.of<UserInfoProvider>(context, listen: false)
-            .fetchUserDetails(responce['data']['user_id']);
-       
+
         PrefData.setLogin(responce['data']['user_id']);
+        PrefData.setIntro(true);
+
+        Get.offAll(() => LoadingScreen());
+        await fetchData(responce['data']['user_id']);
         Get.offAll(() => const AppNavigationScreen());
       } else {
         Get.snackbar("Something went wrong", "Unable to create account");

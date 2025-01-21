@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/data_file_provider.dart';
@@ -13,11 +14,14 @@ import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/new.dart';
+import 'package:projecthub/view/app_shimmer.dart';
 import 'package:projecthub/widgets/creation_card.dart';
 import 'package:projecthub/view/home/categories_screen.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:image/image.dart' as img;
+
+import '../../app_providers/user_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,6 +34,36 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Creation> adeverticmentIterm = [];
 
   List<CategoryModel> categories = [];
+
+  final ScrollController _scrollController = ScrollController();
+  bool _isLoadingMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoadingMore) {
+      setState(() {
+        _isLoadingMore = true;
+      });
+      _fetchNextCreations();
+    }
+  }
+
+  Future<void> _fetchNextCreations() async {
+    await Provider.of<GeneralCreationProvider>(context, listen: false)
+        .fetchMoreGeneralCreations(
+            Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+
+    setState(() {
+      _isLoadingMore = false;
+    });
+  }
 
   void getData() async {
     DataFileProvider dataFileProvider = Provider.of<DataFileProvider>(context);
@@ -50,25 +84,26 @@ class _HomeScreenState extends State<HomeScreen> {
         height: Get.height,
         width: Get.width,
         child: ListView(
+          controller: _scrollController,
           children: [
             SizedBox(height: Get.height * 0.012),
             getTopBar(),
             SizedBox(height: Get.height * 0.006),
             AdverticmentSlider(item: adeverticmentIterm),
-            SizedBox(height: Get.height * 0.012),
+            SizedBox(height: Get.height * 0.018),
             getSectionHedding(
               leftTitle: "Categories",
               rightTitle: "See All",
               navigateTo: const CategoriesPage(),
             ),
             getCategoriesSlider(),
-            SizedBox(height: Get.height * 0.012),
+            SizedBox(height: Get.height * 0.018),
             getSectionHedding(
               leftTitle: "Trending Creations",
               rightTitle: "See All",
               navigateTo: const CategoriesPage(),
             ),
-            SizedBox(height: Get.height * 0.012),
+            SizedBox(height: Get.height * 0.008),
             trendingCreationView(),
             SizedBox(height: Get.height * 0.035),
             getSectionHedding(
@@ -92,7 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SizedBox(height: Get.height * 0.012),
-            getOtherCreationView()
+            getOtherCreationView(),
+            SizedBox(height: Get.height * 0.012),
           ],
         ),
       )),
@@ -110,8 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             leftTitle,
             style: TextStyle(
-              fontSize: 17.sp,
-              fontWeight: FontWeight.w700,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
               fontFamily: 'Gilroy',
             ),
           ),
@@ -120,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text(
               rightTitle,
               style: TextStyle(
-                fontSize: 17.sp,
+                fontSize: 16.sp,
                 fontFamily: 'Gilroy',
                 color: AppColor.primaryColor,
                 fontWeight: FontWeight.bold,
@@ -490,18 +526,24 @@ class _HomeScreenState extends State<HomeScreen> {
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
           child: Column(
-            children: List.generate(
-                value.generalCreations!.length,
-                (index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: GestureDetector(
-                          onTap: () {
-                            Get.to(ProductDetailsScreen(
-                                creation: value.generalCreations![index]));
-                          },
-                          child: CreatationCard(
-                              creation: value.generalCreations![index])),
-                    )),
+            children:
+                List.generate(value.generalCreations!.length + 1, (index) {
+              if (index == value.generalCreations!.length) {
+                return _isLoadingMore
+                    ? Center(child: CreationCardPlaceholder())
+                    : const SizedBox.shrink();
+              }
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: GestureDetector(
+                    onTap: () {
+                      Get.to(ProductDetailsScreen(
+                          creation: value.generalCreations![index]));
+                    },
+                    child: CreatationCard(
+                        creation: value.generalCreations![index])),
+              );
+            }),
           ),
         );
       },
