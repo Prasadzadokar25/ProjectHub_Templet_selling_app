@@ -7,7 +7,6 @@ import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
-import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/incard_creation_model.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
@@ -77,11 +76,11 @@ class _AddToCartPage extends State<AddToCartPage> {
         ),
         body:
             Consumer<InCardCreationProvider>(builder: (context, value, child) {
-          getCost(value.creations!);
-
           if (value.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
+          getCost(value.creations!);
+
           return Column(
             children: [
               Expanded(
@@ -174,8 +173,6 @@ class _AddToCartPage extends State<AddToCartPage> {
       ),
     );
   }
-
-
 
   _getPriceInfo(String key, String value) {
     return Padding(
