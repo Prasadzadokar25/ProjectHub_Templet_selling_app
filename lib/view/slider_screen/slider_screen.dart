@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:projecthub/model/slider_info_model.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/utils/slider_screen_data.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import '../login/login_screen.dart';
-
 
 class SlidePage extends StatefulWidget {
   const SlidePage({super.key});
@@ -106,6 +106,7 @@ class _SlidePageState extends State<SlidePage> {
         });
       },
       child: Container(
+        constraints: BoxConstraints(maxWidth: 300),
         height: 56.h,
         width: 177.w,
         //color: Color(0XFF23408F),
@@ -151,7 +152,7 @@ class _SlidePageState extends State<SlidePage> {
                   });
                 },
                 child: Container(
-                    height: 32.h,
+                    height: 40.h,
                     width: 68.w,
                     //color: Colors.red,
                     decoration: BoxDecoration(
@@ -162,7 +163,7 @@ class _SlidePageState extends State<SlidePage> {
                       "Skip",
                       style: TextStyle(
                           fontFamily: 'Gilroy',
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                           fontStyle: FontStyle.normal,
                           fontSize: 15.sp,
                           color: const Color(0xFF000000)),
@@ -180,11 +181,14 @@ class _SlidePageState extends State<SlidePage> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image(
-                image: AssetImage(pages[index].image!),
-                height: 520.h,
-                width: double.infinity,
-                fit: BoxFit.cover,
+              Container(
+                constraints: BoxConstraints(maxWidth: 600, maxHeight: 800),
+                child: Image(
+                  image: AssetImage(pages[index].image!),
+                  height: Get.height * 0.7,
+                  width: Get.width,
+                  fit: BoxFit.fill,
+                ),
               ),
               SizedBox(height: 50.h),
               Text(

@@ -13,6 +13,7 @@ import 'package:dio/dio.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:projecthub/model/incard_creation_model.dart';
 import 'package:projecthub/model/new.dart';
 
 import '../model/purched_creation_model.dart';
@@ -188,6 +189,26 @@ class CreationController {
       log(response.body);
       if (response.statusCode == 200) {
         log("pppppp");
+      } else {
+        throw Exception('Failed to load creations');
+      }
+    } catch (e) {
+      throw Exception('Failed to load creations: $e');
+    }
+  }
+
+  Future<List<InCardCreationInfo>> fetchUserInCardCreations(
+      int userId, int pageNo, int perPage) async {
+    try {
+      final response = await http.get(
+        Uri.parse("${ApiConfig.incardCreations}/$userId"),
+      );
+      log(response.body);
+      if (response.statusCode == 200) {
+        log("pppppp");
+        List<dynamic> data = jsonDecode(response.body)['data'];
+
+        return data.map((json) => InCardCreationInfo.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load creations');
       }

@@ -8,9 +8,13 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/model/creation_info_model.dart';
+import 'package:projecthub/model/incard_creation_model.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
+
+import '../../app_providers/creation_provider.dart';
+import '../../config/api_config.dart';
 
 class AddToCartPage extends StatefulWidget {
   const AddToCartPage({super.key});
@@ -22,34 +26,37 @@ class AddToCartPage extends StatefulWidget {
 }
 
 class _AddToCartPage extends State<AddToCartPage> {
-  List<Creation> cartCreations = [];
   double subTotal = 0;
   double platFromFees = 0;
   double gstTax = 0;
   double platFromFeesPercentage = 10;
   double gstTaxPercentage = 3;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<InCardCreationProvider>(context, listen: false)
+        .fetchInCardCreations(
+            Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+  }
 
   Future<bool> _requestPop() {
     Navigator.of(context).pop();
     return Future.value(true);
   }
 
-  getCost(List<Creation> creationList) {
+  getCost(List<InCardCreationInfo> creationList) {
     double cost = 0;
     for (int i = 0; i < creationList.length; i++) {
-      cost = cost + creationList[i].price;
+      cost = cost + double.parse("${creationList[i].creation.creationPrice}");
     }
     subTotal = cost;
     platFromFees = subTotal * platFromFeesPercentage / 100;
     gstTax = subTotal * gstTaxPercentage / 100;
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    cartCreations = Provider.of<UserInfoProvider>(context).userInCartCreation;
-    getCost(cartCreations);
-
     return WillPopScope(
       onWillPop: _requestPop,
       child: Scaffold(
@@ -68,102 +75,107 @@ class _AddToCartPage extends State<AddToCartPage> {
             },
           ),
         ),
-        body: Column(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: AppPadding.edgePadding,
-                  right: AppPadding.edgePadding,
-                ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: cartCreations.length,
-                  itemBuilder: (context, index) {
-                    return getCreationCard(cartCreations[index]);
-                  },
+        body:
+            Consumer<InCardCreationProvider>(builder: (context, value, child) {
+          getCost(value.creations!);
+
+          if (value.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return Column(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: AppPadding.edgePadding,
+                    right: AppPadding.edgePadding,
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: value.creations!.length,
+                    itemBuilder: (context, index) {
+                      return getCreationCard(value.creations![index]);
+                    },
+                  ),
                 ),
               ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    topLeft: Radius.circular(30),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade200,
-                      blurRadius: 10,
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(30),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.shade200,
+                        blurRadius: 10,
+                      )
+                    ]),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: Get.width * 0.2,
+                        height: 3,
+                        color: const Color.fromARGB(197, 194, 194, 194),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppPadding.edgePadding * 2),
+                      child: Column(
+                        children: [
+                          _getPriceInfo("SubTotal", "$subTotal"),
+                          _getPriceInfo("platFromFees", "$platFromFees"),
+                          _getPriceInfo("GST Tax", "$gstTax"),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Total",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 44, 44, 44),
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              Text(
+                                "₹ ${subTotal + platFromFees + gstTax}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 44, 44, 44),
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: AppPadding.edgePadding * 1.5,
+                            ),
+                            child: AppPrimaryElevetedButton(
+                              onPressed: () {},
+                              title: "CheckOut",
+                            ),
+                          )
+                        ],
+                      ),
                     )
-                  ]),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: Get.width * 0.2,
-                      height: 3,
-                      color: const Color.fromARGB(197, 194, 194, 194),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppPadding.edgePadding * 2),
-                    child: Column(
-                      children: [
-                        _getPriceInfo("SubTotal", "$subTotal"),
-                        _getPriceInfo("platFromFees", "$platFromFees"),
-                        _getPriceInfo("GST Tax", "$gstTax"),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "Total",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Color.fromARGB(255, 44, 44, 44),
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            Text(
-                              "₹ ${subTotal + platFromFees + gstTax}",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Color.fromARGB(255, 44, 44, 44),
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: AppPadding.edgePadding * 1.5,
-                          ),
-                          child: AppPrimaryElevetedButton(
-                            onPressed: () {},
-                            title: "CheckOut",
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
+                  ],
+                ),
+              )
+            ],
+          );
+        }),
       ),
     );
   }
 
-  void removeItem(Creation index) {
-    cartCreations.remove(index);
-    setState(() {});
-  }
+
 
   _getPriceInfo(String key, String value) {
     return Padding(
@@ -192,7 +204,7 @@ class _AddToCartPage extends State<AddToCartPage> {
     );
   }
 
-  getCreationCard(Creation creation) {
+  getCreationCard(InCardCreationInfo inCardCreationInfo) {
     return Slidable(
       // actionPane: SlidableDrawerActionPane(),
       endActionPane: ActionPane(
@@ -200,8 +212,8 @@ class _AddToCartPage extends State<AddToCartPage> {
         children: [
           SlidableAction(
             onPressed: (context) {
-              removeItem(creation);
-              setState(() {});
+              // removeItem(creation);
+              // setState(() {});
             },
             icon: Icons.close,
             padding: EdgeInsets.zero,
@@ -212,7 +224,7 @@ class _AddToCartPage extends State<AddToCartPage> {
       ),
       child: InkWell(
         onTap: () {
-          //Get.to(ProductDetailsScreen(creation: creation));
+          Get.to(ProductDetailsScreen(creation: inCardCreationInfo.creation));
         },
         child: Container(
           margin: const EdgeInsets.only(top: 10, bottom: 10),
@@ -240,8 +252,9 @@ class _AddToCartPage extends State<AddToCartPage> {
                       Radius.circular(15),
                     ),
                   ),
-                  child: Image.asset(
-                    creation.imagePath,
+                  child: Image.network(
+                    ApiConfig.getFileUrl(
+                        inCardCreationInfo.creation.creationThumbnail!),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -251,8 +264,9 @@ class _AddToCartPage extends State<AddToCartPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(creation.title),
-                      Text(creation.price.toString()),
+                      Text(inCardCreationInfo.creation.creationTitle!),
+                      Text(inCardCreationInfo.creation.creationPrice!
+                          .toString()),
                     ],
                   ),
                 )

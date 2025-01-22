@@ -7,6 +7,9 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/initialization_controller.dart';
 import 'package:provider/provider.dart';
 
+import 'view/no_internet_screen/connectivity_service.dart';
+import 'view/no_internet_screen/global_navigation_key.dart';
+import 'view/no_internet_screen/no_intermet_screen.dart';
 import 'view/splash/splash_screen.dart';
 
 void main() async {
@@ -31,9 +34,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TreandingCreationProvider()),
         ChangeNotifierProvider(create: (_) => PurchedCreationProvider()),
         ChangeNotifierProvider(create: (_) => RecomandedCreationProvider()),
+        ChangeNotifierProvider(create: (_) => InCardCreationProvider()),
       ],
       child: GetMaterialApp(
+        // navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
+        initialRoute: "/splash",
+        routes: {
+          '/noInternet': (context) => const NoInternetScreen(),
+          '/splash': (context) => const Splashscreen(),
+        },
         theme: ThemeData(
           scaffoldBackgroundColor: AppColor.bgColor,
           iconTheme: IconThemeData(
@@ -66,7 +76,6 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        home: const Splashscreen(),
       ),
     );
   }

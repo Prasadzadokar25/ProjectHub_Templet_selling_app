@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await Provider.of<GeneralCreationProvider>(context, listen: false)
         .fetchMoreGeneralCreations(
             Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
-
+    await Future.delayed(Duration(seconds: 2));
     setState(() {
       _isLoadingMore = false;
     });
@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemCount: value.threandingCreations!.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 10),
+            separatorBuilder: (context, index) => SizedBox(width: 10.w),
             itemBuilder: (BuildContext context, index) {
               Creation2 trendingCreation = value.threandingCreations![index];
               return Padding(
@@ -238,9 +238,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ));
                   },
                   child: Container(
-                    width: 200.w,
+                    width: 200.h,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(9.h),
                       color: Colors.white,
                       boxShadow: const [
                         BoxShadow(
@@ -253,54 +253,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          height: 145.h,
-                          width: 200.w,
-
-                          decoration: BoxDecoration(
-                            //color: Colors.red,
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(15),
-                                topLeft: Radius.circular(15)),
+                        ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(9.h),
+                              topLeft: Radius.circular(9.h)),
+                          child: SizedBox(
+                            height: 120.h,
+                            width: 200.w,
                             child: Image.network(
                               ApiConfig.getFileUrl(
                                   trendingCreation.creationThumbnail!),
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fill,
                             ),
                           ),
-                          //alignment: Alignment.topLeft,
-                          // child: Padding(
-                          //   padding: EdgeInsets.only(
-                          //       left: 10.w, right: 147.w, bottom: 142.h),
-                          //   child: Container(
-                          //       height: 20.h,
-                          //       width: 20.w,
-                          //       decoration: const BoxDecoration(
-                          //           shape: BoxShape.circle, color: Colors.white),
-                          //       child: Center(
-                          //         child: GestureDetector(
-                          //           onTap: () {
-                          //             // toggle(index);
-                          //           },
-                          //           child: (true)
-                          //               ? Image(
-                          //                   image: AssetImage(
-                          //                       "assets/saveboldblue.png"),
-                          //                   height: 10.h,
-                          //                   width: 9.w,
-                          //                 )
-                          //               : Image(
-                          //                   image:
-                          //                       AssetImage("assets/savebold.png"),
-                          //                   height: 10.h,
-                          //                   width: 9.w,
-                          //                 ),
-                          //         ),
-                          //       )),
-                          // ),
                         ),
                         SizedBox(height: 8.h),
                         Padding(
@@ -354,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
             shrinkWrap: true,
             itemCount: value.recentlyAddedCreations!.length,
             scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(width: 15),
+            separatorBuilder: (context, index) => SizedBox(width: 12.w),
             itemBuilder: (BuildContext context, index) {
               Creation2 recentAddedCreation =
                   value.recentlyAddedCreations![index];
@@ -364,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: Container(
                   //height: 323,
-                  width: 276.w,
+                  width: 266.h,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9.h),
                       boxShadow: [
@@ -379,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        height: 158.h,
+                        height: 160.h,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(9.h),
@@ -390,19 +355,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                 recentAddedCreation.creationThumbnail!,
                               ),
                             ),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 12.w, vertical: 8.h),
+                            horizontal: 12.h, vertical: 8.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
                               height: 25.h,
-                              width: 58.w,
+                              width: 58.h,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 color: const Color(0XFFFAF4E1),
@@ -445,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Spacer(),
                       Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 8.w,
+                          horizontal: 8.h,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -462,7 +427,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       image: AssetImage(recentAddedCreation
                                           .seller!.sellerProfilePhoto!),
                                       height: 40.h,
-                                      width: 40.w,
+                                      width: 40.h,
                                     ),
                                   ),
                                 SizedBox(
@@ -482,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 8.w, vertical: 2),
+                                  horizontal: 8.h, vertical: 2),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: const Color(0XFFE5ECFF),
@@ -681,7 +646,7 @@ class CategoryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: cellHeight! * 0.55,
+                          height: cellHeight! * 0.50,
                           child: Image.asset(subCategoryModel!.image!),
                         ),
                         SizedBox(

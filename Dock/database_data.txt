@@ -51,11 +51,16 @@ CREATE TABLE ratings (
 # categories table
 
 CREATE TABLE categories (
-    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(255) NOT NULL,
-    category_description TEXT DEFAULT NULL,
-    keywords TEXT DEFAULT NULL
+    category_description TEXT,
+    keywords TEXT,
+    platform_fee_id INT,
+    gst INT,
+    FOREIGN KEY (platform_fee_id) REFERENCES platform_fees(fee_id),
+    FOREIGN KEY (gst) REFERENCES gst_rates(gst_id)
 );
+
 
 CREATE TABLE carditems (
     carditem_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique ID for each card item
@@ -65,3 +70,19 @@ CREATE TABLE carditems (
     FOREIGN KEY (user_id) REFERENCES users(user_id),  -- Assuming you have a users table
     FOREIGN KEY (creation_id) REFERENCES creations(creation_id)  -- Assuming you have a creations table
 );
+
+CREATE TABLE gst_rates (
+    gst_id INT AUTO_INCREMENT PRIMARY KEY,
+    gst_percentage DECIMAL(5,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+CREATE TABLE platform_fees (
+    fee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    fee_percentage DECIMAL(5,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+);
+
+

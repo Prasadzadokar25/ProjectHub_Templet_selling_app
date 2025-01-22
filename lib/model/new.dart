@@ -40,7 +40,9 @@ class Creation2 {
     creationFile = json['creation_file'];
     creationId = json['creation_id'];
     creationOtherImages = json['creation_other_images'];
-    creationPrice = json['creation_price'];
+    creationPrice = (json['creation_price'] is String)
+        ? json['creation_price']
+        : json['creation_price'].toString();
     creationThumbnail = json['creation_thumbnail'];
     creationTitle = json['creation_title'];
     keyword = json['keyword'];

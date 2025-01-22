@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/model/seller_info_model.dart' ;
 
+import 'seller_model.dart';
+
 class Creation {
   String title;
   String subtitle;
@@ -30,7 +32,7 @@ class Creation {
       imagePath: json['imagePath'],
       price: json['price'],
       rating: json['rating'],
-      seller: Seller.fromJson2(json['seller']),
+      seller: Seller.fromJson(json['seller']),
     );
   }
 

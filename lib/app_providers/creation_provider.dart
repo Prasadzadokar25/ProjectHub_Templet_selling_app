@@ -6,6 +6,7 @@ import 'package:projecthub/controller/creation_controller.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/new.dart';
 
+import '../model/incard_creation_model.dart';
 import '../model/purched_creation_model.dart';
 
 class ListedCreationProvider with ChangeNotifier {
@@ -58,7 +59,7 @@ class GeneralCreationProvider with ChangeNotifier {
       currentPage++; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
-      log("errroroooooooooooo");
+      throw Exception("failed to feach general creations $e");
     }
     //log("${_generalCreations!.length}");
     _isLoading = false;
@@ -69,7 +70,7 @@ class GeneralCreationProvider with ChangeNotifier {
     int userId,
   ) async {
     List<Creation2> newFetchedCreation = [];
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 10));
     try {
       newFetchedCreation = await CreationController()
           .fetchGeneralCreations(userId, currentPage, perPage);
@@ -78,7 +79,7 @@ class GeneralCreationProvider with ChangeNotifier {
       _errorMessage = '';
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
-      log("$e");
+      throw Exception("failed to feach more general creations $e");
     }
     currentPage++; // Clear any previous error
     if (newFetchedCreation.length >= perPage) {}
@@ -107,7 +108,7 @@ class RecentCreationProvider extends ChangeNotifier {
       _errorMessage = ''; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
-      log("errror111111111111111111");
+      throw Exception("failed to feach Recentaly added creations $e");
     }
     //log("${_generalCreations!.length}");
     _isLoading = false;
@@ -126,7 +127,7 @@ class RecentCreationProvider extends ChangeNotifier {
       page++; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
-      log("errror111111111111111111");
+      throw Exception("failed to feach more Recentalt added  creations $e");
     }
     //log("${_generalCreations!.length}");
     _isLoading = false;
@@ -156,7 +157,7 @@ class TreandingCreationProvider extends ChangeNotifier {
       page++; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
-      log("errror11222222222222222222222222221");
+      throw Exception("failed to feach treanding creations $e");
     }
     //log("${_generalCreations!.length}");
     _isLoading = false;
@@ -174,7 +175,7 @@ class TreandingCreationProvider extends ChangeNotifier {
       page++;
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
-      log("errror11222222222222222222222222221");
+      throw Exception("failed to feach more trending creations $e");
     }
     //log("${_generalCreations!.length}");
     _isLoading = false;
@@ -204,9 +205,8 @@ class PurchedCreationProvider extends ChangeNotifier {
       _errorMessage = ''; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
-      log("errror33333333333333333333333333333333");
+      throw Exception("failed to feach purched creations $e");
     }
-    log("${_purchedCreations!.length}0000000000000000000000000000000000000000000000000");
     _isLoading = false;
     notifyListeners();
   }
@@ -226,7 +226,6 @@ class RecomandedCreationProvider extends ChangeNotifier {
   String get errorMessage => _errorMessage;
 
   Future<void> feachRecommandedCreation(int userId, Creation2 creation) async {
-    log("=======================================");
     _isLoading = true;
     await Future.delayed(const Duration(microseconds: 10));
     notifyListeners();
@@ -236,7 +235,37 @@ class RecomandedCreationProvider extends ChangeNotifier {
       _errorMessage = ''; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
-      log("$e");
+      throw Exception("failed to feach recommanded creations $e");
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+
+class InCardCreationProvider extends ChangeNotifier {
+  List<InCardCreationInfo>? _creations;
+  int page = 1;
+  int perPage = 10;
+
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  List<InCardCreationInfo>? get creations => _creations;
+  bool get isLoading => _isLoading;
+  String get errorMessage => _errorMessage;
+
+  Future<void> fetchInCardCreations(int userId) async {
+    log("=======================================");
+    _isLoading = true;
+    await Future.delayed(const Duration(microseconds: 10));
+    notifyListeners();
+    try {
+      _creations = await CreationController()
+          .fetchUserInCardCreations(userId, page, perPage);
+      _errorMessage = ''; // Clear any previous error
+    } catch (e) {
+      _errorMessage = 'Failed to fetch creations: $e';
+      throw Exception("failed to feach in crad creations $e");
     }
     _isLoading = false;
     notifyListeners();

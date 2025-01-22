@@ -24,8 +24,10 @@ class _CreatationCardState extends State<CreatationCard> {
 
   @override
   Widget build(BuildContext context) {
+    double screenW = (Get.width < 600) ? Get.width : 600;
+
     return Container(
-      //constraints: BoxConstraints(maxWidth: 500),
+      constraints: BoxConstraints(maxWidth: 600),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(9.h),
         boxShadow: [
@@ -204,7 +206,7 @@ class _CreatationCardState extends State<CreatationCard> {
                     ),
                     SizedBox(width: 10.w),
                     SizedBox(
-                      width: 150.w,
+                      width: screenW * 0.3,
                       child: Text(
                         maxLines: 2,
                         widget.creation.seller!.sellerName!,
@@ -218,6 +220,9 @@ class _CreatationCardState extends State<CreatationCard> {
                     ),
                     const Spacer(),
                     Container(
+                      constraints: BoxConstraints(
+                        maxWidth: screenW * 0.4,
+                      ),
                       padding:
                           EdgeInsets.symmetric(horizontal: 15.w, vertical: 2.h),
                       decoration: BoxDecoration(
@@ -225,6 +230,8 @@ class _CreatationCardState extends State<CreatationCard> {
                           color: const Color(0XFFE5ECFF)),
                       child: Text(
                         "₹ ${widget.creation.creationPrice!}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                         style: TextStyle(
                             color: const Color(0XFF23408F),
                             fontFamily: 'Gilroy',
