@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
-import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/model/new.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:provider/provider.dart';
@@ -111,7 +110,7 @@ class _AllCreationScreenState extends State<AllCreationScreen> {
     await fetchMoreCreations(
         Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
       _isLoadingMore = false;
     });

@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -144,6 +143,7 @@ class _SignInPhonenumberState extends State<SignInPhonenumber> {
   @override
   Widget build(BuildContext context) {
     initializeScreenSize(context);
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () {
         return Future.value(false);
@@ -193,7 +193,7 @@ class _SignInPhonenumberState extends State<SignInPhonenumber> {
                     SizedBox(height: 30.h),
                     continuebutton(),
                     SizedBox(height: 45.h),
-                    or_sign_in_with_text(),
+                    orSignInWithText(),
                     SizedBox(height: 30.h),
                     otherSignUp(
                       title: "Login with Google",
@@ -305,7 +305,7 @@ class _SignInPhonenumberState extends State<SignInPhonenumber> {
     );
   }
 
-  Widget or_sign_in_with_text() {
+  Widget orSignInWithText() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

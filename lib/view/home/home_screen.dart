@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/data_file_provider.dart';
@@ -60,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await Provider.of<GeneralCreationProvider>(context, listen: false)
         .fetchMoreGeneralCreations(
             Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
       _isLoadingMore = false;
     });
@@ -290,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   fontFamily: 'Gilroy',
                                   fontWeight: FontWeight.w400,
                                   fontSize: 12.sp,
-                                  color: Color.fromARGB(255, 92, 91, 91),
+                                  color: const Color.fromARGB(255, 92, 91, 91),
                                 ),
                               ),
                             ],
