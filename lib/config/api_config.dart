@@ -10,6 +10,9 @@ class ApiConfig {
   static String userListedCreations = "$baseURL/userListedCreations";
   static String addCreationToCard = "$baseURL/creation/card/add";
   static String incardCreations = "$baseURL/creation/card/get/userid";
+  static String getBankAccount = "$baseURL/accounts";
+  static String addBankAccount = "$baseURL/addBankAccount";
+  static String setPrimaryBankAccount = "$baseURL/set-primary-account";
 
   static String getGeneralCreationsUrl(int pageNo, [int perPage = 10]) {
     return "$baseURL/creations/page/$pageNo/perPage/$perPage/uid";

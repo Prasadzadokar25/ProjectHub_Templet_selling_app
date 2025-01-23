@@ -335,24 +335,15 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
               ? Container(
                   width: double.infinity, // Width of the container
                   height: 210.h,
-
-                  child: Stack(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border:
+                          Border.all(color: AppColor.primaryColor, width: 1.5),
+                      image: DecorationImage(
+                          image: FileImage(File(image.path)),
+                          fit: BoxFit.fill)),
+                  child: const Stack(
                     children: [
-                      Container(
-                        width: Get.width, // Width of the container
-                        height: 210.h,
-                        decoration: BoxDecoration(
-                          //color: AppColor.primaryColor,
-
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                              color: AppColor.primaryColor, width: 1.5),
-                        ),
-                        child: Image.file(
-                          File(image.path,),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
                       Positioned(
                         bottom: 0,
                         right: 0,

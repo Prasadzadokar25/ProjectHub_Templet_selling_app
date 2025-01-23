@@ -34,7 +34,9 @@ class Creation2 {
   });
 
   Creation2.fromJson(Map<String, dynamic> json) {
-    averageRating = json['average_rating'];
+    averageRating = (json['average_rating'] is String)
+        ? json['average_rating']
+        : json['average_rating'].toString();
     categoryId = json['category_id'];
     creationDescription = json['creation_description'];
     creationFile = json['creation_file'];

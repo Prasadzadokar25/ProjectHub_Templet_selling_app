@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
@@ -30,9 +31,14 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
     _scrollController.addListener(_onScroll);
 
     // Fetch creations when the screen is loaded
-    Provider.of<ListedCreationProvider>(context, listen: false)
-        .fetchUserListedCreations(
-            Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+    getData();
+  }
+
+  getData() async {
+    final provider =
+        Provider.of<ListedCreationProvider>(context, listen: false);
+    await provider.fetchUserListedCreations(
+        Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
   }
 
   void _onScroll() {
@@ -85,7 +91,8 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
         ),
       ),
       body: SafeArea(
-        child: Consumer<ListedCreationProvider>(builder: (context, provider, child) {
+        child: Consumer<ListedCreationProvider>(
+            builder: (context, provider, child) {
           if (provider.isLoading) {
             return Center(child: CircularProgressIndicator());
           }
@@ -94,7 +101,7 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
             return Center(child: Text(provider.errorMessage));
           }
 
-          if (provider.userListedcreations.isEmpty) {
+          if (provider.userListedcreations!.isEmpty) {
             return Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -142,12 +149,12 @@ class _ListedProjectScreenState extends State<ListedProjectScreen> {
                 child: ListView.separated(
                     controller: _scrollController,
                     padding: EdgeInsets.all(AppPadding.edgePadding),
-                    itemCount: provider.userListedcreations.length,
+                    itemCount: provider.userListedcreations!.length,
                     separatorBuilder: (context, index) =>
                         const SizedBox(height: 15),
                     itemBuilder: (context, index) {
                       return ListedCreationCard(
-                          creation: provider.userListedcreations[index]);
+                          creation: provider.userListedcreations![index]);
                     }),
               ),
             ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/app_providers/bank_account_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/data_file_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PurchedCreationProvider()),
         ChangeNotifierProvider(create: (_) => RecomandedCreationProvider()),
         ChangeNotifierProvider(create: (_) => InCardCreationProvider()),
+        ChangeNotifierProvider(create: (_) => BankAccountProvider()),
       ],
       child: GetMaterialApp(
         // navigatorKey: navigatorKey,
@@ -52,6 +54,7 @@ class MyApp extends StatelessWidget {
             size: 21,
           ),
           appBarTheme: AppBarTheme(
+            centerTitle: true,
             color: AppColor.bgColor,
             iconTheme: const IconThemeData(color: Colors.black),
             titleTextStyle: const TextStyle(

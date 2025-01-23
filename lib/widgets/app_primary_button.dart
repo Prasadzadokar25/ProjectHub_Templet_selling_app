@@ -85,6 +85,7 @@ class _AppPrimaryElevetedButtonState extends State<AppPrimaryElevetedButton> {
       child: ElevatedButton.icon(
         onPressed: widget.onPressed,
         icon: widget.icon,
+        
         label: Text(
           widget.title,
           style: const TextStyle(color: Colors.white),

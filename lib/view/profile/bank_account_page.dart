@@ -1,10 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/constant/app_color.dart';
+import 'package:projecthub/app_providers/bank_account_provider.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
+import 'package:projecthub/model/bank_account_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
+import 'package:provider/provider.dart';
 
 class BankAccountPage extends StatefulWidget {
   const BankAccountPage({super.key});
@@ -14,40 +19,39 @@ class BankAccountPage extends StatefulWidget {
 }
 
 class _BankAccountPageState extends State<BankAccountPage> {
-  final List<Map<String, String>> _bankAccounts = [
-    {
-      "accountHolderName": "John Doe",
-      "accountNumber": "1234567890",
-      "ifscCode": "HDFC0001234",
-      "bankName": "HDFC Bank",
-      "balance": "₹2,426.12",
-      "isPrimary": "false",
-    },
-    {
-      "accountHolderName": "Alice Smith",
-      "accountNumber": "9876543210",
-      "ifscCode": "SBI0005678",
-      "bankName": "State Bank of India",
-      "balance": "₹4,123.94",
-      "isPrimary": "false",
-    },
-    {
-      "accountHolderName": "Robert Brown",
-      "accountNumber": "1122334455",
-      "ifscCode": "ICICI0001234",
-      "bankName": "ICICI Bank",
-      "balance": "₹9,871.05",
-      "isPrimary": "true",
-    },
-  ];
+  bool _isError = false;
+  String _errorMessage = '';
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   final List _gradientColors = [
     [const Color(0xFF6D0EB5), const Color(0xFF4059F1)], // Purple
     [const Color(0xFF0072FF), const Color(0xFF00C6FF)], // Blue
     [const Color(0xFFFF4E50), const Color(0xFFF9D423)], // Orange
+    [const Color(0xFF11998E), const Color(0xFF38EF7D)], // Green-Teal
   ];
 
-  Widget _buildBankAccountCard(Map<String, String> account, int index) {
+  getData() async {
+    try {
+      final provider = Provider.of<BankAccountProvider>(context, listen: false);
+      await provider.fetchUserBankAccounts(
+          Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+      _isError = false;
+      _errorMessage = '';
+    } catch (e) {
+      log(e.toString());
+      setState(() {
+        _isError = true;
+        _errorMessage = e.toString();
+        Get.snackbar("Error occurs", e.toString());
+      });
+    }
+  }
+
+  Widget _buildBankAccountCard(BankAccount bankAccount, int index) {
     final gradient = _gradientColors[index % _gradientColors.length];
 
     return Card(
@@ -71,7 +75,7 @@ class _BankAccountPageState extends State<BankAccountPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                account["bankName"]!,
+                bankAccount.bankName,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -79,9 +83,13 @@ class _BankAccountPageState extends State<BankAccountPage> {
                 ),
               ),
               const SizedBox(height: 8),
-              _getInfoSection("Holder", account["accountHolderName"]!),
+              _getInfoSection(
+                  "Account Holder",
+                  (bankAccount.accountHolderName != null)
+                      ? bankAccount.accountHolderName!
+                      : "Not provided"),
               _getInfoSection("Account Number",
-                  "${account["accountNumber"]!.substring(0, 2)}*****${account["accountNumber"]!.substring(account["accountNumber"]!.length - 4, account["accountNumber"]!.length)}"),
+                  "${bankAccount.accountNumber.substring(0, 2)}*****${bankAccount.accountNumber.substring(bankAccount.accountNumber.length - 4, bankAccount.accountNumber.length)}"),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -90,12 +98,10 @@ class _BankAccountPageState extends State<BankAccountPage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   Radio(
-                    value: account["accountNumber"],
-                    groupValue: _getPrimaryAccount(),
+                    value: bankAccount,
+                    groupValue: _getPrimaryAccount(bankAccount),
                     onChanged: (v) {
-                      setState(() {
-                        _setPrimaryAccount(v as String);
-                      });
+                      _setPrimaryAccount(bankAccount);
                     },
                     activeColor: Colors.white,
                   )
@@ -108,32 +114,34 @@ class _BankAccountPageState extends State<BankAccountPage> {
     );
   }
 
-  _getPrimaryAccount() {
+  _getPrimaryAccount(BankAccount bankAccount) {
     // Returns the account number of the primary account
-    return _bankAccounts.firstWhere(
-        (account) => account["isPrimary"] == "true")["accountNumber"];
+    return (bankAccount.isPrimary) ? bankAccount : null;
   }
 
-  _setPrimaryAccount(String accountNumber) {
-    // Set the selected account as primary
-    for (var account in _bankAccounts) {
-      if (account["accountNumber"] == accountNumber) {
-        account["isPrimary"] = "true";
-      } else {
-        account["isPrimary"] = "false";
-      }
+  _setPrimaryAccount(BankAccount bankAccount) async {
+    try {
+      final provider = Provider.of<BankAccountProvider>(context, listen: false);
+      await provider.setPrimaryBankAccount(
+          Provider.of<UserInfoProvider>(context, listen: false).user!.userId,
+          bankAccount.accountId);
+    } catch (e) {
+      Get.snackbar("Not updated", "Failed to set primary account");
     }
   }
 
   _getInfoSection(String key, String value) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: Get.width * 0.3,
           child: Text(key, style: const TextStyle(color: Colors.white70)),
         ),
         const Text(" :   ", style: TextStyle(color: Colors.white70)),
-        Text(value, style: const TextStyle(color: Colors.white70))
+        SizedBox(
+            width: Get.width * 0.4,
+            child: Text(value, style: const TextStyle(color: Colors.white70)))
       ],
     );
   }
@@ -241,36 +249,46 @@ class _BankAccountPageState extends State<BankAccountPage> {
             icon: AppIcon.backIcon),
         title: const Text("Bank Accounts"),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _bankAccounts.length,
-              itemBuilder: (context, index) {
-                return _buildBankAccountCard(_bankAccounts[index], index);
-              },
+      body: Consumer<BankAccountProvider>(builder: (context, value, child) {
+        if (value.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (_isError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(_errorMessage),
+                ElevatedButton(onPressed: getData, child: const Text("Refresh"))
+              ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton.icon(
-              onPressed: _showAddAccountDialog,
-              icon: const Icon(Icons.add, color: Colors.white),
-              label: const Text(
-                "Add New Bank Account",
-                style: TextStyle(color: Colors.white),
-              ),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                backgroundColor: AppColor.iconPrimary,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                minimumSize: const Size(double.infinity, 50),
+          );
+        }
+        return Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: value.accounts!.length,
+                itemBuilder: (context, index) {
+                  return _buildBankAccountCard(value.accounts![index], index);
+                },
               ),
             ),
-          ),
-        ],
-      ),
+            Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: AppPrimaryElevetedButton(
+                  onPressed: _showAddAccountDialog,
+                  title: "Add New Bank Account",
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                )),
+          ],
+        );
+      }),
     );
   }
 }

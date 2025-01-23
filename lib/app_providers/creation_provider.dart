@@ -10,21 +10,23 @@ import '../model/incard_creation_model.dart';
 import '../model/purched_creation_model.dart';
 
 class ListedCreationProvider with ChangeNotifier {
-  List<ListedCreation> _userListedcreations = [];
+  List<ListedCreation>? _userListedcreations;
 
   bool _isLoading = false;
   String _errorMessage = '';
 
-  List<ListedCreation> get userListedcreations => _userListedcreations;
+  List<ListedCreation>? get userListedcreations => _userListedcreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
   // Fetch creations data and update state
   Future<void> fetchUserListedCreations(int userId) async {
-    _isLoading = true;
-    await Future.delayed(const Duration(microseconds: 10));
+    if (_userListedcreations == null) {
+      _isLoading = true;
+      await Future.delayed(const Duration(microseconds: 10));
 
-    notifyListeners();
+      notifyListeners();
+    }
     try {
       _userListedcreations =
           await CreationController().fetchUserListedCreations(userId);
@@ -196,9 +198,13 @@ class PurchedCreationProvider extends ChangeNotifier {
   Future<void> fetchUserPurchedCreation(
       int userId, int page, int perPage) async {
     log("=======================================");
-    _isLoading = true;
-    await Future.delayed(const Duration(microseconds: 10));
-    notifyListeners();
+
+    if (_purchedCreations == null) {
+      _isLoading = true;
+      await Future.delayed(const Duration(microseconds: 10));
+
+      notifyListeners();
+    }
     try {
       _purchedCreations = await CreationController()
           .fetchPurchedCreations(userId, page, perPage);
@@ -246,10 +252,8 @@ class InCardCreationProvider extends ChangeNotifier {
   List<InCardCreationInfo>? _creations;
   int page = 1;
   int perPage = 10;
-
   bool _isLoading = false;
   String _errorMessage = '';
-
   List<InCardCreationInfo>? get creations => _creations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;

@@ -86,3 +86,51 @@ CREATE TABLE platform_fees (
 );
 
 
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT DEFAULT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_details (
+    order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT DEFAULT NULL,
+    creation_id INT DEFAULT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    payment_amount DECIMAL(10,2) NOT NULL,
+    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
+);
+
+CREATE TABLE bank_accounts (
+    account_id INT AUTO_INCREMENT PRIMARY KEY,         -- Unique identifier for each bank account
+    user_id INT NOT NULL,                              -- Links the account to a user
+    account_holder_name VARCHAR(100) DEFAULT NULL,     -- Optional account holder name
+    bank_name VARCHAR(100) NOT NULL,                  -- Name of the bank
+    account_number VARCHAR(20) NOT NULL UNIQUE,       -- Unique account number
+    ifsc_code VARCHAR(11) NOT NULL,                   -- IFSC code of the bank branch
+    is_primary BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,    -- When the record was created
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Last updated timestamp
+
+);
+CREATE TABLE withdrawals (
+    withdrawal_id INT AUTO_INCREMENT PRIMARY KEY,          -- Unique withdrawal ID
+    user_id INT NOT NULL,                                  -- User ID associated with the withdrawal
+    account_id INT NOT NULL,                               -- Bank account from which the money is withdrawn
+    amount DECIMAL(10,2) NOT NULL,                         -- Withdrawal amount
+    withdrawal_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Date and time of the withdrawal
+    status ENUM('pending', 'completed', 'failed') DEFAULT 'pending', -- Status of the withdrawal
+    FOREIGN KEY (account_id) REFERENCES bank_accounts(account_id) ON DELETE CASCADE, -- Foreign key to bank_accounts
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Foreign key to users table
+);
