@@ -63,7 +63,7 @@ class _SignUpAddUserScreenState extends State<SignUpAddUserScreen> {
 
         Get.offAll(() => LoadingScreen());
         await fetchData(responce['data']['user_id']);
-        Get.offAll(() => const AppNavigationScreen());
+        Get.offAll(() =>  AppNavigationScreen());
       } else {
         Get.snackbar("Something went wrong", "Unable to create account");
       }

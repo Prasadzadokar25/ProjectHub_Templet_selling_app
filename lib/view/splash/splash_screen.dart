@@ -71,7 +71,7 @@ class _SplashscreenState extends State<Splashscreen> {
     } else if (isLoginId == null || isLoginId == -1) {
       Get.offAll(() => const LoginScreen());
     } else if (!_isLoading) {
-      Get.offAll(() => const AppNavigationScreen());
+      Get.offAll(() =>  AppNavigationScreen());
     } else {
       Timer(
         const Duration(seconds: 3),

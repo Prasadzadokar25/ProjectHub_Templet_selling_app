@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/controller/paymet_controller.dart';
 import 'package:projecthub/model/incard_creation_model.dart';
+import 'package:projecthub/model/order_details_model.dart';
+import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +32,7 @@ class AddToCartPage extends StatefulWidget {
 class _AddToCartPage extends State<AddToCartPage> {
   double subTotal = 0.00;
   double platFromFees = 0.00;
-  double gstTax = 0.00;
+  double totalGst = 0.00;
   double totalCost = 0.00;
   double platFromFeesPercentage = 10;
   double gstTaxPercentage = 3;
@@ -40,6 +43,71 @@ class _AddToCartPage extends State<AddToCartPage> {
         .fetchInCardCreations(
             Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
   }
+
+  onPaymentSuccessful() {
+    Get.defaultDialog(
+        title: '',
+        barrierDismissible: false,
+        content: Column(
+          children: [
+            Image(
+              image: AssetImage(
+                'assets/images/successpayment.png',
+              ),
+              height: 120.h,
+              width: 120.w,
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              "Payment Successfull",
+              style: TextStyle(
+                  fontSize: 28.sp,
+                  fontFamily: 'Gilroy',
+                  fontWeight: FontWeight.w700),
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              'The purchased items have been moved to the "Purchased" section.',
+              style: TextStyle(
+                  color: const Color(0XFF292929),
+                  fontFamily: 'Gilroy',
+                  fontSize: 15.sp,
+                  fontStyle: FontStyle.normal),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 10.h),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: 20.h, bottom: 20.h, right: 10.w, left: 10.w),
+              child: GestureDetector(
+                onTap: () {
+                  Get.offAll(() => AppNavigationScreen());
+                },
+                child: Container(
+                  height: 56.h,
+                  width: 374.w,
+                  //color: Color(0XFF23408F),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.h),
+                    color: const Color(0XFF23408F),
+                  ),
+                  child: Center(
+                    child: Text("Ok",
+                        style: TextStyle(
+                          color: const Color(0XFFFFFFFF),
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Gilroy',
+                        )),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  onPaymentFailed() {}
 
   Future<bool> _requestPop() {
     Navigator.of(context).pop();
@@ -65,7 +133,7 @@ class _AddToCartPage extends State<AddToCartPage> {
     // Round values to 2 decimal places
     this.subTotal = double.parse(subCost.toStringAsFixed(2));
     this.platFromFees = double.parse(platFromFees.toStringAsFixed(2));
-    this.gstTax = double.parse(gst.toStringAsFixed(2));
+    this.totalGst = double.parse(gst.toStringAsFixed(2));
 
     totalCost = double.parse((subCost + gst + platFromFees).toStringAsFixed(2));
   }
@@ -172,7 +240,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                         children: [
                           _getPriceInfo("SubTotal", "$subTotal"),
                           _getPriceInfo("platFromFees", "$platFromFees"),
-                          _getPriceInfo("GST Tax", "$gstTax"),
+                          _getPriceInfo("GST Tax", "$totalGst"),
                           const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,7 +269,15 @@ class _AddToCartPage extends State<AddToCartPage> {
                             ),
                             child: AppPrimaryElevetedButton(
                               onPressed: () {
-                                PaymetController().makePayment();
+                                Map<String, dynamic> data = {
+                                  'creations': value.creations,
+                                  'subTotal': subTotal,
+                                  'totalGst': totalGst,
+                                  'totalPlatformFees': platFromFees,
+                                  'total': totalCost,
+                                };
+
+                                onCheckOut(OrderDetails.fromJson(data));
                               },
                               title: "Check Out",
                             ),
@@ -217,6 +293,12 @@ class _AddToCartPage extends State<AddToCartPage> {
         }),
       ),
     );
+  }
+
+  onCheckOut(OrderDetails order) {
+    final provider = Provider.of<UserInfoProvider>(context, listen: false);
+    PaymetController().makePayment(
+        provider.user!, order, onPaymentSuccessful, onPaymentFailed);
   }
 
   _getPriceInfo(String key, String value) {

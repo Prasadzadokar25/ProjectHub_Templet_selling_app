@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 // Once data is fetched, navigate to the next screen
         print("Navigating to AppNavigationScreen");
-        Get.offAll(() => const AppNavigationScreen());
+        Get.offAll(() =>  AppNavigationScreen());
       } else {
         String numberTitle = "Mobile number/Email or Password is wrong";
         String emailTitle = "Email or Password is wrong";

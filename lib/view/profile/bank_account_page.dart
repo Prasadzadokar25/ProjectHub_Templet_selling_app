@@ -192,6 +192,10 @@ class _BankAccountPageState extends State<BankAccountPage> {
                 "Failed", e.toString().replaceFirst('Exception: ', ''));
           }
           Navigator.of(context).pop();
+          setState(() {
+            _isSubmitPressedOnce = false;
+          });
+
           accountHolderNameController.clear();
           accountNumberController.clear();
           ifscCodeController.clear();

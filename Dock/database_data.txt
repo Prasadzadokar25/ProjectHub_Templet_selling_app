@@ -89,31 +89,45 @@ CREATE TABLE platform_fees (
 );
 
 
-CREATE TABLE orders (
-    order_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT DEFAULT NULL,
-    total_price DECIMAL(10,2) NOT NULL,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE order_details (
-    order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT DEFAULT NULL,
-    creation_id INT DEFAULT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
-);
-
-
 
 CREATE TABLE payments (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT NOT NULL,
-    payment_amount DECIMAL(10,2) NOT NULL,
+    razorpay_order_id VARCHAR(255) NOT NULL,
+    razorpay_payment_id VARCHAR(255) NOT NULL,
+    razorpay_signature VARCHAR(255),
+    payment_amount DECIMAL(10, 2) NOT NULL,
+    gst_amount DECIMAL(10, 2) DEFAULT NULL,
+    platform_fee DECIMAL(10, 2) DEFAULT NULL,
+    payment_method VARCHAR(50), -- e.g., 'credit_card', 'debit_card', 'upi', etc.
+    currency VARCHAR(10) DEFAULT 'INR', -- Currency used for payment
+    transaction_id VARCHAR(255), -- Unique transaction ID
+    customer_email VARCHAR(255),
+    customer_contact VARCHAR(15),
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
-    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE
+    order_status ENUM('pending', 'completed', 'cancelled') DEFAULT 'pending',
+    payment_gateway_fee DECIMAL(10, 2) DEFAULT NULL -- Fee charged by Razorpay (if applicable)
 );
+
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT DEFAULT NULL, -- Reference to the user placing the order
+    payment_id INT DEFAULT NULL, -- Reference to the payment made for this order
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Date of order creation
+    FOREIGN KEY (payment_id) REFERENCES payments(payment_id) ON DELETE SET NULL -- Relationship to payments table
+);
+
+
+CREATE TABLE order_details (
+    order_detail_id INT AUTO_INCREMENT PRIMARY KEY, -- Unique ID for each order detail
+    order_id INT DEFAULT NULL, -- Foreign key to the orders table
+    creation_id INT DEFAULT NULL, -- ID of the creation/product
+    price DECIMAL(10,2) NOT NULL, -- Price of the creation/product
+    gst_amount DECIMAL(10,2) DEFAULT NULL, -- GST amount for the item
+    platform_fee DECIMAL(10,2) DEFAULT NULL, -- Platform fee for the item
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE -- Foreign key relation with orders
+);
+
 
 CREATE TABLE bank_accounts (
     account_id INT AUTO_INCREMENT PRIMARY KEY,         -- Unique identifier for each bank account
