@@ -5,7 +5,6 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/controller/clear_data_controller.dart';
 import 'package:projecthub/view/cart/cart_page.dart';
-import 'package:projecthub/view/login/login_screen.dart';
 import 'package:projecthub/view/profile/bank_account_page.dart';
 import 'package:projecthub/view/splash/splash_screen.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';

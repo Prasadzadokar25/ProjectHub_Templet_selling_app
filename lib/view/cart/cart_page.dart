@@ -8,6 +8,7 @@ import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
+import 'package:projecthub/controller/paymet_controller.dart';
 import 'package:projecthub/model/incard_creation_model.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
@@ -199,7 +200,9 @@ class _AddToCartPage extends State<AddToCartPage> {
                               vertical: AppPadding.edgePadding * 1.5,
                             ),
                             child: AppPrimaryElevetedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                PaymetController().makePayment();
+                              },
                               title: "Check Out",
                             ),
                           )
