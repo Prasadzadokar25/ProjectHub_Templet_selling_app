@@ -9,6 +9,7 @@ class ApiConfig {
   static String getUserDetailsByID = "$baseURL/getUser";
   static String userListedCreations = "$baseURL/userListedCreations";
   static String addCreationToCard = "$baseURL/creation/card/add";
+  static String removeItemFromCard = "$baseURL//creation/card/remove";
   static String incardCreations = "$baseURL/creation/card/get/userid";
   static String getBankAccount = "$baseURL/accounts";
   static String addBankAccount = "$baseURL/add-bank-account";

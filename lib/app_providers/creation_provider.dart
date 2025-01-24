@@ -18,7 +18,7 @@ class ListedCreationProvider with ChangeNotifier {
   List<ListedCreation>? get userListedcreations => _userListedcreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
-    void reset() {
+  void reset() {
     _userListedcreations = null; // Clear data
     notifyListeners();
   }
@@ -53,7 +53,7 @@ class GeneralCreationProvider with ChangeNotifier {
   List<Creation2>? get generalCreations => _generalCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
-    void reset() {
+  void reset() {
     _generalCreations = null; // Clear data
     notifyListeners();
   }
@@ -111,6 +111,7 @@ class RecentCreationProvider extends ChangeNotifier {
     _recentlyAddedCreations = null; // Clear data
     notifyListeners();
   }
+
   Future<void> fetchRecentCreations(int userId, int page, int perPage) async {
     _isLoading = true;
     await Future.delayed(const Duration(microseconds: 10));
@@ -158,6 +159,7 @@ class TreandingCreationProvider extends ChangeNotifier {
     _treandingCreations = null; // Clear data
     notifyListeners();
   }
+
   List<Creation2>? get threandingCreations => _treandingCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
@@ -212,6 +214,7 @@ class PurchedCreationProvider extends ChangeNotifier {
     _purchedCreations = null; // Clear data
     notifyListeners();
   }
+
   Future<void> fetchUserPurchedCreation(
       int userId, int page, int perPage) async {
     log("=======================================");
@@ -298,5 +301,23 @@ class InCardCreationProvider extends ChangeNotifier {
     }
     _isLoading = false;
     notifyListeners();
+  }
+
+  // Method to remove an item from the card
+  Future<void> removeItemFromCard(int userId, int cardItemId) async {
+    try {
+      // Call the controller method to remove the item
+      await CreationController().removeItemFromCard(userId, cardItemId);
+
+      // Optionally, update the local state by removing the item
+      _creations!.removeWhere((item) => item.carditemId == cardItemId);
+
+      // Notify listeners about the state change
+      notifyListeners();
+    } catch (e) {
+      // Handle any errors that may occur
+      debugPrint("Error removing item from card: $e");
+      rethrow; // Optionally rethrow to handle the error higher up
+    }
   }
 }

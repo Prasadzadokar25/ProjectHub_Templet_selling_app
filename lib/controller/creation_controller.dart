@@ -190,10 +190,10 @@ class CreationController {
       if (response.statusCode == 200) {
         log("pppppp");
       } else {
-        throw Exception('Failed to load creations');
+        throw Exception('Failed to add creations in card');
       }
     } catch (e) {
-      throw Exception('Failed to load creations: $e');
+      throw Exception('Failed to add creations in card: $e');
     }
   }
 
@@ -209,6 +209,26 @@ class CreationController {
         List<dynamic> data = jsonDecode(response.body)['data'];
 
         return data.map((json) => InCardCreationInfo.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load creations');
+      }
+    } catch (e) {
+      throw Exception('Failed to load creations: $e');
+    }
+  }
+
+  Future<void> removeItemFromCard(int userId, int creationId) async {
+    final header = {'Content-Type': 'application/json'};
+    final body = jsonEncode({'user_id': userId, 'carditem_id': creationId});
+    try {
+      final response = await http.post(
+        Uri.parse(ApiConfig.removeItemFromCard),
+        headers: header,
+        body: body,
+      );
+      log(response.body);
+      if (response.statusCode == 200) {
+        log(response.body);
       } else {
         throw Exception('Failed to load creations');
       }

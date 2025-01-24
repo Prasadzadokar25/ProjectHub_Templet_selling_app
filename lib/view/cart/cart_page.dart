@@ -26,9 +26,10 @@ class AddToCartPage extends StatefulWidget {
 }
 
 class _AddToCartPage extends State<AddToCartPage> {
-  double subTotal = 0;
-  double platFromFees = 0;
-  double gstTax = 0;
+  double subTotal = 0.00;
+  double platFromFees = 0.00;
+  double gstTax = 0.00;
+  double totalCost = 0.00;
   double platFromFeesPercentage = 10;
   double gstTaxPercentage = 3;
   @override
@@ -45,9 +46,9 @@ class _AddToCartPage extends State<AddToCartPage> {
   }
 
   getCost(List<InCardCreationInfo> creationList) {
-    double subCost = 0;
-    double gst = 0;
-    double platFromFees = 0;
+    double subCost = 0.00;
+    double gst = 0.00;
+    double platFromFees = 0.00;
 
     for (int i = 0; i < creationList.length; i++) {
       double creationPrice =
@@ -64,6 +65,17 @@ class _AddToCartPage extends State<AddToCartPage> {
     this.subTotal = double.parse(subCost.toStringAsFixed(2));
     this.platFromFees = double.parse(platFromFees.toStringAsFixed(2));
     this.gstTax = double.parse(gst.toStringAsFixed(2));
+
+    totalCost = double.parse((subCost + gst + platFromFees).toStringAsFixed(2));
+  }
+
+  removeItemFromCard(InCardCreationInfo inCardCreationInfo) async {
+    final provider =
+        Provider.of<InCardCreationProvider>(context, listen: false);
+    await provider.removeItemFromCard(
+      Provider.of<UserInfoProvider>(context, listen: false).user!.userId,
+      inCardCreationInfo.carditemId,
+    );
   }
 
   @override
@@ -95,14 +107,17 @@ class _AddToCartPage extends State<AddToCartPage> {
                 child: Column(
               children: [
                 SizedBox(
-                  height: 150.h,
-                  width: 150.w,
+                  height: 120.h,
+                  width: 120.w,
                   child: Image.asset("assets/images/cart.png"),
                 ),
                 const SizedBox(height: 4),
                 const Text("Your cart is empty"),
-                AppPrimaryElevetedButton(
-                    onPressed: () {}, title: "Browse Creations")
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: AppPrimaryElevetedButton(
+                      onPressed: () {}, title: "Browse Creations"),
+                )
               ],
             ));
           }
@@ -170,7 +185,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                                 ),
                               ),
                               Text(
-                                "₹ ${subTotal + platFromFees + gstTax}",
+                                "₹ ${totalCost}",
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 44, 44, 44),
@@ -185,7 +200,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                             ),
                             child: AppPrimaryElevetedButton(
                               onPressed: () {},
-                              title: "CheckOut",
+                              title: "Check Out",
                             ),
                           )
                         ],
@@ -236,8 +251,7 @@ class _AddToCartPage extends State<AddToCartPage> {
         children: [
           SlidableAction(
             onPressed: (context) {
-              // removeItem(creation);
-              // setState(() {});
+              removeItemFromCard(inCardCreationInfo);
             },
             icon: Icons.close,
             padding: EdgeInsets.zero,
@@ -284,25 +298,30 @@ class _AddToCartPage extends State<AddToCartPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: Get.height * 0.096,
-                      width: Get.width * 0.35,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(15),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: Get.height * 0.096,
+                          width: Get.width * 0.35,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(9),
+                            ),
+                            color: Colors
+                                .grey.shade200, // Placeholder background color
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(9),
+                            child: Image.network(
+                              ApiConfig.getFileUrl(inCardCreationInfo
+                                  .creation.creationThumbnail!),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
                         ),
-                        color: Colors
-                            .grey.shade200, // Placeholder background color
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(9),
-                        child: Image.network(
-                          ApiConfig.getFileUrl(
-                              inCardCreationInfo.creation.creationThumbnail!),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                      ],
                     ),
                     SizedBox(
                         width: AppPadding
@@ -321,10 +340,11 @@ class _AddToCartPage extends State<AddToCartPage> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 1),
                         SizedBox(
                           width: Get.width * 0.4,
                           child: Text(
-                            '\$${inCardCreationInfo.creation.creationPrice}',
+                            '₹${inCardCreationInfo.creation.creationPrice}',
                             style: const TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
