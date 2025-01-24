@@ -106,7 +106,7 @@ class _SlidePageState extends State<SlidePage> {
         });
       },
       child: Container(
-        constraints: BoxConstraints(maxWidth: 300),
+        constraints: const BoxConstraints(maxWidth: 300),
         height: 56.h,
         width: 177.w,
         //color: Color(0XFF23408F),
@@ -182,7 +182,7 @@ class _SlidePageState extends State<SlidePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                constraints: BoxConstraints(maxWidth: 600, maxHeight: 800),
+                constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
                 child: Image(
                   image: AssetImage(pages[index].image!),
                   height: Get.height * 0.7,

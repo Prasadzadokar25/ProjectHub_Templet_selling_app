@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
+import 'package:projecthub/controller/clear_data_controller.dart';
 import 'package:projecthub/view/cart/cart_page.dart';
 import 'package:projecthub/view/login/login_screen.dart';
 import 'package:projecthub/view/profile/bank_account_page.dart';
+import 'package:projecthub/view/splash/splash_screen.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SafeArea(
         child: Consumer<UserInfoProvider>(builder: (context, provider, child) {
           if (provider.isLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (provider.errorMessage.isNotEmpty) {
@@ -33,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
 
           if (provider.user == null) {
-            return Center(
+            return const Center(
                 child:
                     Text("error occur\nplease clear all cache and try again"));
           }
@@ -41,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ProfileHeader(user: provider.user),
                 WalletRow(user: provider.user),
                 OptionList(user: provider.user),
@@ -256,9 +258,10 @@ class OptionList extends StatelessWidget {
     {'icon': Icons.logout_outlined, 'text': 'Logout'},
   ];
 
-  logOut() {
+  logOut(context) {
     PrefData.clearAppSharedPref();
-    Get.offAll(const LoginScreen());
+    ClearDataController().clearAllProviders(context);
+    Get.offAll(const Splashscreen());
   }
 
   @override
@@ -302,7 +305,7 @@ class OptionList extends StatelessWidget {
             TextButton(
               onPressed: () {
                 // Perform Logout Logic
-                logOut();
+                logOut(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Logged out successfully')));
               },

@@ -1,10 +1,11 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CreationCardPlaceholder extends StatelessWidget {
+  const CreationCardPlaceholder({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,7 +29,7 @@ class CreationCardPlaceholder extends StatelessWidget {
             child: Container(
               height: 190,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(9), topRight: Radius.circular(9)),
                 color: Colors.grey[300],
               ),
@@ -44,13 +45,13 @@ class CreationCardPlaceholder extends StatelessWidget {
                   width: 100,
                   color: Colors.grey[300],
                 ),
-                SizedBox(height: 11),
+                const SizedBox(height: 11),
                 Container(
                   height: 15,
                   width: 150,
                   color: Colors.grey[300],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Container(
@@ -61,13 +62,13 @@ class CreationCardPlaceholder extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Container(
                       height: 15,
                       width: 100,
                       color: Colors.grey[300],
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Shimmer.fromColors(
                       baseColor: Colors.grey[300]!,
                       highlightColor: const Color.fromARGB(255, 255, 255, 255),
@@ -89,6 +90,8 @@ class CreationCardPlaceholder extends StatelessWidget {
 }
 
 class RecommandationCreationCardPlacHolder extends StatelessWidget {
+  const RecommandationCreationCardPlacHolder({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -119,7 +122,7 @@ class RecommandationCreationCardPlacHolder extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
@@ -130,7 +133,7 @@ class RecommandationCreationCardPlacHolder extends StatelessWidget {
                   width: 150,
                   color: Colors.grey[300],
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Container(
                   height: 15,
                   width: 100,

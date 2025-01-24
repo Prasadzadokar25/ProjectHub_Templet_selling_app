@@ -27,7 +27,7 @@ class _CreatationCardState extends State<CreatationCard> {
     double screenW = (Get.width < 600) ? Get.width : 600;
 
     return Container(
-      constraints: BoxConstraints(maxWidth: 600),
+      constraints: const BoxConstraints(maxWidth: 600),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(9.h),
         boxShadow: [

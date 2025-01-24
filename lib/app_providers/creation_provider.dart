@@ -18,6 +18,10 @@ class ListedCreationProvider with ChangeNotifier {
   List<ListedCreation>? get userListedcreations => _userListedcreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
+    void reset() {
+    _userListedcreations = null; // Clear data
+    notifyListeners();
+  }
 
   // Fetch creations data and update state
   Future<void> fetchUserListedCreations(int userId) async {
@@ -49,6 +53,10 @@ class GeneralCreationProvider with ChangeNotifier {
   List<Creation2>? get generalCreations => _generalCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
+    void reset() {
+    _generalCreations = null; // Clear data
+    notifyListeners();
+  }
 
   Future<void> fetchGeneralCreations(int userId, int page, int perPage) async {
     _isLoading = true;
@@ -99,7 +107,10 @@ class RecentCreationProvider extends ChangeNotifier {
   List<Creation2>? get recentlyAddedCreations => _recentlyAddedCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
-
+  void reset() {
+    _recentlyAddedCreations = null; // Clear data
+    notifyListeners();
+  }
   Future<void> fetchRecentCreations(int userId, int page, int perPage) async {
     _isLoading = true;
     await Future.delayed(const Duration(microseconds: 10));
@@ -143,7 +154,10 @@ class TreandingCreationProvider extends ChangeNotifier {
   int perPage = 10;
   bool _isLoading = false;
   String _errorMessage = '';
-
+  void reset() {
+    _treandingCreations = null; // Clear data
+    notifyListeners();
+  }
   List<Creation2>? get threandingCreations => _treandingCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
@@ -194,7 +208,10 @@ class PurchedCreationProvider extends ChangeNotifier {
   List<PurchedCreationModel>? get purchedCreations => _purchedCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
-
+  void reset() {
+    _purchedCreations = null; // Clear data
+    notifyListeners();
+  }
   Future<void> fetchUserPurchedCreation(
       int userId, int page, int perPage) async {
     log("=======================================");
@@ -230,6 +247,10 @@ class RecomandedCreationProvider extends ChangeNotifier {
       _recomandedCreationProvider;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
+  void reset() {
+    _recomandedCreationProvider = null; // Clear data
+    notifyListeners();
+  }
 
   Future<void> feachRecommandedCreation(int userId, Creation2 creation) async {
     _isLoading = true;
@@ -257,6 +278,10 @@ class InCardCreationProvider extends ChangeNotifier {
   List<InCardCreationInfo>? get creations => _creations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
+  void reset() {
+    _creations = null; // Clear data
+    notifyListeners();
+  }
 
   Future<void> fetchInCardCreations(int userId) async {
     log("=======================================");

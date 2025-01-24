@@ -54,8 +54,8 @@ class BankAccountController {
       } else if (response.statusCode == 400) {
         // Handle client-side error (e.g., validation issues)
         final errorMessage =
-            jsonDecode(response.body)['message'] ?? 'Bad Request';
-        throw Exception("Error 400: $errorMessage");
+            jsonDecode(response.body)['error'] ?? 'Bad Request';
+        throw Exception("$errorMessage");
       } else if (response.statusCode == 500) {
         // Handle server-side error
         throw Exception("Server Error: Please try again later.");
@@ -70,9 +70,6 @@ class BankAccountController {
     } on http.ClientException {
       // Handle HTTP client-side issues
       throw Exception("Network error. Please check your internet connection.");
-    } on Exception catch (e) {
-      // Catch any other exceptions
-      throw Exception("An unexpected error occurred: $e");
     }
   }
 

@@ -200,7 +200,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                             SizedBox(width: Get.height * 0.01),
                             Text(
-                              widget.creation.averageRating!.substring(0, 4),
+                              widget.creation.averageRating!.substring(0, 3),
                               style: const TextStyle(fontSize: 12),
                             ),
                             SizedBox(width: Get.height * 0.01),
@@ -233,12 +233,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     return SizedBox(
                       height: 210.h,
                       child: ListView.builder(
-                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           scrollDirection: Axis.horizontal,
                           itemCount: 6,
                           itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
+                            return const Padding(
+                              padding: EdgeInsets.all(8.0),
                               child: RecommandationCreationCardPlacHolder(),
                             );
                           }),

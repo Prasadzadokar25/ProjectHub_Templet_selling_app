@@ -15,6 +15,8 @@ class Creation2 {
   String? createtime;
   Seller? seller;
   int? totalCopySell;
+  double? gstTaxPercentage;
+  double? platFromFees;
 
   Creation2({
     this.averageRating,
@@ -31,6 +33,8 @@ class Creation2 {
     this.seller,
     this.totalCopySell,
     this.createtime,
+    this.gstTaxPercentage,
+    this.platFromFees,
   });
 
   Creation2.fromJson(Map<String, dynamic> json) {
@@ -52,6 +56,8 @@ class Creation2 {
     seller = json['seller'] != null ? Seller.fromJson(json['seller']) : null;
     totalCopySell = json['total_copy_sell'];
     createtime = json['createtime'];
+    gstTaxPercentage = json['gst_percentage'];
+    platFromFees = json['platform_fee_percentage'];
   }
 
   Map<String, dynamic> toJson() {
@@ -71,6 +77,8 @@ class Creation2 {
       data['seller'] = seller!.toJson();
     }
     data['total_copy_sell'] = totalCopySell;
+    data['gst_percentage'] = gstTaxPercentage;
+    data['platform_fee_percentage'] = platFromFees;
     return data;
   }
 }

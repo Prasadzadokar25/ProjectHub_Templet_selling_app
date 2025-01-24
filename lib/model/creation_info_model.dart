@@ -1,9 +1,5 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:projecthub/config/api_config.dart';
-import 'package:projecthub/model/seller_info_model.dart' ;
-
 import 'seller_model.dart';
 
 class Creation {

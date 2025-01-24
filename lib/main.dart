@@ -8,8 +8,6 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/initialization_controller.dart';
 import 'package:provider/provider.dart';
 
-import 'view/no_internet_screen/connectivity_service.dart';
-import 'view/no_internet_screen/global_navigation_key.dart';
 import 'view/no_internet_screen/no_intermet_screen.dart';
 import 'view/splash/splash_screen.dart';
 
@@ -54,11 +52,10 @@ class MyApp extends StatelessWidget {
             size: 21,
           ),
           appBarTheme: AppBarTheme(
-            centerTitle: true,
             color: AppColor.bgColor,
             iconTheme: const IconThemeData(color: Colors.black),
             titleTextStyle: const TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 51, 51, 51),
             ),

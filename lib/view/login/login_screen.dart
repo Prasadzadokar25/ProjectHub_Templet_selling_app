@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Get.offAll(() => LoadingScreen());
 
 // Fetch data asynchronously
-        await Future.delayed(Duration(microseconds: 100));
+        await Future.delayed(const Duration(microseconds: 100));
         await fetchData(res['data'][0]['user_id']);
 
 // Once data is fetched, navigate to the next screen

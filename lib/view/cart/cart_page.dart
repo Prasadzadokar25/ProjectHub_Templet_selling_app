@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
@@ -32,7 +33,6 @@ class _AddToCartPage extends State<AddToCartPage> {
   double gstTaxPercentage = 3;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Provider.of<InCardCreationProvider>(context, listen: false)
         .fetchInCardCreations(
@@ -45,13 +45,25 @@ class _AddToCartPage extends State<AddToCartPage> {
   }
 
   getCost(List<InCardCreationInfo> creationList) {
-    double cost = 0;
+    double subCost = 0;
+    double gst = 0;
+    double platFromFees = 0;
+
     for (int i = 0; i < creationList.length; i++) {
-      cost = cost + double.parse("${creationList[i].creation.creationPrice}");
+      double creationPrice =
+          double.parse("${creationList[i].creation.creationPrice}");
+
+      subCost = subCost + creationPrice;
+      gst = gst +
+          (creationPrice * creationList[i].creation.gstTaxPercentage!) / 100;
+      platFromFees = platFromFees +
+          (creationPrice * creationList[i].creation.platFromFees!) / 100;
     }
-    subTotal = cost;
-    platFromFees = subTotal * platFromFeesPercentage / 100;
-    gstTax = subTotal * gstTaxPercentage / 100;
+
+    // Round values to 2 decimal places
+    this.subTotal = double.parse(subCost.toStringAsFixed(2));
+    this.platFromFees = double.parse(platFromFees.toStringAsFixed(2));
+    this.gstTax = double.parse(gst.toStringAsFixed(2));
   }
 
   @override
@@ -63,8 +75,7 @@ class _AddToCartPage extends State<AddToCartPage> {
         appBar: AppBar(
           backgroundColor: AppColor.bgColor,
           elevation: 0,
-          centerTitle: true,
-          title: const Text("Cart"),
+          title: const Text("Your Cart"),
           leading: Builder(
             builder: (BuildContext context) {
               return IconButton(
@@ -78,6 +89,22 @@ class _AddToCartPage extends State<AddToCartPage> {
             Consumer<InCardCreationProvider>(builder: (context, value, child) {
           if (value.isLoading) {
             return const Center(child: CircularProgressIndicator());
+          }
+          if (value.creations!.isEmpty) {
+            return Center(
+                child: Column(
+              children: [
+                SizedBox(
+                  height: 150.h,
+                  width: 150.w,
+                  child: Image.asset("assets/images/cart.png"),
+                ),
+                const SizedBox(height: 4),
+                const Text("Your cart is empty"),
+                AppPrimaryElevetedButton(
+                    onPressed: () {}, title: "Browse Creations")
+              ],
+            ));
           }
           getCost(value.creations!);
 
@@ -219,55 +246,97 @@ class _AddToCartPage extends State<AddToCartPage> {
           )
         ],
       ),
-      child: InkWell(
-        onTap: () {
-          Get.to(ProductDetailsScreen(creation: inCardCreationInfo.creation));
-        },
-        child: Container(
-          margin: const EdgeInsets.only(top: 10, bottom: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade200,
-                blurRadius: 10,
-              )
-            ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(AppPadding.edgePadding),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: Get.height * 0.1,
-                  width: Get.width * 0.3,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
+      child: Container(
+        margin: const EdgeInsets.only(top: 10, bottom: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: const [
+            BoxShadow(
+              color: Color.fromARGB(255, 225, 225, 225),
+              blurRadius: 10,
+            )
+          ],
+        ),
+        child: Material(
+          color: Colors
+              .transparent, // Set transparent background for ripple effect
+          child: Ink(
+            decoration: BoxDecoration(
+              color: Colors.white, // Card background color
+              borderRadius:
+                  BorderRadius.circular(12), // Border radius for Ink effect
+            ),
+            child: InkWell(
+              borderRadius:
+                  BorderRadius.circular(12), // Match the border radius
+              hoverColor: const Color.fromARGB(
+                  255, 145, 145, 145), // Slight black hover effect
+              highlightColor: const Color.fromARGB(95, 119, 117, 117)
+                  .withOpacity(0.2), // Slight black highlight effect
+              splashColor: Colors.black.withOpacity(0.1), // Black splash color
+              onTap: () {
+                Get.to(ProductDetailsScreen(
+                    creation: inCardCreationInfo.creation));
+              },
+              child: Padding(
+                padding: EdgeInsets.all(AppPadding.edgePadding),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: Get.height * 0.096,
+                      width: Get.width * 0.35,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(15),
+                        ),
+                        color: Colors
+                            .grey.shade200, // Placeholder background color
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(9),
+                        child: Image.network(
+                          ApiConfig.getFileUrl(
+                              inCardCreationInfo.creation.creationThumbnail!),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
                     ),
-                  ),
-                  child: Image.network(
-                    ApiConfig.getFileUrl(
-                        inCardCreationInfo.creation.creationThumbnail!),
-                    fit: BoxFit.cover,
-                  ),
+                    SizedBox(
+                        width: AppPadding
+                            .itermInsidePadding), // Space between elements
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: Get.width * 0.4,
+                          child: Text(
+                            inCardCreationInfo.creation.creationTitle!,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: Get.width * 0.4,
+                          child: Text(
+                            '\$${inCardCreationInfo.creation.creationPrice}',
+                            style: const TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.all(AppPadding.itermInsidePadding),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(inCardCreationInfo.creation.creationTitle!),
-                      Text(inCardCreationInfo.creation.creationPrice!
-                          .toString()),
-                    ],
-                  ),
-                )
-              ],
+              ),
             ),
           ),
         ),

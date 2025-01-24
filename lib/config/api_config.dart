@@ -11,7 +11,7 @@ class ApiConfig {
   static String addCreationToCard = "$baseURL/creation/card/add";
   static String incardCreations = "$baseURL/creation/card/get/userid";
   static String getBankAccount = "$baseURL/accounts";
-  static String addBankAccount = "$baseURL/addBankAccount";
+  static String addBankAccount = "$baseURL/add-bank-account";
   static String setPrimaryBankAccount = "$baseURL/set-primary-account";
 
   static String getGeneralCreationsUrl(int pageNo, [int perPage = 10]) {

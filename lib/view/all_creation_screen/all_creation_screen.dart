@@ -137,7 +137,7 @@ class _AllCreationScreenState extends State<AllCreationScreen> {
         itemBuilder: (context, index) {
           if (index >= creations.length) {
             return _isLoadingMore
-                ? Center(child: CreationCardPlaceholder())
+                ? const Center(child: CreationCardPlaceholder())
                 : const SizedBox.shrink();
           }
           return GestureDetector(

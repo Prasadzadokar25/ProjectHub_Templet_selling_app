@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:projecthub/controller/bank_account_controller.dart';
 
 import '../model/bank_account_model.dart';
 
 class BankAccountProvider extends ChangeNotifier {
-  bool _isLoading = false;
+  bool _isLoading = true;
   String _errorMessage = '';
   List<BankAccount>? _accounts;
   String get errorMessage => _errorMessage;
@@ -32,14 +34,14 @@ class BankAccountProvider extends ChangeNotifier {
   Future<void> addUserBankAccounts(Map json) async {
     _isLoading = true;
     await Future.delayed(const Duration(microseconds: 10));
-    notifyListeners();
 
     try {
       await BankAccountController().addUserBankAccounts(json);
       _errorMessage = ''; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to add bank account: $e';
-      throw Exception(e.toString());
+      log(e.toString());
+      throw Exception(e.toString().replaceFirst('Exception: ', ''));
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -69,4 +71,8 @@ class BankAccountProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-}
+
+  void reset() {
+    _accounts = null; // Clear data
+    notifyListeners();
+  }}
