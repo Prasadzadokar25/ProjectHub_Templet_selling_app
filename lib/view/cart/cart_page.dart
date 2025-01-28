@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:projecthub/app_providers/order_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
@@ -44,7 +45,56 @@ class _AddToCartPage extends State<AddToCartPage> {
             Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
   }
 
-  onPaymentSuccessful() {
+  onPaymentSuccessful(OrderDetails order) async {
+    final userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+
+    final paymentData = {
+      'razorpay_order_id': "123",
+      'razorpay_payment_id': "456",
+      'razorpay_signature': "signature_789",
+      'payment_amount': 1000,
+      'gst_amount': 180,
+      'platform_fee': 50,
+      'payment_method': 'upi',
+      'currency': 'INR',
+      'transaction_id': 'txn_001',
+      'status': 'completed',
+      'payment_gateway_fee': 20,
+    };
+    List productDetail = [];
+
+    for (int i = 0; i < order.creations.length; i++) {
+      double price = double.parse(
+          (double.parse(order.creations[i].creation.creationPrice!))
+              .toStringAsFixed(2));
+
+      productDetail.add({
+        'creation_id': order.creations[i].creation.creationId!,
+        'price': price,
+        'gst_amount': double.parse(
+            (price * (order.creations[i].creation.gstTaxPercentage!))
+                .toStringAsFixed(2)),
+        'platform_fee': double.parse(
+            (price * (order.creations[i].creation.platFromFees!))
+                .toStringAsFixed(2)),
+      });
+    }
+    Get.defaultDialog(
+        title: "please wait",
+        content: Center(
+          child: CircularProgressIndicator(),
+        ));
+
+    final provider = Provider.of<OrderProvider>(context, listen: false);
+    try {
+      await provider.placeOrder(
+          userProvider.user!.userId, paymentData, productDetail);
+    } catch (e) {
+      Get.snackbar("Order failed", "Paymet confirm but order failed");
+    } finally {
+      Navigator.of(context).pop();
+    }
+
     Get.defaultDialog(
         title: '',
         barrierDismissible: false,
@@ -296,9 +346,9 @@ class _AddToCartPage extends State<AddToCartPage> {
   }
 
   onCheckOut(OrderDetails order) {
-    final provider = Provider.of<UserInfoProvider>(context, listen: false);
+    final userProvider = Provider.of<UserInfoProvider>(context, listen: false);
     PaymetController().makePayment(
-        provider.user!, order, onPaymentSuccessful, onPaymentFailed);
+        userProvider.user!, order, onPaymentSuccessful, onPaymentFailed);
   }
 
   _getPriceInfo(String key, String value) {

@@ -9,8 +9,12 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 class PaymetController {
   final Razorpay _razorpay = Razorpay();
 
-  void makePayment(UserModel user, OrderDetails order, onPaymentSuccessful,
-      onPaymentFailed) {
+  void makePayment(
+    UserModel user,
+    OrderDetails order,
+    onPaymentSuccessful,
+    onPaymentFailed,
+  ) {
     var options = {
       'key': AppData.razorpayKey,
       'amount': order.total * 100,
@@ -23,7 +27,6 @@ class PaymetController {
       },
     };
     // Conditionally add contact if it's not null
-    // Conditionally add contact if it's not null
     if (user.userContact != null) {
       (options['prefill'] as Map<String, dynamic>)['contact'] =
           user.userContact!;
@@ -35,7 +38,7 @@ class PaymetController {
     }
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
         (PaymentSuccessResponse response) {
-      _handlePaymentSuccess(response, onPaymentSuccessful);
+      _handlePaymentSuccess(response, onPaymentSuccessful, order);
     });
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
         (PaymentFailureResponse response) {
@@ -51,16 +54,17 @@ class PaymetController {
   }
 
   void _handlePaymentSuccess(
-      PaymentSuccessResponse response, onPaymentSuccessful) {
-    // Do something when payment succeeds
+    PaymentSuccessResponse response,
+    onPaymentSuccessful,
+    OrderDetails order,
+  ) {
     Fluttertoast.showToast(msg: "Paymet successful");
     log("paymet successful");
-    onPaymentSuccessful();
+    onPaymentSuccessful(order);
     _razorpay.clear(); // Removes all listeners
   }
 
   void _handlePaymentError(PaymentFailureResponse response, onPaymentFailed) {
-    // Do something when payment fails
     Fluttertoast.showToast(msg: "Paymet failed");
 
     log("paymet failed");

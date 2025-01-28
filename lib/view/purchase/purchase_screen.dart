@@ -21,6 +21,8 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isSearchVisible = true;
   double _lastScrollOffset = 0.0;
+  bool _isLoadingMore = false;
+  int page = 1;
 
   @override
   void initState() {
@@ -28,12 +30,21 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     _scrollController.addListener(_onScroll);
     Provider.of<PurchedCreationProvider>(context, listen: false)
         .fetchUserPurchedCreation(
-            Provider.of<UserInfoProvider>(context, listen: false).user!.userId,
-            1,
-            10);
+            Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+    setState(() {
+      page++;
+    });
   }
 
   void _onScroll() {
+    if (_scrollController.position.pixels ==
+            (_scrollController.position.maxScrollExtent) &&
+        !_isLoadingMore) {
+      setState(() {
+        _isLoadingMore = true;
+      });
+      // _fetchNextCreations();// update
+    }
     double currentOffset = _scrollController.position.pixels;
 
     if (currentOffset > _lastScrollOffset && _isSearchVisible) {
@@ -49,6 +60,18 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     }
 
     _lastScrollOffset = currentOffset;
+  }
+
+  Future<void> _fetchNextCreations() async {
+    await Provider.of<PurchedCreationProvider>(context, listen: false)
+        .fetchMoreUserPurchedCreation(
+      Provider.of<UserInfoProvider>(context, listen: false).user!.userId,
+    );
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      page++;
+      _isLoadingMore = false;
+    });
   }
 
   @override

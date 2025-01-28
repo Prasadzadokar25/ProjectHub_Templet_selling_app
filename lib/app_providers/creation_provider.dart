@@ -203,10 +203,10 @@ class TreandingCreationProvider extends ChangeNotifier {
 
 class PurchedCreationProvider extends ChangeNotifier {
   List<PurchedCreationModel>? _purchedCreations;
-
+  int page = 1;
+  int perPage = 10;
   bool _isLoading = false;
   String _errorMessage = '';
-
   List<PurchedCreationModel>? get purchedCreations => _purchedCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
@@ -215,25 +215,56 @@ class PurchedCreationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchUserPurchedCreation(
-      int userId, int page, int perPage) async {
-    log("=======================================");
+  Future<void> fetchUserPurchedCreation(int userId) async {
+    List<PurchedCreationModel>? newFetchedCreations;
+
+    if (_purchedCreations != null) {
+      await fetchMoreUserPurchedCreation(userId);
+      return;
+    }
+    _isLoading = true;
+    await Future.delayed(const Duration(microseconds: 5));
+
+    notifyListeners();
+    try {
+      newFetchedCreations = await CreationController()
+          .fetchPurchedCreations(userId, page, perPage);
+      _purchedCreations = newFetchedCreations;
+      _errorMessage = '';
+    } catch (e) {
+      _errorMessage = 'Failed to fetch creations: $e';
+      throw Exception("failed to feach purched creations $e");
+    } finally {
+      _isLoading = false;
+      if (newFetchedCreations != null && newFetchedCreations.length == 10) {
+        page++;
+      }
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchMoreUserPurchedCreation(int userId) async {
+    List<PurchedCreationModel>? newFetchedCreations;
 
     if (_purchedCreations == null) {
       _isLoading = true;
-      await Future.delayed(const Duration(microseconds: 10));
-
+      await Future.delayed(const Duration(microseconds: 5));
       notifyListeners();
     }
     try {
-      _purchedCreations = await CreationController()
+      newFetchedCreations = await CreationController()
           .fetchPurchedCreations(userId, page, perPage);
-      _errorMessage = ''; // Clear any previous error
+      _purchedCreations!.addAll(newFetchedCreations);
+      _errorMessage = '';
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
       throw Exception("failed to feach purched creations $e");
     }
     _isLoading = false;
+    if (newFetchedCreations != null &&
+        newFetchedCreations.length == (perPage + 1)) {
+      page++;
+    }
     notifyListeners();
   }
 }
@@ -292,8 +323,7 @@ class InCardCreationProvider extends ChangeNotifier {
     await Future.delayed(const Duration(microseconds: 10));
     notifyListeners();
     try {
-      _creations = await CreationController()
-          .fetchUserInCardCreations(userId, page, perPage);
+      _creations = await CreationController().fetchUserInCardCreations(userId);
       _errorMessage = ''; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';

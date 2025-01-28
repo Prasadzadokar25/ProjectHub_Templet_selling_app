@@ -101,13 +101,11 @@ CREATE TABLE payments (
     payment_method VARCHAR(50), -- e.g., 'credit_card', 'debit_card', 'upi', etc.
     currency VARCHAR(10) DEFAULT 'INR', -- Currency used for payment
     transaction_id VARCHAR(255), -- Unique transaction ID
-    customer_email VARCHAR(255),
-    customer_contact VARCHAR(15),
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
-    order_status ENUM('pending', 'completed', 'cancelled') DEFAULT 'pending',
     payment_gateway_fee DECIMAL(10, 2) DEFAULT NULL -- Fee charged by Razorpay (if applicable)
 );
+
 
 CREATE TABLE orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,

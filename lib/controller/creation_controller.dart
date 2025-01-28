@@ -198,7 +198,7 @@ class CreationController {
   }
 
   Future<List<InCardCreationInfo>> fetchUserInCardCreations(
-      int userId, int pageNo, int perPage) async {
+      int userId) async {
     try {
       final response = await http.get(
         Uri.parse("${ApiConfig.incardCreations}/$userId"),

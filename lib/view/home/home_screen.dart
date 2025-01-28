@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onScroll() {
     if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+            (_scrollController.position.maxScrollExtent) &&
         !_isLoadingMore) {
       setState(() {
         _isLoadingMore = true;

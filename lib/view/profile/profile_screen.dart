@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
-import 'package:projecthub/controller/clear_data_controller.dart';
+import 'package:projecthub/controller/logout_data_controller.dart';
 import 'package:projecthub/view/cart/cart_page.dart';
 import 'package:projecthub/view/profile/bank_account_page.dart';
 import 'package:projecthub/view/splash/splash_screen.dart';
@@ -21,23 +21,31 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<UserInfoProvider>(context, listen: false).fetchUserDetails(
+        Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Consumer<UserInfoProvider>(builder: (context, provider, child) {
-          if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          // if (provider.isLoading) {
+          //   return const Center(child: CircularProgressIndicator());
+          // }
 
-          if (provider.errorMessage.isNotEmpty) {
-            return Center(child: Text(provider.errorMessage));
-          }
+          // if (provider.errorMessage.isNotEmpty) {
+          //   return Center(child: Text(provider.errorMessage));
+          // }
 
-          if (provider.user == null) {
-            return const Center(
-                child:
-                    Text("error occur\nplease clear all cache and try again"));
-          }
+          // if (provider.user == null) {
+          //   return const Center(
+          //       child:
+          //           Text("error occur\nplease clear all cache and try again"));
+          // }
 
           return SingleChildScrollView(
             child: Column(
@@ -173,25 +181,21 @@ class WalletRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SizedBox(
-          height: Get.height * 0.07,
+          //height: Get.height * 0.07,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildWalletColumn('₹ ${user.walletMoney}', 'Wallet'),
-              VerticalDivider(
-                indent: 8,
-                endIndent: 8,
-                thickness: 1.5,
-                width: 20, // Space taken by the divider horizontally
+              Container(
+                height: Get.height * 0.04,
+                width: 1.5, // Space taken by the divider horizontally
                 color: AppColor.primaryColor,
               ),
               _buildWalletColumn('${user.boughthCreationNumber}', 'Bought'),
-              VerticalDivider(
-                indent: 8,
-                endIndent: 8,
-                thickness: 1.5,
-                width: 20, // Space taken by the divider horizontally
+              Container(
+                height: Get.height * 0.04,
+                width: 1.5, // Space taken by the divider horizontally
                 color: AppColor.primaryColor,
               ),
               _buildWalletColumn('${user.listedCreationNumber}', 'Listed'),
