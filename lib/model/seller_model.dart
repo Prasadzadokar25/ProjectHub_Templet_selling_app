@@ -12,7 +12,7 @@ class Seller {
 
   Seller.fromJson(Map<String, dynamic> json) {
     sellerEmail = json['seller_email'];
-    // sellerId = json['seller_id'];
+    sellerId = json['seller_id'];
     sellerName = json['seller_name'];
     sellerProfilePhoto = json['seller_profile_photo'];
   }

@@ -21,6 +21,8 @@ import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../app_providers/categories_provider.dart';
+
 class ListNewCreationScreen extends StatefulWidget {
   const ListNewCreationScreen({super.key});
 
@@ -39,7 +41,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   final FilesController _filesController = FilesController();
   final _infoFormKey = GlobalKey<FormState>();
   final _categoryInfoKey = GlobalKey<FormState>();
-  List<CategoryModel> _categories = [];
+  List<CategoryModel>? _categories;
   bool _showCategories = false;
   List<CategoryModel> _filteredCategories = [];
   String thumbnailErrorMassage = '';
@@ -53,11 +55,12 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   @override
   void initState() {
     super.initState();
-
-    _filteredCategories = _categories;
+    _categories =
+        Provider.of<CategoriesProvider>(context, listen: false).categories!;
+    _filteredCategories = _categories!;
     _categoryController.addListener(() {
       setState(() {
-        _filteredCategories = _categories
+        _filteredCategories = _categories!
             .where((category) => category.name!
                 .toLowerCase()
                 .contains(_categoryController.text.toLowerCase()))
@@ -264,13 +267,8 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
     );
   }
 
-  getData() {
-    _categories = Provider.of<DataFileProvider>(context).categories;
-  }
-
   @override
   Widget build(BuildContext context) {
-    getData();
     return WillPopScope(
       onWillPop: () async {
         // Show the save confirmation dialog

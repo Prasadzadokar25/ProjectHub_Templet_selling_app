@@ -197,15 +197,13 @@ class CreationController {
     }
   }
 
-  Future<List<InCardCreationInfo>> fetchUserInCardCreations(
-      int userId) async {
+  Future<List<InCardCreationInfo>> fetchUserInCardCreations(int userId) async {
     try {
       final response = await http.get(
         Uri.parse("${ApiConfig.incardCreations}/$userId"),
       );
       log(response.body);
       if (response.statusCode == 200) {
-        log("pppppp");
         List<dynamic> data = jsonDecode(response.body)['data'];
 
         return data.map((json) => InCardCreationInfo.fromJson(json)).toList();

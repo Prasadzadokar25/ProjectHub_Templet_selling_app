@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projecthub/controller/category_controller.dart';
 
 import '../model/categories_info_model.dart';
 
@@ -9,11 +10,18 @@ class CategoriesProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   List<CategoryModel>? get categories => _categories;
 
-  Future<void> fetchCategories() async {
+  Future<void> fetchCategories(int userId) async {
     _isLoading = true;
     await Future.delayed(const Duration(milliseconds: 5));
     notifyListeners();
 
-    try {} catch (e) {}
+    try {
+      _categories = await CategoryController().fetchCategories(userId);
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

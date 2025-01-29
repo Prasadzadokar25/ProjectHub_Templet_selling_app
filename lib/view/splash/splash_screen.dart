@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
@@ -49,6 +50,8 @@ class _SplashscreenState extends State<Splashscreen> {
             .fetchRecentCreations(isLoginId!, 1, 10);
         await Provider.of<TreandingCreationProvider>(context, listen: false)
             .fetchTrendingCreations(isLoginId!, 1, 10);
+        await Provider.of<CategoriesProvider>(context, listen: false)
+            .fetchCategories(isLoginId!);
       }
 
       setState(() {
@@ -71,7 +74,7 @@ class _SplashscreenState extends State<Splashscreen> {
     } else if (isLoginId == null || isLoginId == -1) {
       Get.offAll(() => const LoginScreen());
     } else if (!_isLoading) {
-      Get.offAll(() =>  AppNavigationScreen());
+      Get.offAll(() => AppNavigationScreen());
     } else {
       Timer(
         const Duration(seconds: 3),

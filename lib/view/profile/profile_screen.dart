@@ -216,7 +216,7 @@ class WalletRow extends StatelessWidget {
           child: Text(
             maxLines: 1,
             value,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
           ),
         ),

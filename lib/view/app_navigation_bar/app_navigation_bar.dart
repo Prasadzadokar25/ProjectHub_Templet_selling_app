@@ -48,7 +48,7 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
             _selectedIndex = index; // Update the selected index
           });
         },
-        children: const [
+        children:  [
           HomeScreen(),
           SearchScreen(),
           PurchaseScreen(), // First Screen

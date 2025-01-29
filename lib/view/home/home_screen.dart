@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/data_file_provider.dart';
 import 'package:projecthub/config/api_config.dart';
@@ -32,8 +33,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Creation> adeverticmentIterm = [];
-
-  List<CategoryModel> categories = [];
 
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
@@ -68,8 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void getData() async {
     DataFileProvider dataFileProvider = Provider.of<DataFileProvider>(context);
     adeverticmentIterm = dataFileProvider.adeverticmentIterm;
-
-    categories = dataFileProvider.categories;
 
     setState(() {});
   }
@@ -201,21 +198,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget getCategoriesSlider() {
-    return SizedBox(
-      height: Get.height * 0.135,
-      child: ListView.separated(
-        physics: const BouncingScrollPhysics(
-            decelerationRate: ScrollDecelerationRate.normal),
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.all(AppPadding.edgePadding),
-        itemBuilder: (context, index) => CategoryCard(
-          subCategoryModel: categories[index],
-          cellHeight: (Get.height * 0.135) - 2 * AppPadding.edgePadding,
+    return Consumer<CategoriesProvider>(builder: (context, value, child) {
+      if (_isLoadingMore) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+      return SizedBox(
+        height: Get.height * 0.135,
+        child: ListView.separated(
+          physics: const BouncingScrollPhysics(
+              decelerationRate: ScrollDecelerationRate.normal),
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.all(AppPadding.edgePadding),
+          itemBuilder: (context, index) => CategoryCard(
+            category: value.categories![index],
+            cellHeight: (Get.height * 0.135) - 2 * AppPadding.edgePadding,
+          ),
+          separatorBuilder: (context, index) => const SizedBox(width: 20),
+          itemCount: value.categories!.length,
         ),
-        separatorBuilder: (context, index) => const SizedBox(width: 20),
-        itemCount: categories.length,
-      ),
-    );
+      );
+    });
   }
 
   Widget trendingCreationView() {
@@ -575,28 +579,19 @@ class _AdverticmentSliderState extends State<AdverticmentSlider> {
 }
 
 class CategoryCard extends StatelessWidget {
-  final CategoryModel? subCategoryModel;
+  final CategoryModel? category;
   final double? cellHeight;
 
-  const CategoryCard({super.key, this.subCategoryModel, this.cellHeight});
+  const CategoryCard({super.key, this.category, this.cellHeight});
 
-  static Future<Color> _updatePaletteGenerator(String imageName) async {
-    ByteData imageBytes = await rootBundle.load(imageName);
-    img.Image photo;
-    photo = img.decodeImage(imageBytes.buffer.asUint8List())!;
-    //log("imagesize==${photo.width}");
-    Rect region =
-        Offset.zero & Size(photo.width.toDouble(), photo.height.toDouble());
-
-    PaletteGenerator paletteGenerator =
+  static Future<Color> getDominantColor(String imageUrl) async {
+    final PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(
-      AssetImage(imageName),
-      size: Size(photo.width.toDouble(), photo.height.toDouble()),
-      region: region,
-      maximumColorCount: 10,
+      NetworkImage(imageUrl),
+      maximumColorCount: 10, // Increases accuracy
     );
-    return paletteGenerator.colors.first
-        .withOpacity(paletteGenerator.colors.first.computeLuminance());
+
+    return paletteGenerator.dominantColor?.color ?? Colors.grey;
   }
 
   @override
@@ -624,7 +619,8 @@ class CategoryCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FutureBuilder<Color>(
-                future: _updatePaletteGenerator(subCategoryModel!.image!),
+                future:
+                    getDominantColor(ApiConfig.getFileUrl(category!.image!)),
                 //This function return color from Sqlite DB Asynchronously
                 builder: (BuildContext context, AsyncSnapshot<Color> snapshot) {
                   Color color;
@@ -653,7 +649,8 @@ class CategoryCard extends StatelessWidget {
                       children: [
                         SizedBox(
                           height: cellHeight! * 0.50,
-                          child: Image.asset(subCategoryModel!.image!),
+                          child: Image.network(
+                              "${ApiConfig.getFileUrl(category!.image!)}"),
                         ),
                         SizedBox(
                           height: Get.height * 0.004,
@@ -661,7 +658,7 @@ class CategoryCard extends StatelessWidget {
                         Text(
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          subCategoryModel!.name!,
+                          category!.name!,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontSize: 12, fontWeight: FontWeight.w600),

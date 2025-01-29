@@ -1,10 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:projecthub/app_providers/order_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
@@ -33,11 +34,10 @@ class AddToCartPage extends StatefulWidget {
 
 class _AddToCartPage extends State<AddToCartPage> {
   double subTotal = 0.00;
-  double platFromFees = 0.00;
+  double totalPlatFromFees = 0.00;
   double totalGst = 0.00;
   double totalCost = 0.00;
-  double platFromFeesPercentage = 10;
-  double gstTaxPercentage = 3;
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +56,9 @@ class _AddToCartPage extends State<AddToCartPage> {
           (double.parse(order.creations[i].creation.creationPrice!))
               .toStringAsFixed(2));
 
+      log((order.creations[i].creation).toString());
       productDetail.add({
+        'seller_id': order.creations[i].creation.seller!.sellerId!,
         'creation_id': order.creations[i].creation.creationId!,
         'price': price,
         'gst_amount': double.parse(
@@ -177,9 +179,9 @@ class _AddToCartPage extends State<AddToCartPage> {
     }
 
     // Round values to 2 decimal places
-    this.subTotal = double.parse(subCost.toStringAsFixed(2));
-    this.platFromFees = double.parse(platFromFees.toStringAsFixed(2));
-    this.totalGst = double.parse(gst.toStringAsFixed(2));
+    subTotal = double.parse(subCost.toStringAsFixed(2));
+    totalPlatFromFees = double.parse(platFromFees.toStringAsFixed(2));
+    totalGst = double.parse(gst.toStringAsFixed(2));
 
     totalCost = double.parse((subCost + gst + platFromFees).toStringAsFixed(2));
   }
@@ -285,7 +287,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                       child: Column(
                         children: [
                           _getPriceInfo("SubTotal", "$subTotal"),
-                          _getPriceInfo("platFromFees", "$platFromFees"),
+                          _getPriceInfo("platFromFees", "$totalPlatFromFees"),
                           _getPriceInfo("GST Tax", "$totalGst"),
                           const SizedBox(height: 10),
                           Row(
@@ -300,7 +302,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                                 ),
                               ),
                               Text(
-                                "₹ ${totalCost}",
+                                "₹ $totalCost",
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 44, 44, 44),
@@ -319,7 +321,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                                   'creations': value.creations,
                                   'subTotal': subTotal,
                                   'totalGst': totalGst,
-                                  'totalPlatformFees': platFromFees,
+                                  'totalPlatformFees': totalPlatFromFees,
                                   'total': totalCost,
                                 };
 
