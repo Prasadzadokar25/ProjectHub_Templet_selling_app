@@ -1,6 +1,6 @@
 class ApiConfig {
   // static String baseURL = "https://projecthub.pythonanywhere.com";
-  static String baseURL = "http://192.168.30.119:5000";
+  static String baseURL = "http://192.168.0.104:5000";
 
   static String addUser = "$baseURL/addUser";
   static String checkNumber = "$baseURL/checkNumber";
@@ -15,6 +15,7 @@ class ApiConfig {
   static String addBankAccount = "$baseURL/add-bank-account";
   static String setPrimaryBankAccount = "$baseURL/set-primary-account";
   static String placeOrder = "$baseURL/create-order";
+  static String categories = "$baseURL/create-order";
 
   static String getGeneralCreationsUrl(int pageNo, [int perPage = 10]) {
     return "$baseURL/creations/page/$pageNo/perPage/$perPage/uid";

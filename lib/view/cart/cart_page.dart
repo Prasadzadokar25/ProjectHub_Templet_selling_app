@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 
 import '../../app_providers/creation_provider.dart';
 import '../../config/api_config.dart';
+import '../../model/payment_ingo_model.dart';
 
 class AddToCartPage extends StatefulWidget {
   const AddToCartPage({super.key});
@@ -45,22 +46,9 @@ class _AddToCartPage extends State<AddToCartPage> {
             Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
   }
 
-  onPaymentSuccessful(OrderDetails order) async {
+  onPaymentSuccessful(OrderDetails order, PaymentData paymentData) async {
     final userProvider = Provider.of<UserInfoProvider>(context, listen: false);
 
-    final paymentData = {
-      'razorpay_order_id': "123",
-      'razorpay_payment_id': "456",
-      'razorpay_signature': "signature_789",
-      'payment_amount': 1000,
-      'gst_amount': 180,
-      'platform_fee': 50,
-      'payment_method': 'upi',
-      'currency': 'INR',
-      'transaction_id': 'txn_001',
-      'status': 'completed',
-      'payment_gateway_fee': 20,
-    };
     List productDetail = [];
 
     for (int i = 0; i < order.creations.length; i++) {
@@ -72,23 +60,23 @@ class _AddToCartPage extends State<AddToCartPage> {
         'creation_id': order.creations[i].creation.creationId!,
         'price': price,
         'gst_amount': double.parse(
-            (price * (order.creations[i].creation.gstTaxPercentage!))
+            (price * (order.creations[i].creation.gstTaxPercentage!) / 100)
                 .toStringAsFixed(2)),
         'platform_fee': double.parse(
-            (price * (order.creations[i].creation.platFromFees!))
+            (price * (order.creations[i].creation.platFromFees!) / 100)
                 .toStringAsFixed(2)),
       });
     }
     Get.defaultDialog(
         title: "please wait",
-        content: Center(
+        content: const Center(
           child: CircularProgressIndicator(),
         ));
 
     final provider = Provider.of<OrderProvider>(context, listen: false);
     try {
       await provider.placeOrder(
-          userProvider.user!.userId, paymentData, productDetail);
+          userProvider.user!.userId, paymentData.toJson(), productDetail);
     } catch (e) {
       Get.snackbar("Order failed", "Paymet confirm but order failed");
     } finally {
@@ -101,7 +89,7 @@ class _AddToCartPage extends State<AddToCartPage> {
         content: Column(
           children: [
             Image(
-              image: AssetImage(
+              image: const AssetImage(
                 'assets/images/successpayment.png',
               ),
               height: 120.h,
@@ -131,7 +119,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                   top: 20.h, bottom: 20.h, right: 10.w, left: 10.w),
               child: GestureDetector(
                 onTap: () {
-                  Get.offAll(() => AppNavigationScreen());
+                  Get.offAll(() => const AppNavigationScreen());
                 },
                 child: Container(
                   height: 56.h,
@@ -157,7 +145,15 @@ class _AddToCartPage extends State<AddToCartPage> {
         ));
   }
 
-  onPaymentFailed() {}
+  onPaymentFailed() {
+    Get.snackbar("Payment failed", "please try agian");
+  }
+
+  onCheckOut(OrderDetails order) {
+    final userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    PaymetController().makePayment(
+        userProvider.user!, order, onPaymentSuccessful, onPaymentFailed);
+  }
 
   Future<bool> _requestPop() {
     Navigator.of(context).pop();
@@ -345,12 +341,6 @@ class _AddToCartPage extends State<AddToCartPage> {
     );
   }
 
-  onCheckOut(OrderDetails order) {
-    final userProvider = Provider.of<UserInfoProvider>(context, listen: false);
-    PaymetController().makePayment(
-        userProvider.user!, order, onPaymentSuccessful, onPaymentFailed);
-  }
-
   _getPriceInfo(String key, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -475,7 +465,7 @@ class _AddToCartPage extends State<AddToCartPage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 1),
+                        const SizedBox(height: 1),
                         SizedBox(
                           width: Get.width * 0.4,
                           child: Text(

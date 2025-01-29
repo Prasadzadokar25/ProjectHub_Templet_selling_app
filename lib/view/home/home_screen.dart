@@ -164,9 +164,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget getTopBar() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: Row(children: [
+    return Consumer<UserInfoProvider>(builder: (context, value, child) {
+      return Row(children: [
+        const SizedBox(width: 16),
         ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(50)),
           child: Image(
@@ -176,21 +176,28 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         SizedBox(width: 10.w),
-        Text("Welcome, Prasad",
-            style: TextStyle(
-                fontFamily: 'Gilroy',
-                color: const Color(0XFF000000),
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w700)),
+        SizedBox(
+          width: Get.width * 0.6,
+          child: Text("Welcome, ${value.user!.userName}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontFamily: 'Gilroy',
+                  color: const Color(0XFF000000),
+                  fontSize: 21.sp,
+                  fontWeight: FontWeight.w700)),
+        ),
         const Spacer(),
         IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.shopping_cart,
-              color: Color(0XFF23408F),
-            ))
-      ]),
-    );
+          onPressed: () {},
+          icon: const Icon(
+            Icons.notifications_on,
+            color: Color(0XFF23408F),
+          ),
+        ),
+        const SizedBox(width: 2),
+      ]);
+    });
   }
 
   Widget getCategoriesSlider() {
