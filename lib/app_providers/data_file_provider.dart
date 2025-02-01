@@ -46,8 +46,6 @@ class DataFileProvider extends ChangeNotifier {
   ];
 
   // ignore: prefer_final_fields
-  
- 
-  List<Creation> get adeverticmentIterm => _adeverticmentIterm;
 
+  List<Creation> get adeverticmentIterm => _adeverticmentIterm;
 }

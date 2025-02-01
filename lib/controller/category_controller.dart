@@ -17,6 +17,8 @@ class CategoryController {
         List<dynamic> data = jsonDecode(response.body)['data'];
 
         return data.map((json) => CategoryModel.fromJson(json)).toList();
+      } else if (response.statusCode == 404) {
+        return [];
       } else {
         throw Exception('Failed to fetch categories');
       }

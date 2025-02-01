@@ -79,7 +79,7 @@ class _SplashscreenState extends State<Splashscreen> {
       Timer(
         const Duration(seconds: 3),
         () {
-          if (_isLoading) Get.offAll(() => LoadingScreen());
+          if (_isLoading) Get.to(() => LoadingScreen());
         },
       );
     }

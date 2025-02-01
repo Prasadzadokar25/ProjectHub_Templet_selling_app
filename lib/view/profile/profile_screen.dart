@@ -11,6 +11,7 @@ import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/app_shared_preferences.dart';
+import 'reffer_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -255,7 +256,11 @@ class OptionList extends StatelessWidget {
     {'icon': Icons.history_outlined, 'text': 'Purchase History'},
     {'icon': Icons.swap_horiz_outlined, 'text': 'Transaction Histoty'},
     {'icon': Icons.campaign_outlined, 'text': 'Advertisement'},
-    {'icon': Icons.card_giftcard, 'text': 'Refer and Earn'},
+    {
+      'icon': Icons.card_giftcard,
+      'text': 'Refer and Earn',
+      'navigateTo': const ReferScreen()
+    },
     {'icon': Icons.info_outline, 'text': 'About Us'},
     {'icon': Icons.feedback_outlined, 'text': 'Feedback'},
     {'icon': Icons.logout_outlined, 'text': 'Logout'},

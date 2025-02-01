@@ -9,8 +9,6 @@ CREATE TABLE users (
     user_email VARCHAR(255) UNIQUE DEFAULT NULL,
     role VARCHAR(50) NOT NULL,
     wallet_money DECIMAL(10, 2) DEFAULT 0.00,
-    boughth_creation_number INT DEFAULT 0,
-    listed_creation_number INT DEFAULT 0,
     reference_code VARCHAR(50),
     profile_photo VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -26,13 +24,20 @@ CREATE TABLE creations (
     creation_thumbnail VARCHAR(255) NOT NULL,
     creation_file VARCHAR(255) NOT NULL,
     category_id INT NOT NULL,
-    keyword TEXT DEFAULT NULL,  -- Allowing keyword to be NULL
+    keyword TEXT DEFAULT NULL,
     creation_other_images TEXT DEFAULT NULL,
     total_copy_sell INT DEFAULT 0,
+    user_id INT,
+    createtime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('underreview', 'publish') DEFAULT 'underreview',
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
 );
+
 
 
 # rating table
@@ -57,6 +62,7 @@ CREATE TABLE categories (
     keywords TEXT,
     platform_fee_id INT,
     gst INT,
+    image varchar(255),
     FOREIGN KEY (platform_fee_id) REFERENCES platform_fees(fee_id),
     FOREIGN KEY (gst) REFERENCES gst_rates(gst_id)
 );
@@ -92,15 +98,12 @@ CREATE TABLE platform_fees (
 
 CREATE TABLE payments (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
-    razorpay_order_id VARCHAR(255) NOT NULL,
     razorpay_payment_id VARCHAR(255) NOT NULL,
-    razorpay_signature VARCHAR(255),
     payment_amount DECIMAL(10, 2) NOT NULL,
     gst_amount DECIMAL(10, 2) DEFAULT NULL,
     platform_fee DECIMAL(10, 2) DEFAULT NULL,
     payment_method VARCHAR(50), -- e.g., 'credit_card', 'debit_card', 'upi', etc.
     currency VARCHAR(10) DEFAULT 'INR', -- Currency used for payment
-    transaction_id VARCHAR(255), -- Unique transaction ID
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
     payment_gateway_fee DECIMAL(10, 2) DEFAULT NULL -- Fee charged by Razorpay (if applicable)

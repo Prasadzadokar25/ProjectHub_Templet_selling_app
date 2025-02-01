@@ -184,7 +184,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         'creation_price': double.parse(_priceController.text.trim()),
         'creation_thumbnail': _thumbnailImage,
         'creation_file': _sourceZipFile,
-        'category_id': 1,
+        'category_id': 3,
         'keyword': _keywords,
         'otherImages': _otherImages,
         'user_id': userid,
