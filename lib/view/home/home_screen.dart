@@ -19,7 +19,6 @@ import 'package:projecthub/widgets/creation_card.dart';
 import 'package:projecthub/view/home/categories_screen.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:image/image.dart' as img;
 
 import '../../app_providers/user_provider.dart';
 import '../all_creation_screen/all_creation_screen.dart';
@@ -74,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     getData();
-    log("here");
     return Scaffold(
       body: SafeArea(
           child: SizedBox(

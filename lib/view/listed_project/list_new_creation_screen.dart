@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
 import 'package:projecthub/app_providers/creation_provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
-import 'package:projecthub/app_providers/data_file_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
@@ -41,6 +41,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   final FilesController _filesController = FilesController();
   final _infoFormKey = GlobalKey<FormState>();
   final _categoryInfoKey = GlobalKey<FormState>();
+  int selectedCategory = -1;
   List<CategoryModel>? _categories;
   bool _showCategories = false;
   List<CategoryModel> _filteredCategories = [];
@@ -184,7 +185,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         'creation_price': double.parse(_priceController.text.trim()),
         'creation_thumbnail': _thumbnailImage,
         'creation_file': _sourceZipFile,
-        'category_id': 3,
+        'category_id': selectedCategory,
         'keyword': _keywords,
         'otherImages': _otherImages,
         'user_id': userid,
@@ -626,6 +627,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
                   onTap: () {
                     FocusScope.of(context).unfocus();
                     setState(() {
+                      selectedCategory = _filteredCategories[index].id!;
                       _categoryController.text =
                           _filteredCategories[index].name!;
                       _showCategories = false;
