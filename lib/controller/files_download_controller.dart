@@ -29,7 +29,7 @@ class FilesDownloadController {
 
           response.stream.listen(
             (chunk) {
-              log("1");
+              log("1");   
               bytes.addAll(chunk);
               received += chunk.length;
               var progress = ((received / total) * 100).toInt();
