@@ -16,6 +16,7 @@ class ApiConfig {
   static String setPrimaryBankAccount = "$baseURL/set-primary-account";
   static String placeOrder = "$baseURL/create-order";
   static String categories = "$baseURL/categories";
+  static String updateUser = "$baseURL/update_user";
 
   static String getGeneralCreationsUrl(int pageNo, [int perPage = 10]) {
     return "$baseURL/creations/page/$pageNo/perPage/$perPage/uid";

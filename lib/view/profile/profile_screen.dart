@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
@@ -6,6 +7,7 @@ import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/controller/logout_data_controller.dart';
 import 'package:projecthub/view/cart/cart_page.dart';
 import 'package:projecthub/view/profile/bank_account_page.dart';
+import 'package:projecthub/view/profile/edit_profile.dart';
 import 'package:projecthub/view/splash/splash_screen.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +27,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<UserInfoProvider>(context, listen: false).fetchUserDetails(
-        Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+    
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserInfoProvider>(context, listen: false).fetchUserDetails(
+          Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
+    });
   }
 
   @override
@@ -139,7 +144,11 @@ class ProfileHeader extends StatelessWidget {
             children: [
               AppPrimaryButton(
                 title: "Edit profile",
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(() => EditProfileScreen(
+                        user: user,
+                      ));
+                },
                 height: Get.height * 0.05,
               ),
               SizedBox(width: Get.width * 0.03),

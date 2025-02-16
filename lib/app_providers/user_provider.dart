@@ -11,6 +11,8 @@ class UserInfoProvider extends ChangeNotifier {
   UserModel? get user => _user;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
+  UserModel get getUserInfo => _user!;
+
   void reset() {
     _user = null; // Clear data
     notifyListeners();
@@ -26,11 +28,22 @@ class UserInfoProvider extends ChangeNotifier {
       _user = await UserController().fetchUserDetailsById(userId);
       _errorMessage = ''; // Clear any previous error
     } catch (e) {
-      _errorMessage = 'Failed to fetch creations: $e';
+      _errorMessage = 'Failed to fetch user details: $e';
     }
     _isLoading = false;
     notifyListeners();
   }
 
-  UserModel get getUserInfo => _user!;
+  Future<void> updateUser(userId, data) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await UserController().updateUser(userId, data);
+      _errorMessage = ''; // Clear any previous error
+    } catch (e) {
+      _errorMessage = 'Failed to update user details: $e';
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
 }

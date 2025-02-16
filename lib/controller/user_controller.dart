@@ -58,4 +58,25 @@ class UserController {
       throw Exception("Failed to load user details $e");
     }
   }
+
+  Future<void> updateUser(int userId, Map data) async {
+    final basUrl = ApiConfig.updateUser;
+    final url = Uri.parse('$basUrl/$userId');
+    Map<String, String> header = {
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      final response =
+          await http.patch(url, headers: header, body: jsonEncode(data));
+      log(response.body);
+      if (response.statusCode == 200) {
+      } else {
+        log("failed to udated usesr");
+        throw Exception("Failed to load user details");
+      }
+    } catch (e) {
+      throw Exception("Failed to load user details $e");
+    }
+  }
 }

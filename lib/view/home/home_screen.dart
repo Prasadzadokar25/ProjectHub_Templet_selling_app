@@ -15,6 +15,7 @@ import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/new.dart';
 import 'package:projecthub/view/app_shimmer.dart';
+import 'package:projecthub/view/profile/profile_screen.dart';
 import 'package:projecthub/widgets/creation_card.dart';
 import 'package:projecthub/view/home/categories_screen.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
@@ -162,12 +163,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer<UserInfoProvider>(builder: (context, value, child) {
       return Row(children: [
         const SizedBox(width: 16),
-        ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(50)),
-          child: Image(
-            image: const AssetImage("assets/images/user_image.png"),
-            height: 50.h,
-            width: 49.93.w,
+        GestureDetector(
+          onTap: () {
+            Get.to(() => ProfileScreen());
+          },
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(50)),
+            child: Image(
+              image: const AssetImage("assets/images/user_image.png"),
+              height: 50.h,
+              width: 49.93.w,
+            ),
           ),
         ),
         SizedBox(width: 10.w),

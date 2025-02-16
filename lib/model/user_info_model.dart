@@ -7,6 +7,7 @@ class UserModel {
   String? userEmail;
   String? profilePhoto;
   String role;
+  String loginType;
   double walletMoney;
   int boughthCreationNumber;
   int listedCreationNumber;
@@ -21,6 +22,7 @@ class UserModel {
     this.userEmail,
     this.profilePhoto,
     required this.role,
+    required this.loginType,
     required this.walletMoney,
     required this.boughthCreationNumber,
     required this.listedCreationNumber,
@@ -36,6 +38,7 @@ class UserModel {
       'user_contact': userContact,
       'user_email': userEmail,
       'profile_photo': profilePhoto,
+      'loginType': loginType,
       'role': role,
       'wallet_money': walletMoney,
       'boughth_creation_number': boughthCreationNumber,
@@ -54,6 +57,7 @@ class UserModel {
       userEmail: json['user_email'],
       profilePhoto: json['profile_photo'],
       role: json['role'],
+      loginType: json['loginType'],
       walletMoney: (json['wallet_money'] is String)
           ? double.parse(json['wallet_money'])
           : json['wallet_money'],

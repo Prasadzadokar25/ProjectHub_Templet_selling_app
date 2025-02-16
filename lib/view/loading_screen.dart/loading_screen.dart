@@ -1,7 +1,5 @@
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -9,6 +7,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../constant/app_padding.dart';
 
 class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class LoadingScreen extends StatelessWidget {
             SizedBox(height: Get.height * 0.012),
             getTopBarShimmer(),
             SizedBox(height: Get.height * 0.006),
-            AdverticmentSlider(),
+            const AdverticmentSlider(),
             SizedBox(height: Get.height * 0.018),
             getSectionHeddingShimmer(100.w),
             getCategoriesSliderShimmer(),
@@ -201,9 +201,9 @@ class _AdverticmentSliderState extends State<AdverticmentSlider> {
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[100]!,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
               margin: const EdgeInsets.all(7),
               height: Get.height * 0.21,
