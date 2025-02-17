@@ -7,6 +7,8 @@ import 'package:projecthub/view/profile/profile_screen.dart';
 import 'package:projecthub/view/purchase/purchase_screen.dart';
 import 'package:projecthub/view/search_screen/search_screen.dart';
 
+import '../shorts/shorts_screen.dart';
+
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppNavigationScreen extends StatefulWidget {
@@ -48,11 +50,11 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
             _selectedIndex = index; // Update the selected index
           });
         },
-        children:  [
+        children: [
           HomeScreen(),
           SearchScreen(),
+          ShortsScreen(),
           PurchaseScreen(), // First Screen
-          ListedProjectScreen(), // First Screen
           ProfileScreen(), // First Screen
         ],
       ),
@@ -109,14 +111,14 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
               label: "Seach",
             ),
             NavigationDestination(
+              selectedIcon: Icon(Icons.play_circle_fill),
+              icon: Icon(Icons.play_circle_outlined),
+              label: "Clips",
+            ),
+            NavigationDestination(
               selectedIcon: Icon(Icons.shopping_bag),
               icon: Icon(Icons.shopping_bag_outlined),
               label: "Purchased",
-            ),
-            NavigationDestination(
-              selectedIcon: Icon(Icons.list_alt),
-              icon: Icon(Icons.list_alt_outlined),
-              label: "Listed",
             ),
             NavigationDestination(
               selectedIcon: Icon(Icons.person),

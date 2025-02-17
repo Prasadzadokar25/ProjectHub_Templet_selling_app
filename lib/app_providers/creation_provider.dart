@@ -254,7 +254,7 @@ class PurchedCreationProvider extends ChangeNotifier {
     try {
       newFetchedCreations = await CreationController()
           .fetchPurchedCreations(userId, page, perPage);
-      _purchedCreations!.addAll(newFetchedCreations);
+      _purchedCreations = newFetchedCreations;
       _errorMessage = '';
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';

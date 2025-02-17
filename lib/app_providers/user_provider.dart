@@ -13,8 +13,28 @@ class UserInfoProvider extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   UserModel get getUserInfo => _user!;
 
+  void setEmail(String email) {
+    _user!.userEmail = email;
+    notifyListeners();
+  }
+
+  void setMobileNumber(String mobileNumber) {
+    _user!.userName = mobileNumber;
+    notifyListeners();
+  }
+
+  void setDescription(String des) {
+    _user!.userDescription = des;
+    notifyListeners();
+  }
+
   void reset() {
     _user = null; // Clear data
+    notifyListeners();
+  }
+
+  void setUserName(String name) {
+    _user!.userName = name;
     notifyListeners();
   }
 
@@ -38,10 +58,13 @@ class UserInfoProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      await UserController().updateUser(userId, data);
+      if (data.isNotEmpty) {
+        await UserController().updateUser(userId, data);
+      }
       _errorMessage = ''; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to update user details: $e';
+      rethrow;
     }
     _isLoading = false;
     notifyListeners();

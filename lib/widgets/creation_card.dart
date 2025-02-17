@@ -74,49 +74,6 @@ class _CreatationCardState extends State<CreatationCard> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.w, top: 10.h),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 33.h,
-                    width: 32.w,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: IconButton(
-                      splashRadius: 10.h,
-                      onPressed: () {},
-                      icon: const Center(
-                        child: Icon(
-                          Icons.save_as,
-                          size: 14,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 55.w, top: 10.h),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 33.h,
-                    width: 32.w,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.white),
-                    child: Center(
-                      child: IconButton(
-                        onPressed: () {
-                          share();
-                        },
-                        icon: const Icon(
-                          Icons.share,
-                          size: 14,
-                        ),
-                      ),
-                    ),
-                  ),
-                )
               ],
             ),
           ),
@@ -155,6 +112,44 @@ class _CreatationCardState extends State<CreatationCard> {
                         ],
                       ),
                     ),
+                    Spacer(),
+                    SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: Material(
+                        shape:
+                            CircleBorder(), // Optional: Make the button round
+                        child: IconButton(
+                          padding: EdgeInsets.all(0),
+                          splashRadius: 1,
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.favorite_outline_sharp,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: Material(
+                        shape:
+                            CircleBorder(), // Optional: Make the button round
+
+                        child: IconButton(
+                          alignment: Alignment.center,
+                          iconSize: 18,
+                          onPressed: () {
+                            share();
+                          },
+                          icon: const Icon(
+                            Icons.share,
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
                 SizedBox(height: 11.h),
@@ -186,23 +181,21 @@ class _CreatationCardState extends State<CreatationCard> {
                 //   ),
                 Row(
                   children: [
-                    Container(
-                      height: 40.h,
-                      width: 40.h,
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(163, 228, 228, 255),
-                        shape: BoxShape.circle,
-                      ),
-                      child: (widget.creation.seller!.sellerProfilePhoto !=
-                              null)
-                          ? Image(
-                              image: AssetImage(
-                                  widget.creation.seller!.sellerProfilePhoto!),
-                              height: 40.h,
-                              width: 40.w,
-                            )
-                          : const Icon(Icons.person),
+                    CircleAvatar(
+                      radius: Get.height * 0.02,
+                      backgroundImage:
+                          (widget.creation.seller!.sellerProfilePhoto != null)
+                              ? NetworkImage(ApiConfig.baseURL +
+                                  widget.creation.seller!.sellerProfilePhoto!)
+                              : null,
+                      child:
+                          (widget.creation.seller!.sellerProfilePhoto == null)
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: Colors.black45,
+                                )
+                              : null,
                     ),
                     SizedBox(width: 10.w),
                     SizedBox(

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/controller/logout_data_controller.dart';
 import 'package:projecthub/view/cart/cart_page.dart';
+import 'package:projecthub/view/listed_project/listed_creation_screen.dart';
 import 'package:projecthub/view/profile/bank_account_page.dart';
 import 'package:projecthub/view/profile/edit_profile.dart';
 import 'package:projecthub/view/splash/splash_screen.dart';
@@ -27,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    
+
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Provider.of<UserInfoProvider>(context, listen: false).fetchUserDetails(
           Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
@@ -86,8 +88,8 @@ class ProfileHeader extends StatelessWidget {
               CircleAvatar(
                 radius: Get.height * 0.05,
                 backgroundImage: (user.profilePhoto != null)
-                    ? AssetImage(
-                        user.profilePhoto!,
+                    ? NetworkImage(
+                        ApiConfig.baseURL + user.profilePhoto!,
                       )
                     : null,
                 child: (user.profilePhoto == null)
@@ -152,11 +154,11 @@ class ProfileHeader extends StatelessWidget {
                 height: Get.height * 0.05,
               ),
               SizedBox(width: Get.width * 0.03),
-              AppPrimaryButton(
-                title: "Share profile",
-                onPressed: () {},
-                height: Get.height * 0.05,
-              ),
+              // AppPrimaryButton(
+              //   title: "Share profile",
+              //   onPressed: () {},
+              //   height: Get.height * 0.05,
+              // ),
             ],
           )
         ],
@@ -254,6 +256,11 @@ class OptionList extends StatelessWidget {
       'icon': Icons.shopping_cart_outlined,
       'text': 'Cart',
       "navigateTo": const AddToCartPage(),
+    },
+    {
+      'icon': Icons.list_alt_outlined,
+      'text': 'Listed creations',
+      "navigateTo": const ListedProjectScreen(),
     },
     {
       'icon': Icons.account_balance_outlined,

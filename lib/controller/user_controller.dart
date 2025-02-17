@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:dio/dio.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/model/user_info_model.dart';
 
 class UserController {
+  final Dio _dio = Dio();
+
   Future<Map> addUser(NewUserInfo newUserInfo) async {
     log(newUserInfo.userName);
     final basUrl = ApiConfig.addUser;
@@ -59,24 +63,42 @@ class UserController {
     }
   }
 
-  Future<void> updateUser(int userId, Map data) async {
-    final basUrl = ApiConfig.updateUser;
-    final url = Uri.parse('$basUrl/$userId');
-    Map<String, String> header = {
-      'Content-Type': 'application/json',
+  Future<void> updateUser(int userId, Map<String, dynamic> data) async {
+    final baseUrl = ApiConfig.updateUser;
+    final url = '$baseUrl/$userId';
+
+    Map<String, String> headers = {
+      'Content-Type': 'multipart/form-data',
     };
 
+    final Dio _dio = Dio();
+
+    // Check if profile_photo exists and convert it to MultipartFile
+    if (data.containsKey("profile_photo") && data["profile_photo"] is String) {
+      String filePath = data["profile_photo"];
+      data["profile_photo"] = await MultipartFile.fromFile(
+        filePath,
+        filename: basename(filePath), // Extract filename
+      );
+    }
+
+    FormData formData = FormData.fromMap(data);
+
     try {
-      final response =
-          await http.patch(url, headers: header, body: jsonEncode(data));
-      log(response.body);
+      final response = await _dio.patch(
+        url,
+        data: formData,
+        options: Options(headers: headers), // Specify headers
+      );
+
       if (response.statusCode == 200) {
-      } else {
-        log("failed to udated usesr");
-        throw Exception("Failed to load user details");
+        log("User updated successfully");
+      } else if (response.statusCode == 400) {
+        log("no failed to update user");
       }
     } catch (e) {
-      throw Exception("Failed to load user details $e");
+      log("Failed to update user: $e");
+      throw Exception("Failed to update user details: $e");
     }
   }
 }

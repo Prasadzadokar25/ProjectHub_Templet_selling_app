@@ -2,15 +2,18 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'dart:io';
 
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/model/user_info_model.dart';
+import 'package:projecthub/widgets/app_dailogbox.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
@@ -60,26 +63,44 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _saveProfile() async {
     if (_formKey.currentState!.validate()) {
       // Save the profile details (you can add your logic here)
-      Map data = {};
+      final userProvider =
+          Provider.of<UserInfoProvider>(context, listen: false);
+      Map<String, dynamic> data = {};
       if (_nameController.text != widget.user!.userName) {
         data['user_name'] = _nameController.text.trim();
+        userProvider.setUserName(_nameController.text.trim());
       }
       if (_descriptionController.text != widget.user!.userDescription) {
         data['user_description'] = _descriptionController.text.trim();
+        userProvider.setDescription(_descriptionController.text.trim());
       }
 
       if (_mobileNumberController.text != widget.user!.userContact) {
         data['user_contact'] = _mobileNumberController.text.trim();
+        userProvider.setMobileNumber(_mobileNumberController.text.trim());
       }
       if (_emailController.text != widget.user!.userEmail) {
         data['user_email'] = _emailController.text.trim();
+        userProvider.setEmail(_emailController.text.trim());
+      }
+      if (_profileImage != null) {
+        data['profile_photo'] = _profileImage!.path;
       }
       log(data.toString());
-      await Provider.of<UserInfoProvider>(context, listen: false)
-          .updateUser(widget.user!.userId, data);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile Updated Successfully!')),
-      );
+      showUpadteAlertBox();
+      try {
+        await userProvider.updateUser(widget.user!.userId, data);
+        Get.back();
+        Get.back();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile Updated Successfully!')),
+        );
+      } catch (e) {
+        Get.back();
+        Get.back();
+        Get.snackbar("$e", "");
+      }
+
       setState(() {
         _isEdited = false; // Reset edited state after saving
       });
@@ -141,10 +162,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           radius: 50,
                           backgroundImage: _profileImage != null
                               ? FileImage(_profileImage!)
-                              : const AssetImage(
-                                      'assets/images/default_profile_picture.svg')
-                                  as ImageProvider,
-                          child: _profileImage == null
+                              : (widget.user!.profilePhoto != null)
+                                  ? NetworkImage(ApiConfig.baseURL +
+                                      widget.user!.profilePhoto!)
+                                  : null,
+                          child: (_profileImage == null &&
+                                  widget.user!.profilePhoto == null)
                               ? const Icon(Icons.camera_alt, size: 40)
                               : null,
                         ),
@@ -286,7 +309,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 // Save Button
 
                 AppPrimaryElevetedButton(
-                    onPressed: _saveProfile, title: "Save Profile")
+                    onPressed: _isEdited ? _saveProfile : null,
+                    title: "Save Profile")
               ],
             ),
           ),

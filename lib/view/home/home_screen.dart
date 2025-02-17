@@ -165,15 +165,20 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(width: 16),
         GestureDetector(
           onTap: () {
-            Get.to(() => ProfileScreen());
+            Get.to(() => const ProfileScreen());
           },
-          child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(50)),
-            child: Image(
-              image: const AssetImage("assets/images/user_image.png"),
-              height: 50.h,
-              width: 49.93.w,
-            ),
+          child: CircleAvatar(
+            radius: Get.height * 0.028,
+            backgroundImage: (value.user!.profilePhoto != null)
+                ? NetworkImage(ApiConfig.baseURL + value.user!.profilePhoto!)
+                : null,
+            child: (value.user!.profilePhoto == null)
+                ? const Icon(
+                    Icons.person,
+                    size: 40,
+                    color: Colors.black45,
+                  )
+                : null,
           ),
         ),
         SizedBox(width: 10.w),
@@ -203,8 +208,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget getCategoriesSlider() {
     return Consumer<CategoriesProvider>(builder: (context, value, child) {
-      if (_isLoadingMore) {
-        return Center(
+      if (value.isLoading) {
+        return const Center(
           child: CircularProgressIndicator(),
         );
       }
@@ -431,19 +436,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Row(
                               children: [
-                                if (recentAddedCreation
-                                        .seller!.sellerProfilePhoto !=
-                                    null)
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(25)),
-                                    child: Image(
-                                      image: AssetImage(recentAddedCreation
-                                          .seller!.sellerProfilePhoto!),
-                                      height: 40.h,
-                                      width: 40.h,
-                                    ),
-                                  ),
+                                CircleAvatar(
+                                  radius: Get.height * 0.02,
+                                  backgroundImage: (recentAddedCreation
+                                              .seller!.sellerProfilePhoto !=
+                                          null)
+                                      ? NetworkImage(ApiConfig.baseURL +
+                                          recentAddedCreation
+                                              .seller!.sellerProfilePhoto!)
+                                      : null,
+                                  child: (recentAddedCreation
+                                              .seller!.sellerProfilePhoto ==
+                                          null)
+                                      ? const Icon(
+                                          Icons.person,
+                                          size: 40,
+                                          color: Colors.black45,
+                                        )
+                                      : null,
+                                ),
+                                const SizedBox(width: 5),
                                 SizedBox(
                                   width: 100,
                                   child: Text(
@@ -502,7 +514,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 List.generate(value.generalCreations!.length + 3, (index) {
               if (index >= value.generalCreations!.length) {
                 return _isLoadingMore
-                    ? Center(child: CreationCardPlaceholder())
+                    ? const Center(child: CreationCardPlaceholder())
                     : const SizedBox.shrink();
               }
               return Padding(

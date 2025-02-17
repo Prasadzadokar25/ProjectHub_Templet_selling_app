@@ -54,7 +54,6 @@ class BankAccountProvider extends ChangeNotifier {
 
     //notifyListeners();
     try {
-      await BankAccountController().setPrimaryBankAccount(userId, accountId);
       _errorMessage = ''; // Clear any previous error
       _accounts = _accounts?.map((account) {
         if (account.accountId == accountId) {
@@ -63,6 +62,9 @@ class BankAccountProvider extends ChangeNotifier {
           return account.copyWith(isPrimary: false);
         }
       }).toList();
+      _isLoading = false;
+      notifyListeners();
+      await BankAccountController().setPrimaryBankAccount(userId, accountId);
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
       throw Exception(e.toString());
@@ -75,4 +77,5 @@ class BankAccountProvider extends ChangeNotifier {
   void reset() {
     _accounts = null; // Clear data
     notifyListeners();
-  }}
+  }
+}

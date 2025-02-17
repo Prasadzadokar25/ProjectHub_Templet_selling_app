@@ -15,7 +15,7 @@ import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/controller/creation_controller.dart';
-import 'package:projecthub/controller/files_upload_controller.dart';
+import 'package:projecthub/controller/files_picked_controller.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
@@ -84,7 +84,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   // Function to request permissions and pick an image
   Future<void> _pickImage() async {
     // Request permissions before picking the image
-    final thumbnailFile = await _filesController.pickThumbnail();
+    final thumbnailFile = await _filesController.pickImage();
     //PermissionStatus status = await Permission.photos.request();
 
     if (thumbnailFile != null) {
