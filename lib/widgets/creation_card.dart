@@ -192,7 +192,7 @@ class _CreatationCardState extends State<CreatationCard> {
                           (widget.creation.seller!.sellerProfilePhoto == null)
                               ? const Icon(
                                   Icons.person,
-                                  size: 40,
+                                  size: 22,
                                   color: Colors.black45,
                                 )
                               : null,

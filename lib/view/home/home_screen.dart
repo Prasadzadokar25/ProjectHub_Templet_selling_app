@@ -450,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           null)
                                       ? const Icon(
                                           Icons.person,
-                                          size: 40,
+                                          size: 20,
                                           color: Colors.black45,
                                         )
                                       : null,
