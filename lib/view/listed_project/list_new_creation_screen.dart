@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -38,9 +39,13 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _keywordController = TextEditingController();
   final TextEditingController _filePathController = TextEditingController();
+  final TextEditingController _ytVideoController = TextEditingController();
   final FilesController _filesController = FilesController();
+  final _previewDetailsKey = GlobalKey<FormState>();
+
   final _infoFormKey = GlobalKey<FormState>();
   final _categoryInfoKey = GlobalKey<FormState>();
+
   int selectedCategory = -1;
   List<CategoryModel>? _categories;
   bool _showCategories = false;
@@ -50,7 +55,8 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   bool _submitPressedOnce = false;
   File? _thumbnailImage;
   File? _sourceZipFile;
-  List<String> _otherImages = [];
+  final List<String> _otherImages = [];
+
   ValueNotifier<double> _uploadProgress = ValueNotifier<double>(0.0);
 
   @override
@@ -82,7 +88,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   }
 
   // Function to request permissions and pick an image
-  Future<void> _pickImage() async {
+  Future<void> _pickThumbnailImage() async {
     // Request permissions before picking the image
     final thumbnailFile = await _filesController.pickImage();
     //PermissionStatus status = await Permission.photos.request();
@@ -302,6 +308,8 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
               SizedBox(height: Get.height * 0.04),
               _getCategoryForm(),
               SizedBox(height: Get.height * 0.02),
+              _getPriviewDetails(),
+              SizedBox(width: Get.width * 0.012),
               _getSubmitButton(),
               const SizedBox(height: 30),
             ],
@@ -329,7 +337,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         getHeaddinfText("Thumbnail *"),
         SizedBox(height: Get.height * 0.01),
         GestureDetector(
-          onTap: _pickImage,
+          onTap: _pickThumbnailImage,
           child: (image != null)
               ? Container(
                   width: double.infinity, // Width of the container
@@ -554,6 +562,149 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
     );
   }
 
+  _getPriviewDetails() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(
+        children: [
+          Text(
+            "Preview details",
+            style: AppText.bigHeddingStyle1a,
+          ),
+          getHeaddinfText(" (optional)")
+        ],
+      ),
+      const Text(
+        "Visual previews help others see and choose your template with confidence. ",
+        style: TextStyle(fontSize: 11, color: Colors.black87),
+      ),
+      SizedBox(height: Get.height * 0.028),
+      getHeaddinfText("Youtube video link"),
+      SizedBox(height: Get.height * 0.01),
+      Form(
+        key: _previewDetailsKey,
+        child: TextFormField(
+          controller: _ytVideoController,
+          validator: (value) {
+            if (value != null && value.isEmpty) {
+              return "Please select category";
+            }
+            return null;
+          },
+          onTapOutside: (p) {
+            setState(() {
+              FocusScope.of(context).unfocus();
+            });
+          },
+          decoration: InputDecoration(
+            // hintText: "eg. xyz.",
+            focusedErrorBorder: AppTextfieldBorder.focusedErrorBorder,
+            errorBorder: AppTextfieldBorder.errorBorder,
+            focusedBorder: AppTextfieldBorder.focusedBorder,
+            enabledBorder: AppTextfieldBorder.enabledBorder,
+            filled: true,
+            fillColor: const Color(0xFFF5F5F5),
+            contentPadding: EdgeInsets.only(
+              left: 20.w,
+              top: 10.h,
+              bottom: 10.h,
+              right: 20.w,
+            ),
+          ),
+        ),
+      ),
+      SizedBox(height: Get.height * 0.02),
+      getHeaddinfText("Other images"),
+      SizedBox(
+        height: 120,
+        child: ListView.separated(
+          padding: EdgeInsets.all(10),
+          scrollDirection: Axis.horizontal,
+          itemCount: _otherImages.length + 1,
+          separatorBuilder: (context, index) {
+            return const SizedBox(width: 10);
+          },
+          itemBuilder: (context, index) {
+            if (index == _otherImages.length) {
+              return GestureDetector(
+                onTap: _pickOtherImage,
+                child: Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: const Icon(Icons.add, size: 40, color: Colors.grey),
+                ),
+              );
+            } else {
+              return Stack(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                            blurRadius: 8,
+                            spreadRadius: 0,
+                            color: Colors.black12)
+                      ],
+                      image: DecorationImage(
+                        image: FileImage(
+                          // Use `File` since XFile has path property
+                          // Ensure to import `dart:io` for File usage
+                          File(_otherImages[index]!),
+                        ),
+                        fit: BoxFit.fitHeight,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () => _removeImage(index),
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.close,
+                            color: Colors.white, size: 16),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+          },
+        ),
+      ),
+      SizedBox(height: Get.height * 0.028),
+    ]);
+  }
+
+  Future<void> _pickOtherImage() async {
+    final File? image = await _filesController.pickImage();
+    if (image != null) {
+      setState(() {
+        _otherImages.add(image.path);
+      });
+      log(image.path);
+    }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      _otherImages.removeAt(index);
+    });
+  }
+
   _getCategoryForm() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -637,7 +788,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
               },
             ),
           ),
-        SizedBox(height: Get.height * 0.03),
+        SizedBox(height: Get.height * 0.02),
         getHeaddinfText("Keywords"),
         const Text(
           "Please press enter while specifying multiple keyword. Keyword separated by comma or space will be considered as a single entity.",
