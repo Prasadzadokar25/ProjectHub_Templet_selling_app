@@ -179,8 +179,9 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
 
     bool isBasicInfoFilled = _infoFormKey.currentState!.validate();
     bool isCategorySelected = _categoryInfoKey.currentState!.validate();
+    bool isPreviewDetailValid = _previewDetailsKey.currentState!.validate();
 
-    if (isBasicInfoFilled && isCategorySelected) {
+    if (isBasicInfoFilled && isCategorySelected && isPreviewDetailValid) {
       int userid = Provider.of<UserInfoProvider>(context, listen: false)
           .getUserInfo
           .userId;
@@ -195,6 +196,9 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         'keyword': _keywords,
         'otherImages': _otherImages,
         'user_id': userid,
+        "youtube_link": (_ytVideoController.text == "")
+            ? null
+            : _ytVideoController.text.trim()
       };
 
       NewCreationModel newCreation = NewCreationModel.fromJson(data);
@@ -585,8 +589,8 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         child: TextFormField(
           controller: _ytVideoController,
           validator: (value) {
-            if (value != null && value.isEmpty) {
-              return "Please select category";
+            if (value == null || value == "") {
+              return null;
             }
             return null;
           },

@@ -45,8 +45,6 @@ class Creation {
   }
 }
 
-
-
 class ListedCreation {
   final int? creationId;
   final String creationTitle;
@@ -124,33 +122,34 @@ class NewCreationModel {
   final List<String>? otherImages;
   final int userId;
   double uploadProgress = 0;
+  final String? youtubelink;
 
-  NewCreationModel({
-    required this.creationTitle,
-    this.creationDescription,
-    required this.creationPrice,
-    required this.creationThumbnail,
-    required this.creationFile,
-    required this.categoryId,
-    this.keyword,
-    this.otherImages,
-    required this.userId,
-  });
+  NewCreationModel(
+      {required this.creationTitle,
+      this.creationDescription,
+      required this.creationPrice,
+      required this.creationThumbnail,
+      required this.creationFile,
+      required this.categoryId,
+      this.keyword,
+      this.otherImages,
+      required this.userId,
+      required this.youtubelink});
 
   // Factory constructor to create an instance from a JSON object
   factory NewCreationModel.fromJson(Map<String, dynamic> json) {
     return NewCreationModel(
-      creationTitle: json['creation_title'],
-      creationDescription: json['creation_description'],
-      creationPrice: json['creation_price'],
-      creationThumbnail:
-          json['creation_thumbnail'], // Assuming the path is in JSON
-      creationFile: json['creation_file'], // Assuming the path is in JSON
-      categoryId: json['category_id'],
-      keyword: List<String>.from(json['keyword'] ?? []),
-      otherImages: List<String>.from(json['other_images'] ?? []),
-      userId: json['user_id'],
-    );
+        creationTitle: json['creation_title'],
+        creationDescription: json['creation_description'],
+        creationPrice: json['creation_price'],
+        creationThumbnail:
+            json['creation_thumbnail'], // Assuming the path is in JSON
+        creationFile: json['creation_file'], // Assuming the path is in JSON
+        categoryId: json['category_id'],
+        keyword: List<String>.from(json['keyword'] ?? []),
+        otherImages: List<String>.from(json['other_images'] ?? []),
+        userId: json['user_id'],
+        youtubelink: json["youtube_link"]);
   }
 
   // Method to convert the instance to a JSON object
@@ -166,6 +165,7 @@ class NewCreationModel {
       'keyword': keyword,
       'other_images': otherImages,
       'user_id': userId,
+      'youtube_link': youtubelink
     };
   }
 }

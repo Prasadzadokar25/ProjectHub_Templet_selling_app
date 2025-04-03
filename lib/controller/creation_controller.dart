@@ -38,6 +38,7 @@ class CreationController {
         'creation_file': await MultipartFile.fromFile(
             creation.creationFile.path,
             filename: creation.creationFile.path),
+        "youtube_link": creation.youtubelink,
       });
 
       Response response = await _dio.post(

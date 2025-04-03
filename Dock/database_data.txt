@@ -37,6 +37,9 @@ CREATE TABLE creations (
         ON DELETE SET NULL
         ON UPDATE CASCADE
 );
+ALTER TABLE creations 
+ADD COLUMN youtube_link TEXT NULL;
+
 
 
 
@@ -152,3 +155,34 @@ CREATE TABLE withdrawals (
     FOREIGN KEY (account_id) REFERENCES bank_accounts(account_id) ON DELETE CASCADE, -- Foreign key to bank_accounts
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Foreign key to users table
 );
+
+CREATE TABLE creation_likes (
+    like_id INT AUTO_INCREMENT PRIMARY KEY,
+    creation_id INT NOT NULL,
+    user_id INT NOT NULL,
+    liked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (creation_id) REFERENCES creations(creation_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+CREATE TABLE creation_comments (
+    comment_id INT AUTO_INCREMENT PRIMARY KEY,
+    creation_id INT NOT NULL,
+    user_id INT NOT NULL,
+    comment_text TEXT NOT NULL,
+    commented_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (creation_id) REFERENCES creations(creation_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+CREATE TABLE creation_shares (
+    share_id INT AUTO_INCREMENT PRIMARY KEY,
+    creation_id INT NOT NULL,
+    user_id INT NOT NULL,
+    shared_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    share_platform ENUM('facebook', 'twitter', 'instagram', 'whatsapp', 'other') NOT NULL,
+    FOREIGN KEY (creation_id) REFERENCES creations(creation_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
