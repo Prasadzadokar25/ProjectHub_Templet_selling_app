@@ -9,7 +9,7 @@ class ReelsController {
   Future<List<ReelModel>> fetchReels(int userId, int limit, int offset) async {
     try {
       final url = Uri.parse(
-          'http://your-server-ip:5000/reels?limit=$limit&offset=$offset&user_id=$userId');
+          '${ApiConfig.getReels}/?limit=$limit&offset=$offset&user_id=$userId');
 
       final response = await http.get(url);
       if (response.statusCode == 200) {
