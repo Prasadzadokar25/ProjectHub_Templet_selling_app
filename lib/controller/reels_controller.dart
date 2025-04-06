@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
+import 'dart:developer';
 
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/model/reel_model.dart';
@@ -9,7 +9,7 @@ class ReelsController {
   Future<List<ReelModel>> fetchReels(int userId, int limit, int offset) async {
     try {
       final url = Uri.parse(
-          '${ApiConfig.getReels}/?limit=$limit&offset=$offset&user_id=$userId');
+          '${ApiConfig.getReels}?limit=$limit&offset=$offset&user_id=$userId');
 
       final response = await http.get(url);
       if (response.statusCode == 200) {
