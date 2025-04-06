@@ -196,7 +196,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         'keyword': _keywords,
         'otherImages': _otherImages,
         'user_id': userid,
-        "youtube_link": (_ytVideoController.text == "")
+        "youtube_link": ( _ytVideoController.text == "")
             ? null
             : _ytVideoController.text.trim()
       };
