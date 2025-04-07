@@ -22,7 +22,7 @@ class ReelsProvider extends ChangeNotifier {
       final newData = await _reelsController.fetchReels(userId, limit, offset);
       reels ??= newData;
       reels!.addAll(newData);
-      offset += limit;
+      offset += newData.length;
     } catch (e) {
       errorMassage = e.toString();
     }

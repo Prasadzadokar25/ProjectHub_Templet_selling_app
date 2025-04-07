@@ -4,6 +4,7 @@ import 'package:projecthub/app_providers/bank_account_provider.dart';
 import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/data_file_provider.dart';
+import 'package:projecthub/app_providers/histroy_provider.dart';
 import 'package:projecthub/app_providers/order_provider.dart';
 import 'package:projecthub/app_providers/reels_providel.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => CategoriesProvider()),
         ChangeNotifierProvider(create: (_) => ReelsProvider()),
+        ChangeNotifierProvider(create: (_) => HistroyProvider()),
       ],
       child: GetMaterialApp(
         // navigatorKey: navigatorKey,

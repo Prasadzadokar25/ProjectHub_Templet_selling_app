@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 
 import '../../utils/app_shared_preferences.dart';
 import 'reffer_screen.dart';
+import 'transactions/all_transactions_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -27,7 +28,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -73,6 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 // Profile Header Section
 class ProfileHeader extends StatelessWidget {
+  // ignore: prefer_typing_uninitialized_variables
   final user;
   const ProfileHeader({super.key, required this.user});
 
@@ -182,6 +183,7 @@ getContactSection(Widget icon, String value) {
 
 // Wallet and Stats Section
 class WalletRow extends StatelessWidget {
+  // ignore: prefer_typing_uninitialized_variables
   final user;
   const WalletRow({super.key, required this.user});
 
@@ -249,6 +251,7 @@ class WalletRow extends StatelessWidget {
 
 // Options List
 class OptionList extends StatelessWidget {
+  // ignore: prefer_typing_uninitialized_variables
   final user;
   OptionList({super.key, required this.user});
   final options = [
@@ -270,7 +273,11 @@ class OptionList extends StatelessWidget {
     {'icon': Icons.money_outlined, 'text': 'Withdraw Money'},
     {'icon': Icons.analytics_outlined, 'text': 'Sell Analysis'},
     {'icon': Icons.history_outlined, 'text': 'Purchase History'},
-    {'icon': Icons.swap_horiz_outlined, 'text': 'Transaction Histoty'},
+    {
+      'icon': Icons.swap_horiz_outlined,
+      'text': 'Transaction Histoty',
+      "navigateTo": const TransactionListScreen()
+    },
     {'icon': Icons.campaign_outlined, 'text': 'Advertisement'},
     {
       'icon': Icons.card_giftcard,

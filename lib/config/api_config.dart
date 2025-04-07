@@ -42,4 +42,7 @@ class ApiConfig {
   static String getFileUrl(String path) {
     return "$baseURL/$path";
   }
+  static String getUserTransactions(int userid){
+    return "$baseURL/transactions?user_id=$userid";
+  }
 }

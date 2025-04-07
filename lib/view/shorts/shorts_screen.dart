@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -7,8 +6,10 @@ import '../../app_providers/reels_providel.dart';
 import '../../app_providers/user_provider.dart';
 
 class ShortsScreen extends StatefulWidget {
+  const ShortsScreen({super.key});
+
   @override
-  _ShortsScreenState createState() => _ShortsScreenState();
+  State createState() => _ShortsScreenState();
 }
 
 class _ShortsScreenState extends State<ShortsScreen> {
@@ -17,8 +18,8 @@ class _ShortsScreenState extends State<ShortsScreen> {
   int _currentIndex = 0;
   bool _isFetchingMore = false;
   bool _isUserScrolling = false;
-  double _scrollThreshold =
-      100.0; // Minimum scroll distance to trigger page change
+  final double _scrollThreshold =
+      20.0; // Minimum scroll distance to trigger page change
 
   @override
   void initState() {
@@ -241,12 +242,12 @@ class _ShortsScreenState extends State<ShortsScreen> {
                         children: [
                           IconButton(
                             icon: reel.isLikedByUser
-                                ? Icon(
+                                ? const Icon(
                                     Icons.favorite,
                                     color: Colors.red,
                                     size: 32,
                                   )
-                                : Icon(
+                                : const Icon(
                                     Icons.favorite_border_outlined,
                                     size: 32,
                                     color: Colors.white,
