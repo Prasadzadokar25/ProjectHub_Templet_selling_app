@@ -8,12 +8,12 @@ class OrderProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  Future<void> placeOrder(int userId,  paymentDetails, List products) async {
+  Future<void> placeOrder(int userId,  paymentDetails, List products,String date) async {
     _isLoading = true;
     await Future.delayed(const Duration(milliseconds: 10));
     notifyListeners();
     try {
-      await OrderController().placeOrder(userId, paymentDetails, products);
+      await OrderController().placeOrder(userId, paymentDetails, products,date);
     } catch (e) {
       log(e.toString());
       rethrow;

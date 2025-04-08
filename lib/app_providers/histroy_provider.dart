@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:projecthub/controller/transaction_controller.dart';
 
-import '../model/payment_model.dart';
+import '../model/transaction_model.dart';
 
 class HistroyProvider extends ChangeNotifier {
   bool _isLoading = false;

@@ -6,12 +6,13 @@ import 'package:projecthub/config/api_config.dart';
 
 class OrderController {
   Future<void> placeOrder(
-      int userId, dynamic paymentDetails, List products) async {
+      int userId, dynamic paymentDetails, List products, String date) async {
     final header = {'Content-Type': 'application/json'};
     final body = {
       'user_id': userId,
       'payment_details': paymentDetails,
       'product': products,
+      'order_date': date,
     };
 
     log("Request Body: ${body.toString()}");

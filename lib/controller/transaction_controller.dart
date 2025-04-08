@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:projecthub/config/api_config.dart';
 
-import '../model/payment_model.dart';
+import '../model/transaction_model.dart';
 
 class TransactionController {
   Future<List<TransactionModel>> getUserTransactions(int userId) async {

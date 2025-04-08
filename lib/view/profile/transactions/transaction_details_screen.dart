@@ -1,7 +1,7 @@
 // screens/transaction_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../model/payment_model.dart';
+import '../../../model/transaction_model.dart';
 
 class TransactionDetailScreen extends StatefulWidget {
   final TransactionModel transaction;
@@ -160,7 +160,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
               children: [
                 const Text('Amount:'),
                 Text(
-                  '₹${transaction.paymentAmount.toStringAsFixed(2)}',
+                  '₹${(transaction.paymentAmount - transaction.gstAmount! - transaction.platformFee!).toStringAsFixed(2)}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -185,16 +185,16 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                 ],
               ),
             ],
-            if (transaction.paymentGatewayFee != null) ...[
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Gateway Fee:'),
-                  Text('₹${transaction.paymentGatewayFee!.toStringAsFixed(2)}'),
-                ],
-              ),
-            ],
+            // if (transaction.paymentGatewayFee != null) ...[
+            //   const SizedBox(height: 8),
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       const Text('Gateway Fee:'),
+            //       Text('₹${transaction.paymentGatewayFee!.toStringAsFixed(2)}'),
+            //     ],
+            //   ),
+            // ],
             const Divider(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,7 +204,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '₹${_calculateTotal(transaction).toStringAsFixed(2)}',
+                  '₹${(transaction.paymentAmount).toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -263,15 +263,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     );
   }
 
-  double _calculateTotal(TransactionModel transaction) {
-    double total = transaction.paymentAmount;
-    if (transaction.gstAmount != null) total += transaction.gstAmount!;
-    if (transaction.platformFee != null) total += transaction.platformFee!;
-    if (transaction.paymentGatewayFee != null)
-      total += transaction.paymentGatewayFee!;
-    return total;
-  }
-
   Color _getStatusColor(String status) {
     switch (status) {
       case 'completed':
@@ -305,7 +296,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final transactionDay = DateTime(date.year, date.month, date.day);
+    final transactionDay =
+        DateTime(date.toLocal().year, date.toLocal().month, date.toLocal().day);
 
     final timeFormat = DateFormat('hh:mm a'); // 12-hour format with AM/PM
 

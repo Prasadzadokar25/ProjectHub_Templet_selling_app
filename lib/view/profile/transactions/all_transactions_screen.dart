@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:projecthub/app_providers/histroy_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:provider/provider.dart';
-import '../../../model/payment_model.dart';
+import '../../../model/transaction_model.dart';
 import 'transaction_details_screen.dart';
 
 class TransactionListScreen extends StatefulWidget {

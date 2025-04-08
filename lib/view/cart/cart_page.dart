@@ -78,7 +78,11 @@ class _AddToCartPage extends State<AddToCartPage> {
     final provider = Provider.of<OrderProvider>(context, listen: false);
     try {
       await provider.placeOrder(
-          userProvider.user!.userId, paymentData.toJson(), productDetail);
+        userProvider.user!.userId,
+        paymentData.toJson(),
+        productDetail,
+        DateTime.now().toString(),
+      );
     } catch (e) {
       Get.snackbar("Order failed", "Paymet confirm but order failed");
     } finally {
