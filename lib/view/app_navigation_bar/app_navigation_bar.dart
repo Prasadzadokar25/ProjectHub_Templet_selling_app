@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/app_permission_controller.dart';
 import 'package:projecthub/view/home/home_screen.dart';
-import 'package:projecthub/view/listed_project/listed_creation_screen.dart';
 import 'package:projecthub/view/profile/profile_screen.dart';
 import 'package:projecthub/view/purchase/purchase_screen.dart';
 import 'package:projecthub/view/search_screen/search_screen.dart';
@@ -53,7 +52,7 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
         children: [
           HomeScreen(),
           SearchScreen(),
-          ShortsScreen(),
+          ReelsScreen(),
           PurchaseScreen(), // First Screen
           ProfileScreen(), // First Screen
         ],

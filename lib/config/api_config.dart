@@ -18,6 +18,8 @@ class ApiConfig {
   static String categories = "$baseURL/categories";
   static String updateUser = "$baseURL/update_user";
   static String getReels = "$baseURL/reels";
+  static String addLikeToReel = "$baseURL/reel/addLike";
+  static String removeLikeToReel = "$baseURL/reel/removeLike";
 
   static String getGeneralCreationsUrl(int pageNo, [int perPage = 10]) {
     return "$baseURL/creations/page/$pageNo/perPage/$perPage/uid";
@@ -42,7 +44,8 @@ class ApiConfig {
   static String getFileUrl(String path) {
     return "$baseURL/$path";
   }
-  static String getUserTransactions(int userid){
+
+  static String getUserTransactions(int userid) {
     return "$baseURL/transactions?user_id=$userid";
   }
 }

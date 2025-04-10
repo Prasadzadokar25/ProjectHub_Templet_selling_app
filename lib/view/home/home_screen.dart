@@ -506,7 +506,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget getOtherCreationView() {
     return Consumer<GeneralCreationProvider>(
       builder: (context, value, child) {
-        log("${value.generalCreations!.length}mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
           child: Column(

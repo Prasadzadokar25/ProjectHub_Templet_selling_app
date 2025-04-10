@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -196,7 +195,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
         'keyword': _keywords,
         'otherImages': _otherImages,
         'user_id': userid,
-        "youtube_link": ( _ytVideoController.text == "")
+        "youtube_link": (_ytVideoController.text == "")
             ? null
             : _ytVideoController.text.trim()
       };
@@ -621,7 +620,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
       SizedBox(
         height: 120,
         child: ListView.separated(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           scrollDirection: Axis.horizontal,
           itemCount: _otherImages.length + 1,
           separatorBuilder: (context, index) {
@@ -651,7 +650,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                             blurRadius: 8,
                             spreadRadius: 0,
@@ -661,7 +660,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
                         image: FileImage(
                           // Use `File` since XFile has path property
                           // Ensure to import `dart:io` for File usage
-                          File(_otherImages[index]!),
+                          File(_otherImages[index]),
                         ),
                         fit: BoxFit.fitHeight,
                       ),

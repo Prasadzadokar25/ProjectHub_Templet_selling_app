@@ -8,7 +8,6 @@ import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/model/user_info_model.dart';
 
 class UserController {
-  final Dio _dio = Dio();
 
   Future<Map> addUser(NewUserInfo newUserInfo) async {
     log(newUserInfo.userName);

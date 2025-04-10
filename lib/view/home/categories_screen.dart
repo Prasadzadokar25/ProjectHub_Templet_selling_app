@@ -2,12 +2,9 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:image/image.dart' as img;
 import 'package:palette_generator/palette_generator.dart';
 import 'package:projecthub/app_providers/categories_provider.dart';
-import 'package:projecthub/app_providers/data_file_provider.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_text.dart';
