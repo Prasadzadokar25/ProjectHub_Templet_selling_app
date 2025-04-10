@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:projecthub/app_providers/reels_providel.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/config/api_config.dart';
+import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/model/reel_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -35,25 +37,6 @@ class _ReelsScreenState extends State<ReelsScreen> {
     });
   }
 
-  String extractVideoId(String urlOrId) {
-    final uri = Uri.tryParse(urlOrId);
-    if (uri == null || !uri.isAbsolute) return urlOrId;
-
-    if (uri.host.contains("youtube.com")) {
-      if (uri.pathSegments.contains("watch")) {
-        return uri.queryParameters["v"] ?? urlOrId;
-      } else if (uri.pathSegments.contains("shorts") ||
-          uri.pathSegments.contains("embed") ||
-          uri.pathSegments.contains("v")) {
-        return uri.pathSegments.last;
-      }
-    } else if (uri.host.contains("youtu.be")) {
-      return uri.pathSegments.first;
-    }
-
-    return urlOrId;
-  }
-
   Future<void> _fetchVideos([bool isFirstCall = false]) async {
     setState(() => _isLoading = true);
     final userProvider = Provider.of<UserInfoProvider>(context, listen: false);
@@ -65,6 +48,12 @@ class _ReelsScreenState extends State<ReelsScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  fetchMoreReel() async {
+    final userProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    final reelProvider = Provider.of<ReelsProvider>(context, listen: false);
+    await reelProvider.fetchReels(userProvider.user!.userId);
   }
 
   void _onRefresh() async {
@@ -83,7 +72,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Consumer<ReelsProvider>(builder: (context, provider, child) {
-      if (_isLoading || provider.isLoading) {
+      if (_isLoading) {
         return _buildShimmerLoader();
       }
       if (provider.errorMassage != null) {
@@ -99,7 +88,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
           physics: const BouncingScrollPhysics(),
           controller: _pageController,
           scrollDirection: Axis.vertical,
-          itemCount: provider.reels!.length,
+          itemCount: provider.reels!.length + 3,
           onPageChanged: (index) {
             setState(() => _currentPage = index);
             if (index + 1 < provider.reels!.length) {
@@ -115,10 +104,16 @@ class _ReelsScreenState extends State<ReelsScreen> {
                   const Duration(seconds: 1), () => tempController.dispose());
             }
             if (index == provider.reels!.length - 2) {
-              _fetchVideos();
+              fetchMoreReel();
             }
           },
           itemBuilder: (context, index) {
+            if (index >= provider.reels!.length) {
+              if (provider.isLoading) {
+                return _buildShimmerLoader();
+              }
+              return _buildShimmerLoader();
+            }
             return VideoItem(
               isCurrent: index == _currentPage,
               reel: provider.reels![index],
@@ -126,29 +121,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
           },
         ),
       );
-    }
-            //  _isLoading
-            //     ? _buildShimmerLoader()
-            //     : SmartRefresher(
-            //         controller: _refreshController,
-            //         enablePullDown: true,
-            //         onRefresh: _onRefresh,
-            //         child: PageView.builder(
-            //           controller: _pageController,
-            //           scrollDirection: Axis.vertical,
-            //           itemCount: videoIds.length,
-            //           onPageChanged: (index) {
-            //             setState(() => _currentPage = index);
-            //           },
-            //           itemBuilder: (context, index) {
-            //             return VideoItem(
-            //               videoId: extractVideoId(videoIds[index]),
-            //               isCurrent: index == _currentPage,
-            //             );
-            //           },
-            //         ),
-            //       ),
-            ));
+    }));
   }
 
   Widget _buildShimmerLoader() {
@@ -158,7 +131,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
         Container(
           width: double.infinity,
           height: double.infinity,
-          color: Color.fromARGB(255, 33, 33, 33),
+          color: const Color.fromARGB(255, 33, 33, 33),
         ),
         // Bottom-left: Title and Description
         Positioned(
@@ -192,15 +165,15 @@ class _ReelsScreenState extends State<ReelsScreen> {
         // Bottom-right: Like, Comment, Share buttons
         Positioned(
           right: 16,
-          bottom: 180,
+          bottom: 120,
           child: Column(
             children: [
               _shimmerIconBox(), // Like
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               _shimmerIconBox(), // Comment
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               _shimmerIconBox(), // Share
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               _shimmerIconBox(),
             ],
           ),
@@ -212,12 +185,12 @@ class _ReelsScreenState extends State<ReelsScreen> {
   Widget _shimmerIconBox() {
     return Shimmer.fromColors(
       baseColor: Colors.grey[800]!,
-      highlightColor: const Color.fromARGB(255, 89, 89, 89)!,
+      highlightColor: const Color.fromARGB(255, 89, 89, 89),
       child: Container(
         width: 40,
         height: 40,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 65, 64, 64),
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 65, 64, 64),
           shape: BoxShape.circle,
         ),
       ),
@@ -226,14 +199,14 @@ class _ReelsScreenState extends State<ReelsScreen> {
 }
 
 class VideoItem extends StatefulWidget {
-  ReelModel reel;
+  final ReelModel reel;
   final bool isCurrent;
 
-  VideoItem({
+  const VideoItem({
     required this.isCurrent,
     required this.reel,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<VideoItem> createState() => _VideoItemState();
@@ -244,6 +217,8 @@ class _VideoItemState extends State<VideoItem> {
   bool _isPlayerReady = false;
   bool _showControls = false;
   bool _showHeart = false;
+
+  bool isPaying = false;
 
   @override
   void initState() {
@@ -282,25 +257,6 @@ class _VideoItemState extends State<VideoItem> {
     }
   }
 
-  String extractVideoId(String urlOrId) {
-    final uri = Uri.tryParse(urlOrId);
-    if (uri == null || !uri.isAbsolute) return urlOrId;
-
-    if (uri.host.contains("youtube.com")) {
-      if (uri.pathSegments.contains("watch")) {
-        return uri.queryParameters["v"] ?? urlOrId;
-      } else if (uri.pathSegments.contains("shorts") ||
-          uri.pathSegments.contains("embed") ||
-          uri.pathSegments.contains("v")) {
-        return uri.pathSegments.last;
-      }
-    } else if (uri.host.contains("youtu.be")) {
-      return uri.pathSegments.first;
-    }
-
-    return urlOrId;
-  }
-
   @override
   void dispose() {
     _controller.dispose();
@@ -332,6 +288,7 @@ class _VideoItemState extends State<VideoItem> {
             child: YoutubePlayer(
               controller: _controller,
               onReady: () {
+                isPaying = true;
                 setState(() => _isPlayerReady = true);
                 if (widget.isCurrent) {
                   _controller.play();
@@ -388,17 +345,17 @@ class _VideoItemState extends State<VideoItem> {
                 Text(
                   formatProper(
                       widget.reel.creationTitle), // Replace with actual title
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   formatProper(widget.reel
                       .creationDescription), // Replace with actual description
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: Colors.white,
                   ),
@@ -424,15 +381,18 @@ class _VideoItemState extends State<VideoItem> {
                       Provider.of<UserInfoProvider>(context, listen: false)
                           .user!
                           .userId);
+                }, () {
+                  _showLikesBottomSheet(context, widget.reel);
                 }),
                 const SizedBox(height: 20),
                 _buildActionButton(
-                    Icons.comment, Colors.white, 'Comment', () {}),
-                const SizedBox(height: 20),
-                _buildActionButton(Icons.share, Colors.white, 'Share', () {}),
+                    Icons.comment, Colors.white, 'Comment', () {}, () {}),
                 const SizedBox(height: 20),
                 _buildActionButton(
-                    Icons.more_vert, Colors.white, 'More', () {}),
+                    Icons.share, Colors.white, 'Share', () {}, () {}),
+                const SizedBox(height: 20),
+                _buildActionButton(
+                    Icons.more_vert, Colors.white, 'More', () {}, () {}),
               ],
             ),
           ),
@@ -445,18 +405,19 @@ class _VideoItemState extends State<VideoItem> {
                 child: Center(
                   child: IconButton(
                     icon: Icon(
-                      _controller.value.isPlaying
-                          ? Icons.pause
-                          : Icons.play_arrow,
+                      isPaying ? Icons.pause : Icons.play_arrow,
                       size: 50,
                       color: Colors.white,
                     ),
                     onPressed: () {
                       if (_controller.value.isPlaying) {
                         _controller.pause();
+                        isPaying = false;
                       } else {
+                        isPaying = true;
                         _controller.play();
                       }
+                      setState(() {});
                     },
                   ),
                 ),
@@ -477,17 +438,39 @@ class _VideoItemState extends State<VideoItem> {
   }
 
   Widget _buildActionButton(
-      IconData icon, Color color, String label, onPressed) {
+      IconData icon, Color color, String label, onPressed, onLabelPressed) {
     return Column(
       children: [
         GestureDetector(
-            onTap: onPressed, child: Icon(icon, size: 30, color: color)),
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8, left: 10, right: 10),
+            child: Icon(icon, size: 30, color: color),
+          ),
+        ),
         const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white, fontSize: 12),
+        GestureDetector(
+          onTap: onLabelPressed,
+          child: Text(
+            label,
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
         ),
       ],
+    );
+  }
+
+  void _showLikesBottomSheet(BuildContext context, ReelModel reel) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => LikesBottomSheet(
+        reel: reel,
+      ),
     );
   }
 
@@ -495,4 +478,164 @@ class _VideoItemState extends State<VideoItem> {
     if (input.isEmpty) return input;
     return input[0].toUpperCase() + input.substring(1).toLowerCase();
   }
+}
+
+class LikesBottomSheet extends StatefulWidget {
+  final ReelModel reel;
+  const LikesBottomSheet({super.key, required this.reel});
+
+  @override
+  State<LikesBottomSheet> createState() => _LikesBottomSheetState();
+}
+
+class _LikesBottomSheetState extends State<LikesBottomSheet> {
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await fetchLikesDate();
+    });
+  }
+
+  fetchLikesDate() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final provider = Provider.of<ReelsProvider>(context, listen: false);
+    await provider.fetchLikeInfo(widget.reel.creationId, true);
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  String query = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.5,
+      minChildSize: 0.3,
+      maxChildSize: 0.95,
+      builder: (context, scrollController) {
+        final filteredUsers = Provider.of<ReelsProvider>(context, listen: false)
+            .reelLikes!
+            .where((user) =>
+                user.userName!.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Column(
+            children: [
+              Container(
+                width: 40,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.grey[400],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "${widget.reel.likeCount} Likes",
+                style: AppText.heddingStyle2bBlack,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                decoration: const InputDecoration(
+                  hintText: "Search by name",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
+                ),
+                onChanged: (val) {
+                  setState(() {
+                    query = val;
+                  });
+                },
+              ),
+              const SizedBox(height: 12),
+              Consumer<ReelsProvider>(builder: (context, provider, child) {
+                if (_isLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: filteredUsers.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == filteredUsers.length &&
+                          provider.isLikeLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      if (index == filteredUsers.length) {
+                        return const SizedBox.shrink();
+                      }
+                      final user = filteredUsers[index];
+                      return Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: (user.profilePhoto != null)
+                                ? NetworkImage(
+                                    ApiConfig.baseURL + user.profilePhoto!,
+                                  )
+                                : null,
+                            child: (user.profilePhoto == null)
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 40,
+                                    color: Colors.black45,
+                                  )
+                                : null,
+                          ),
+                          title: Text(user.userName!),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+String extractVideoId(String urlOrId) {
+  final uri = Uri.tryParse(urlOrId);
+  if (uri == null || !uri.isAbsolute) return urlOrId;
+
+  if (uri.host.contains("youtube.com")) {
+    if (uri.pathSegments.contains("watch")) {
+      return uri.queryParameters["v"] ?? urlOrId;
+    } else if (uri.pathSegments.contains("shorts") ||
+        uri.pathSegments.contains("embed") ||
+        uri.pathSegments.contains("v")) {
+      return uri.pathSegments.last;
+    }
+  } else if (uri.host.contains("youtu.be")) {
+    return uri.pathSegments.first;
+  }
+
+  return urlOrId;
 }

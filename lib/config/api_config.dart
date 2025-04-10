@@ -18,6 +18,7 @@ class ApiConfig {
   static String categories = "$baseURL/categories";
   static String updateUser = "$baseURL/update_user";
   static String getReels = "$baseURL/reels";
+  static String getLikeInfo = "$baseURL/reel/likes";
   static String addLikeToReel = "$baseURL/reel/addLike";
   static String removeLikeToReel = "$baseURL/reel/removeLike";
 

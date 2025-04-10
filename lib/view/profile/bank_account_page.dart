@@ -181,7 +181,7 @@ class _BankAccountPageState extends State<BankAccountPage> {
           try {
             await provider.addUserBankAccounts(data);
             Get.snackbar("Succeful😀", "Bank account added successfully",
-                backgroundColor: Color(0xFF32CD32));
+                backgroundColor: const Color.fromARGB(255, 136, 254, 136));
 
             await provider.fetchUserBankAccounts(
                 Provider.of<UserInfoProvider>(context, listen: false)
@@ -191,6 +191,7 @@ class _BankAccountPageState extends State<BankAccountPage> {
             Get.snackbar(
                 "Failed", e.toString().replaceFirst('Exception: ', ''));
           }
+          // ignore: use_build_context_synchronously
           Navigator.of(context).pop();
           setState(() {
             _isSubmitPressedOnce = false;

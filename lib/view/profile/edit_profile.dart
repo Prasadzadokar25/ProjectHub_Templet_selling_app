@@ -36,7 +36,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.user!.userName;
+    _nameController.text = widget.user!.userName!;
     if (widget.user!.userEmail != null) {
       _emailController.text = widget.user!.userEmail!;
     }
@@ -92,6 +92,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         await userProvider.updateUser(widget.user!.userId, data);
         Get.back();
         Get.back();
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile Updated Successfully!')),
         );

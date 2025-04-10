@@ -1,19 +1,30 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/controller/reels_controller.dart';
 import 'package:projecthub/model/reel_model.dart';
-import 'package:provider/provider.dart';
+import 'package:projecthub/model/user_info_model.dart';
 
 class ReelsProvider extends ChangeNotifier {
-  bool isLoading = false;
-  List<ReelModel>? reels;
-  String? errorMassage;
   final ReelsController _reelsController = ReelsController();
-  int offset = 0;
-  int limit = 5;
+  bool isLoading = false;
+  List<ReelModel>? reels = [];
+  String? errorMassage;
+  int reelOffset = 0;
+  int reelLimit = 5;
+  int likeOffset = 0;
+  int likeLimit = 10;
+
+  bool isLikeLoading = false;
+  List<UserModel>? reelLikes;
 
   setLoading(value) {
     isLoading = value;
+    notifyListeners();
+  }
+
+  reset() {
+    reelOffset = 0;
+    reels = [];
     notifyListeners();
   }
 
@@ -26,29 +37,21 @@ class ReelsProvider extends ChangeNotifier {
     }
 
     try {
-      final newData = await _reelsController.fetchReels(userId, limit, offset);
-      if (isFirstCall || reels == null) {
+      final newData =
+          await _reelsController.fetchReels(userId, reelLimit, reelOffset);
+      if (isFirstCall) {
         reels = newData;
       } else {
         reels!.addAll(newData);
       }
 
-      offset += newData.length;
+      reelOffset += newData.length;
     } catch (e) {
       errorMassage = e.toString();
     }
     setLoading(false);
   }
 
-  // toggleLike(index) {
-  //   reels![index].isLikedByUser = !reels![index].isLikedByUser;
-  //   if (reels![index].isLikedByUser) {
-  //     reels![index].likeCount++;
-  //   } else {
-  //     reels![index].likeCount--;
-  //   }
-  //   notifyListeners();
-  // }
   void toggleLike(ReelModel reel, int userId, [bool confirmLike = false]) {
     if (confirmLike) {
       if (!reel.isLikedByUser) {
@@ -70,9 +73,29 @@ class ReelsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  reset() {
-    offset = 1;
-    reels = [];
+  fetchLikeInfo(int reelId, [bool isFirstCall = false]) async {
+    isLikeLoading = true;
+    notifyListeners();
+
+    if (isFirstCall) {
+      reelLikes = [];
+      likeOffset = 0;
+    }
+
+    try {
+      final newData =
+          await _reelsController.getLikeInfo(reelId, likeLimit, likeOffset);
+      if (isFirstCall) {
+        reelLikes = newData;
+      } else {
+        reelLikes!.addAll(newData);
+      }
+
+      likeOffset += newData.length;
+    } catch (e) {
+      log(e.toString());
+    }
+    isLikeLoading = false;
     notifyListeners();
   }
 }

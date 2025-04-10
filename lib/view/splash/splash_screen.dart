@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
@@ -74,12 +76,12 @@ class _SplashscreenState extends State<Splashscreen> {
     } else if (isLoginId == null || isLoginId == -1) {
       Get.offAll(() => const LoginScreen());
     } else if (!_isLoading) {
-      Get.offAll(() => AppNavigationScreen());
+      Get.offAll(() => const AppNavigationScreen());
     } else {
       Timer(
         const Duration(seconds: 3),
         () {
-          if (_isLoading) Get.to(() => LoadingScreen());
+          if (_isLoading) Get.to(() => const LoadingScreen());
         },
       );
     }

@@ -1,7 +1,5 @@
-import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -665,7 +663,7 @@ class CategoryCard extends StatelessWidget {
                         SizedBox(
                           height: cellHeight! * 0.50,
                           child: Image.network(
-                              "${ApiConfig.getFileUrl(category!.image!)}"),
+                              ApiConfig.getFileUrl(category!.image!)),
                         ),
                         SizedBox(
                           height: Get.height * 0.004,

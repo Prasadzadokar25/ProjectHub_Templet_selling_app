@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/model/reel_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:projecthub/model/user_info_model.dart';
 
 class ReelsController {
   Future<List<ReelModel>> fetchReels(int userId, int limit, int offset) async {
@@ -95,6 +95,28 @@ class ReelsController {
       log("Error: $e");
       // Optionally throw or return the error for further handling
       throw Exception('Network or server error: $e');
+    }
+  }
+
+  Future<List<UserModel>> getLikeInfo(int reelId, int limit, int offset) async {
+    try {
+      final url = Uri.parse(
+          '${ApiConfig.getLikeInfo}?limit=$limit&offset=$offset&reel_id=$reelId');
+
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body)['data'];
+
+        log(response.body);
+        return data.map((json) => UserModel.fromJson(json)).toList();
+      } else if (response.statusCode == 204) {
+        log("No like found found");
+        throw Exception('Failed to load reel like');
+      } else {
+        throw Exception('Failed to load reel like');
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

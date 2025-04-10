@@ -261,8 +261,7 @@ class PurchedCreationProvider extends ChangeNotifier {
       throw Exception("failed to feach purched creations $e");
     }
     _isLoading = false;
-    if (newFetchedCreations != null &&
-        newFetchedCreations.length == (perPage + 1)) {
+    if (newFetchedCreations.length == (perPage + 1)) {
       page++;
     }
     notifyListeners();

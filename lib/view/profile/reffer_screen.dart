@@ -123,7 +123,7 @@ class _ReferScreenState extends State<ReferScreen> {
                             width: 16,
                           ),
                           InkWell(
-                              child: Text(
+                              child: const Text(
                                 "Copy Code",
                                 style: TextStyle(
                                     fontSize: 18, color: Colors.white70),
@@ -191,7 +191,7 @@ class _ReferScreenState extends State<ReferScreen> {
     return ListTile(
       title: Text(
         header,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
       ),
       trailing: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
       onTap: () {

@@ -1,16 +1,16 @@
 class UserModel {
   int userId;
-  String userName;
-  String userPassword;
+  String? userName;
+  String? userPassword;
   String? userDescription;
   String? userContact;
   String? userEmail;
   String? profilePhoto;
-  String role;
-  String loginType;
-  double walletMoney;
-  int boughthCreationNumber;
-  int listedCreationNumber;
+  String? role;
+  String? loginType;
+  double? walletMoney;
+  int? boughthCreationNumber;
+  int? listedCreationNumber;
 
   // Constructor
   UserModel({

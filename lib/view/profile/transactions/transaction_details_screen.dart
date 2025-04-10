@@ -9,8 +9,7 @@ class TransactionDetailScreen extends StatefulWidget {
   const TransactionDetailScreen({super.key, required this.transaction});
 
   @override
-  _TransactionDetailScreenState createState() =>
-      _TransactionDetailScreenState();
+  State createState() => _TransactionDetailScreenState();
 }
 
 class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
@@ -40,68 +39,6 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             ],
           ),
         ));
-  }
-
-  Widget _buildSkeletonDetail() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSkeletonCard(height: 200),
-          const SizedBox(height: 16),
-          _buildSkeletonCard(height: 220),
-          const SizedBox(height: 16),
-          _buildSkeletonCard(height: 180),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSkeletonCard({required double height}) {
-    return Card(
-      child: Container(
-        height: height,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 150,
-              height: 24,
-              color: Colors.grey[300],
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 16,
-                          color: Colors.grey[300],
-                        ),
-                        Container(
-                          width: 80,
-                          height: 16,
-                          color: Colors.grey[300],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildStatusCard(TransactionModel transaction) {
