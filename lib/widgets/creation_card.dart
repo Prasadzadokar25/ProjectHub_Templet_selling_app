@@ -5,243 +5,242 @@ import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/controller/files_download_controller.dart';
 import 'package:projecthub/model/creation_info_model.dart';
-import 'package:projecthub/model/new.dart';
+import 'package:projecthub/model/creation_model.dart';
 import 'package:projecthub/model/purched_creation_model.dart';
 import 'package:share_plus/share_plus.dart';
 
-class CreatationCard extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
+
+class CreatationCard extends StatelessWidget {
   final Creation2 creation;
-  const CreatationCard({super.key, required this.creation});
+  final VoidCallback? onTap;
 
-  @override
-  State createState() => _CreatationCardState();
-}
+  const CreatationCard({
+    super.key,
+    required this.creation,
+    this.onTap,
+  });
 
-class _CreatationCardState extends State<CreatationCard> {
   Future<void> share() async {
-    await Share.share('check out my website https://example.com');
+    await Share.share('Check out this template: ${creation.creationTitle}');
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenW = (Get.width < 600) ? Get.width : 600;
-
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 600),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(9.h),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0XFF23408F).withOpacity(0.24),
-            offset: const Offset(-4, 5),
-            blurRadius: 16.h,
-          ),
-        ],
-        color: Colors.white,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(9.h),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0XFF23408F).withOpacity(0.14),
-                  offset: const Offset(-4, 5),
-                  blurRadius: 16.h,
-                ),
-              ],
-              color: Colors.white,
-            ),
-            child: Stack(
-              children: [
-                Container(
-                  height: 210.h,
-                  width: double.infinity.w,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.h),
-                      color: Colors.white),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(9.h),
-                        topRight: Radius.circular(9.h)),
-                    child: Image(
-                      image: NetworkImage(ApiConfig.getFileUrl(
-                        widget.creation.creationThumbnail!,
-                      )),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      height: 27.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.h),
-                        color: const Color(0XFFFAF4E1),
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 2,
+        // margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Thumbnail Image
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Image.network(
+                "${ApiConfig.baseURL}/${creation.creationThumbnail!}",
+                height: 180.h,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return SizedBox(
+                    height: 180.h,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.star_rate_rounded,
-                            color: Color.fromARGB(255, 255, 196, 0),
-                            size: 15,
+                    ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    alignment: Alignment.center,
+                    height: 180.h,
+                    color: Colors.grey[200],
+                    child: const Icon(
+                      Icons.broken_image,
+                      size: 50,
+                      color: Color.fromARGB(255, 171, 171, 171),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Content
+            Padding(
+              padding: EdgeInsets.all(12.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title and Rating
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          creation.creationTitle ?? 'Untitled Template',
+                          style: TextStyle(
+                            fontSize: 19.sp,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            widget.creation.averageRating!.substring(0, 4),
-                            style: TextStyle(
-                                color: const Color.fromARGB(255, 255, 196, 0),
-                                fontFamily: 'Gilroy',
-                                fontSize: 15.sp),
+                        ),
+                      ),
+                      if (creation.averageRating != null)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 4.h),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: const Color(0XFFFAF4E1),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.star,
+                                color: Color(0xFFFFA000),
+                                size: 16,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                creation.averageRating!.length > 3
+                                    ? creation.averageRating!.substring(0, 3)
+                                    : creation.averageRating!,
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+
+                  SizedBox(height: 8.h),
+
+                  // Description
+                  if (creation.creationDescription != null &&
+                      creation.creationDescription!.isNotEmpty)
+                    Column(
+                      children: [
+                        Text(
+                          creation.creationDescription!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                      ],
+                    ),
+
+                  // Seller Info and Price
+                  Row(
+                    children: [
+                      // Seller Avatar
+                      CircleAvatar(
+                        radius: 20.r,
+                        backgroundImage: creation.seller?.sellerProfilePhoto !=
+                                null
+                            ? NetworkImage(
+                                "${ApiConfig.baseURL}/${creation.seller!.sellerProfilePhoto!}")
+                            : null,
+                        child: creation.seller?.sellerProfilePhoto == null
+                            ? const Icon(Icons.person, size: 20)
+                            : null,
+                      ),
+
+                      SizedBox(width: 8.w),
+
+                      // Seller Name
+                      Expanded(
+                        child: Text(
+                          creation.seller?.sellerName ?? 'Unknown Seller',
+                          style: TextStyle(
+                            fontSize: 14.5.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+
+                      // Price
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 6.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: const Color(0XFFE5ECFF),
+                        ),
+                        child: Text(
+                          '₹${creation.creationPrice ?? '0'}',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0XFF23408F),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 8.h),
+
+                  // Footer (Date and Actions)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Added: ${creation.createtime?.split(' ')[1]} ${creation.createtime?.split(' ')[2]} ${creation.createtime?.split(' ')[3]}",
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: (creation.isLikedByUser!)
+                                ? const Icon(Icons.favorite,
+                                    color: Colors.red, size: 20)
+                                : const Icon(Icons.favorite_border, size: 20),
+                            onPressed: () {},
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
+                          Text(creation.totalLikes!.toString()),
+                          SizedBox(width: 8.w),
+                          IconButton(
+                            icon: const Icon(Icons.share, size: 20),
+                            onPressed: share,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
                           ),
                         ],
                       ),
-                    ),
-                    Spacer(),
-                    SizedBox(
-                      height: 30,
-                      width: 30,
-                      child: Material(
-                        shape:
-                            CircleBorder(), // Optional: Make the button round
-                        child: IconButton(
-                          padding: EdgeInsets.all(0),
-                          splashRadius: 1,
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.favorite_outline_sharp,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    SizedBox(
-                      height: 30,
-                      width: 30,
-                      child: Material(
-                        shape:
-                            CircleBorder(), // Optional: Make the button round
-
-                        child: IconButton(
-                          alignment: Alignment.center,
-                          iconSize: 18,
-                          onPressed: () {
-                            share();
-                          },
-                          icon: const Icon(
-                            Icons.share,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(height: 11.h),
-                Text(
-                  widget.creation.creationTitle!,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 17.sp,
-                      fontFamily: 'Gilroy',
-                      color: const Color.fromARGB(255, 25, 25, 25)),
-                ),
-                SizedBox(height: 8.h),
-                // if (widget.creation.creationDescription != null &&
-                //     widget.creation.creationDescription! != "")
-                //   Column(
-                //     children: [
-                //       Text(
-                //         maxLines: 2,
-                //         overflow: TextOverflow.ellipsis,
-                //         widget.creation.creationDescription!,
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.w400,
-                //             fontSize: 14.sp,
-                //             fontFamily: 'Gilroy',
-                //             color: const Color.fromARGB(255, 25, 25, 25)),
-                //       ),
-                //       SizedBox(height: 8.h),
-                //     ],
-                //   ),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: Get.height * 0.02,
-                      backgroundImage:
-                          (widget.creation.seller!.sellerProfilePhoto != null)
-                              ? NetworkImage(ApiConfig.baseURL +
-                                  widget.creation.seller!.sellerProfilePhoto!)
-                              : null,
-                      child:
-                          (widget.creation.seller!.sellerProfilePhoto == null)
-                              ? const Icon(
-                                  Icons.person,
-                                  size: 22,
-                                  color: Colors.black45,
-                                )
-                              : null,
-                    ),
-                    SizedBox(width: 10.w),
-                    SizedBox(
-                      width: screenW * 0.3,
-                      child: Text(
-                        maxLines: 2,
-                        widget.creation.seller!.sellerName!,
-                        style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            color: const Color(0XFF23408F),
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Gilroy'),
-                      ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: screenW * 0.4,
-                      ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15.w, vertical: 2.h),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.h),
-                          color: const Color(0XFFE5ECFF)),
-                      child: Text(
-                        "₹ ${widget.creation.creationPrice!}",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: TextStyle(
-                            color: const Color(0XFF23408F),
-                            fontFamily: 'Gilroy',
-                            fontSize: 19.sp,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ],
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

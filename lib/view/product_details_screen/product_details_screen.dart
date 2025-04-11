@@ -12,11 +12,12 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/controller/creation_controller.dart';
-import 'package:projecthub/model/new.dart';
+import 'package:projecthub/model/creation_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
 import '../app_shimmer.dart';
+import '../cart/cart_page.dart';
 
 // ignore: must_be_immutable
 class ProductDetailsScreen extends StatefulWidget {
@@ -361,13 +362,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    flex: 1,
+                    flex: 0,
                     child: InkWell(
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                       child: Container(
                         // margin: const EdgeInsets.only(right: 5),
                         height: Get.height * 0.06,
-                        //padding: const EdgeInsets.only(left: 10),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: Get.width * 0.06),
                         decoration: BoxDecoration(
                             color: Colors.transparent,
                             shape: BoxShape.rectangle,
@@ -379,19 +381,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Buy Now",
+                              "My Cart",
                               style: AppText.heddingStyle2bBlack,
                             )
                           ],
                         ),
                       ),
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => AddToCartPage(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AddToCartPage(),
+                          ),
+                        );
                       },
                     ),
                   ),

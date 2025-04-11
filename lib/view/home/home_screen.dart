@@ -11,7 +11,7 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_info_model.dart';
-import 'package:projecthub/model/new.dart';
+import 'package:projecthub/model/creation_model.dart';
 import 'package:projecthub/view/app_shimmer.dart';
 import 'package:projecthub/view/profile/profile_screen.dart';
 import 'package:projecthub/widgets/creation_card.dart';

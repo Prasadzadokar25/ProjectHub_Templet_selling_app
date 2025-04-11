@@ -17,6 +17,8 @@ class Creation2 {
   int? totalCopySell;
   double? gstTaxPercentage;
   double? platFromFees;
+  int? totalLikes;
+  bool? isLikedByUser;
 
   Creation2({
     this.averageRating,
@@ -35,6 +37,8 @@ class Creation2 {
     this.createtime,
     this.gstTaxPercentage,
     this.platFromFees,
+    this.totalLikes,
+    this.isLikedByUser,
   });
 
   Creation2.fromJson(Map<String, dynamic> json) {
@@ -58,6 +62,8 @@ class Creation2 {
     createtime = json['createtime'];
     gstTaxPercentage = json['gst_percentage'];
     platFromFees = json['platform_fee_percentage'];
+    totalLikes = json['total_likes'];
+    isLikedByUser = (json['isLikedByUser']);
   }
 
   Map<String, dynamic> toJson() {
@@ -72,6 +78,7 @@ class Creation2 {
     data['creation_thumbnail'] = creationThumbnail;
     data['creation_title'] = creationTitle;
     data['keyword'] = keyword;
+    data['total_likes'] = totalLikes;
     data['number_of_reviews'] = numberOfReviews;
     if (seller != null) {
       data['seller'] = seller!.toJson();
@@ -79,6 +86,7 @@ class Creation2 {
     data['total_copy_sell'] = totalCopySell;
     data['gst_percentage'] = gstTaxPercentage;
     data['platform_fee_percentage'] = platFromFees;
+    data['isLikedByUser'] = isLikedByUser;
     return data;
   }
 }

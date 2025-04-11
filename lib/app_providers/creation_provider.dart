@@ -3,8 +3,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:projecthub/controller/creation_controller.dart';
+import 'package:projecthub/controller/searched_creation_controller.dart';
 import 'package:projecthub/model/creation_info_model.dart';
-import 'package:projecthub/model/new.dart';
+import 'package:projecthub/model/creation_model.dart';
 
 import '../model/incard_creation_model.dart';
 import '../model/purched_creation_model.dart';
@@ -348,5 +349,42 @@ class InCardCreationProvider extends ChangeNotifier {
       debugPrint("Error removing item from card: $e");
       rethrow; // Optionally rethrow to handle the error higher up
     }
+  }
+}
+
+class SearchedCreationProvider extends ChangeNotifier {
+  bool _isLoading = false;
+  String _errorMassage = '';
+  List<Creation2>? _seachedCreations;
+  int offset = 0;
+  int limit = 5;
+
+  bool get isLoading => _isLoading;
+  String get errormassage => _errorMassage;
+  List<Creation2>? get searchedCreations => _seachedCreations;
+
+  setLoading(value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  reset() {
+    offset = 0;
+    _seachedCreations = null;
+    _errorMassage = '';
+  }
+
+  Future<void> fetchSearchedCreation(
+      String query, int userId, bool isFirstCall) async {
+    _errorMassage = '';
+    setLoading(true);
+    try {
+      _seachedCreations = await SearchedCreationController()
+          .getSearchedCreation(
+              query: query, userId: userId, offset: offset, limit: limit);
+    } catch (e) {
+      _errorMassage  = 'Failed to fetch searched creation creations: $e';
+    }
+  setLoading(false);
   }
 }

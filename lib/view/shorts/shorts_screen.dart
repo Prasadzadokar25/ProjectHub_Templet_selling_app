@@ -375,7 +375,7 @@ class _VideoItemState extends State<VideoItem> {
                         ? Icons.favorite
                         : Icons.favorite_border_outlined,
                     (widget.reel.isLikedByUser) ? Colors.red : Colors.white,
-                    widget.reel.likeCount.toString(), () {
+                    formatCount(widget.reel.likeCount), () {
                   Provider.of<ReelsProvider>(context, listen: F).toggleLike(
                       widget.reel,
                       Provider.of<UserInfoProvider>(context, listen: false)
@@ -443,17 +443,18 @@ class _VideoItemState extends State<VideoItem> {
       children: [
         GestureDetector(
           onTap: onPressed,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8, left: 10, right: 10),
-            child: Icon(icon, size: 30, color: color),
-          ),
+          child: Icon(icon, size: 30, color: color),
         ),
         const SizedBox(height: 4),
         GestureDetector(
           onTap: onLabelPressed,
-          child: Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
+          child: Padding(
+            padding:
+                const EdgeInsets.only(bottom: 8, left: 10, right: 10, top: 4),
+            child: Text(
+              label,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
           ),
         ),
       ],
@@ -638,4 +639,16 @@ String extractVideoId(String urlOrId) {
   }
 
   return urlOrId;
+}
+
+String formatCount(int count) {
+  if (count >= 1000000000) {
+    return '${(count / 1000000000).toStringAsFixed(1).replaceAll('.0', '')}B';
+  } else if (count >= 1000000) {
+    return '${(count / 1000000).toStringAsFixed(1).replaceAll('.0', '')}M';
+  } else if (count >= 1000) {
+    return '${(count / 1000).toStringAsFixed(1).replaceAll('.0', '')}K';
+  } else {
+    return count.toString();
+  }
 }

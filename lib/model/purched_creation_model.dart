@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'new.dart';
+import 'creation_model.dart';
 
 class PurchedCreationModel {
   final Creation2 creation;

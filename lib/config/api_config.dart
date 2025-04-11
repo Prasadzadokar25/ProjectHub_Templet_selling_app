@@ -21,6 +21,7 @@ class ApiConfig {
   static String getLikeInfo = "$baseURL/reel/likes";
   static String addLikeToReel = "$baseURL/reel/addLike";
   static String removeLikeToReel = "$baseURL/reel/removeLike";
+  static String getSearchedCreation = "$baseURL/search/creation";
 
   static String getGeneralCreationsUrl(int pageNo, [int perPage = 10]) {
     return "$baseURL/creations/page/$pageNo/perPage/$perPage/uid";

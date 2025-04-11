@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/controller/app_permission_controller.dart';
 import 'package:projecthub/controller/notification_controller.dart';
-import 'package:projecthub/model/new.dart';
+import 'package:projecthub/model/creation_model.dart';
 
 class FilesDownloadController {
   final NotificationController _notificationController = NotificationController();

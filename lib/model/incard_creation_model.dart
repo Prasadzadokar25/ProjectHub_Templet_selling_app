@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:projecthub/model/new.dart';
+import 'package:projecthub/model/creation_model.dart';
 
 class InCardCreationInfo {
   int carditemId;
