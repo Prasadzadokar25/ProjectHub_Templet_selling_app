@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/app_permission_controller.dart';
 import 'package:projecthub/view/home/home_screen.dart';
@@ -26,8 +27,26 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
   @override
   void initState() {
     super.initState();
+    requestpermissions(); // Request location permissions on startup
+  }
+
+  void requestpermissions() async {
+    // Check if location services are enabled
     appPermissionController.requestNotificationPermission();
     appPermissionController.requestStoragePermission();
+    bool isLocationEnabled = await appPermissionController.isLocationOn();
+    if (!isLocationEnabled) {
+      // If not, show a dialog to inform the user
+      showLocationErrorDialog("Location services are disabled.");
+    } else {
+      // If location services are enabled, check for permissions
+      bool isPermissionGranted =
+          await appPermissionController.requestLocationPermission();
+      if (!isPermissionGranted) {
+        // If permission is not granted, show a dialog to inform the user
+        showLocationErrorDialog("Location permissions are denied.");
+      }
+    }
   }
 
   void _onItemTapped(int index) {
@@ -127,6 +146,70 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void showLocationErrorDialog(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        String message = "An error occurred while fetching location.";
+        if (errorMessage.contains('Location services are disabled')) {
+          message = "Please enable location services.";
+        } else if (errorMessage.contains('Location permissions are denied')) {
+          message = "Location permissions are denied. Please enable them.";
+        } else if (errorMessage
+            .contains('Location permissions are permanently denied')) {
+          message =
+              "Location permissions are permanently denied. Please enable them in the app settings.";
+        }
+
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                message,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await Geolocator.openAppSettings();
+                    },
+                    child: const Text(
+                      "Open settings",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -2,12 +2,44 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../app_providers/categories_provider.dart';
+import '../../app_providers/creation_provider.dart';
+import '../../app_providers/user_provider.dart';
 import '../../constant/app_padding.dart';
 
-class LoadingScreen extends StatelessWidget {
-  const LoadingScreen({super.key});
+class LoadingScreen extends StatefulWidget {
+  final int userId;
+  const LoadingScreen({super.key, required this.userId});
+
+  @override
+  State<LoadingScreen> createState() => _LoadingScreentState();
+}
+
+class _LoadingScreentState extends State<LoadingScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData(widget.userId);
+  }
+
+  fetchData(int uid) async {
+    await Provider.of<UserInfoProvider>(context, listen: false)
+        .fetchUserDetails(uid);
+    await Provider.of<GeneralCreationProvider>(context, listen: false)
+        .fetchGeneralCreations(uid, 1, 10);
+    await Provider.of<RecentCreationProvider>(context, listen: false)
+        .fetchRecentCreations(uid, 1, 10);
+    await Provider.of<TreandingCreationProvider>(context, listen: false)
+        .fetchTrendingCreations(uid, 1, 10);
+    await Provider.of<CategoriesProvider>(context, listen: false)
+        .fetchCategories(uid);
+    Get.offAll(() => AppNavigationScreen());
+  }
 
   @override
   Widget build(BuildContext context) {

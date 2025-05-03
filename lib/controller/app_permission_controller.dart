@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
 
 class AppPermissionController {
   Future<bool> requestNotificationPermission() async {
@@ -20,6 +21,33 @@ class AppPermissionController {
       _showPermissionDialog();
     }
     if (await Permission.notification.status.isGranted) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> isLocationOn() async {
+    // Request permission for notifications
+    return await Geolocator.isLocationServiceEnabled();
+  }
+
+  Future<bool> requestLocationPermission() async {
+    // Request permission for location
+    PermissionStatus status = await Permission.location.request();
+
+    // If the permission is granted, show a notification
+    if (status.isGranted) {
+      print("Location Permission Granted");
+      // You can show notifications now
+    } else if (status.isDenied) {
+      print("Location Permission Denied");
+      // Handle denied permission (you might show an explanation or guide to settings)
+    } else if (status.isPermanentlyDenied) {
+      print("Location Permission Permanently Denied");
+      // Guide user to open app settings
+      _showPermissionDialog();
+    }
+    if (await Permission.location.status.isGranted) {
       return true;
     }
     return false;

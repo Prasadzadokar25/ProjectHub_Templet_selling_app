@@ -94,9 +94,9 @@ class _SlidePageState extends State<SlidePage> {
         setState(() {
           if (currentpage == pages.length - 1) {
             PrefData.setIntro(true);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
+            Get.to(
+              LoginScreen(),
+              transition: Transition.rightToLeftWithFade,
             );
           } else {
             controller.nextPage(
@@ -182,15 +182,16 @@ class _SlidePageState extends State<SlidePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                constraints: const BoxConstraints(maxWidth: 600, maxHeight: 800),
+                constraints:
+                    const BoxConstraints(maxWidth: 600, maxHeight: 800),
                 child: Image(
                   image: AssetImage(pages[index].image!),
-                  height: Get.height * 0.7,
+                  //height: Get.height * 0.7,
                   width: Get.width,
                   fit: BoxFit.fill,
                 ),
               ),
-              SizedBox(height: 50.h),
+              SizedBox(height: 20.h),
               Text(
                 pages[index].name!,
                 style: TextStyle(
@@ -200,7 +201,7 @@ class _SlidePageState extends State<SlidePage> {
                     fontSize: 22.sp),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 10.h),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 35),
                 child: Text(

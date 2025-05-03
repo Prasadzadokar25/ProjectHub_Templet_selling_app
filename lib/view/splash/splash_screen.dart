@@ -41,6 +41,7 @@ class _SplashscreenState extends State<Splashscreen> {
     try {
       isIntro = await PrefData.getIntro();
       isLoginId = await PrefData.getLogin();
+      //PrefData.clearAppSharedPref();
       _navigateAfterSplash();
 
       if (isLoginId != null && isLoginId! > 0 && isIntro == true) {
@@ -81,7 +82,11 @@ class _SplashscreenState extends State<Splashscreen> {
       Timer(
         const Duration(seconds: 3),
         () {
-          if (_isLoading) Get.to(() => const LoadingScreen());
+          if (_isLoading) {
+            Get.to(() => LoadingScreen(
+                  userId: isLoginId!,
+                ));
+          }
         },
       );
     }

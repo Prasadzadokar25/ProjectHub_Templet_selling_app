@@ -73,15 +73,16 @@ class _LoginScreenState extends State<LoginScreen> {
         // PrefData.setVarification(true);
         //Get.offAll(const AppNavigationScreen());
         // Navigate to the loading screen
-        Get.offAll(() => LoadingScreen());
+        Get.offAll(() => LoadingScreen(
+              userId: res['data'][0]['user_id'],
+            ));
 
 // Fetch data asynchronously
-        await Future.delayed(const Duration(microseconds: 100));
-        await fetchData(res['data'][0]['user_id']);
+//         await fetchData(res['data'][0]['user_id']);
 
-// Once data is fetched, navigate to the next screen
-        print("Navigating to AppNavigationScreen");
-        Get.offAll(() =>  AppNavigationScreen());
+// // Once data is fetched, navigate to the next screen
+//         print("Navigating to AppNavigationScreen");
+//         Get.offAll(() => AppNavigationScreen());
       } else {
         String numberTitle = "Mobile number/Email or Password is wrong";
         String emailTitle = "Email or Password is wrong";

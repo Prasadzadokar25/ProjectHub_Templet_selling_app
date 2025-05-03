@@ -50,4 +50,8 @@ class ApiConfig {
   static String getUserTransactions(int userid) {
     return "$baseURL/transactions?user_id=$userid";
   }
+
+  static String getAdvertisements(int userid, String location) {
+    return "$baseURL/advertisements?user_id=$userid&location=$location";
+  }
 }
