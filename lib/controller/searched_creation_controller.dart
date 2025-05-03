@@ -16,10 +16,10 @@ class SearchedCreationController {
 
     try {
       final response = await http.get(Uri.parse(url));
+      log(response.body);
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['data'];
 
-        log(response.body);
         return data.map((json) => Creation2.fromJson(json)).toList();
       } else if (response.statusCode == 204) {
         log("No creation found for query ");
@@ -28,6 +28,7 @@ class SearchedCreationController {
         throw Exception('No creation found for query');
       }
     } catch (e) {
+      log(e.toString());
       rethrow;
     }
   }

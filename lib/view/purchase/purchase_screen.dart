@@ -10,6 +10,8 @@ import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/widgets/creation_card.dart';
 import 'package:provider/provider.dart';
 
+import '../app_navigation_bar/app_navigation_bar.dart';
+
 class PurchaseScreen extends StatefulWidget {
   const PurchaseScreen({super.key});
 
@@ -82,67 +84,75 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            getSearchField(),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: AppPadding.edgePadding,
-                  right: AppPadding.edgePadding,
-                  top: AppPadding.edgePadding,
-                  bottom: AppPadding.edgePadding * 0.6),
-              child: Text(
-                "My puchesed creations",
-                style: AppText.heddingStyle2bBlack,
+    return WillPopScope(
+      onWillPop: () async {
+        Get.offAll(() => const AppNavigationScreen(),
+            transition: Transition
+                .leftToRightWithFade); // Replace with your actual home screen
+        return false;
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              getSearchField(),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: AppPadding.edgePadding,
+                    right: AppPadding.edgePadding,
+                    top: AppPadding.edgePadding,
+                    bottom: AppPadding.edgePadding * 0.6),
+                child: Text(
+                  "My puchesed creations",
+                  style: AppText.heddingStyle2bBlack,
+                ),
               ),
-            ),
-            Expanded(
-              child: Consumer<PurchedCreationProvider>(
-                  builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+              Expanded(
+                child: Consumer<PurchedCreationProvider>(
+                    builder: (context, provider, child) {
+                  if (provider.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                if (provider.errorMessage.isNotEmpty) {
-                  return Center(child: Text(provider.errorMessage));
-                }
+                  if (provider.errorMessage.isNotEmpty) {
+                    return Center(child: Text(provider.errorMessage));
+                  }
 
-                if (provider.purchedCreations!.isEmpty) {
-                  return Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 150.h,
-                        width: 150.w,
-                        child: SvgPicture.asset(
-                            "assets/images/no_creation_found.svg"),
-                      ),
-                      SizedBox(height: 20.h),
-                      Text(
-                        "You did't purched anything",
-                        style: AppText.heddingStyle2bBlack,
-                      ),
-                    ],
-                  ));
-                }
-                return ListView.separated(
-                    controller: _scrollController,
-                    padding: EdgeInsets.all(AppPadding.edgePadding),
-                    itemCount: provider.purchedCreations!.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 15),
-                    itemBuilder: (context, index) {
-                      return PurchedCreationCard(
-                          purchedCreationModel:
-                              provider.purchedCreations![index]);
-                    });
-              }),
-            ),
-          ],
+                  if (provider.purchedCreations!.isEmpty) {
+                    return Center(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 150.h,
+                          width: 150.w,
+                          child: SvgPicture.asset(
+                              "assets/images/no_creation_found.svg"),
+                        ),
+                        SizedBox(height: 20.h),
+                        Text(
+                          "You did't purched anything",
+                          style: AppText.heddingStyle2bBlack,
+                        ),
+                      ],
+                    ));
+                  }
+                  return ListView.separated(
+                      controller: _scrollController,
+                      padding: EdgeInsets.all(AppPadding.edgePadding),
+                      itemCount: provider.purchedCreations!.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 15),
+                      itemBuilder: (context, index) {
+                        return PurchedCreationCard(
+                            purchedCreationModel:
+                                provider.purchedCreations![index]);
+                      });
+                }),
+              ),
+            ],
+          ),
         ),
       ),
     );

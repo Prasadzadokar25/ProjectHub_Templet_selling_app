@@ -15,6 +15,8 @@ import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/app_shared_preferences.dart';
+import '../advertisement/add_submission_form.dart';
+import '../app_navigation_bar/app_navigation_bar.dart';
 import 'reffer_screen.dart';
 import 'transactions/all_transactions_screen.dart';
 
@@ -39,33 +41,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Consumer<UserInfoProvider>(builder: (context, provider, child) {
-          // if (provider.isLoading) {
-          //   return const Center(child: CircularProgressIndicator());
-          // }
+      body: WillPopScope(
+        onWillPop: () async {
+          Get.offAll(() => const AppNavigationScreen(),
+              transition: Transition
+                  .leftToRightWithFade); // Replace with your actual home screen
+          return false;
+        },
+        child: SafeArea(
+          child:
+              Consumer<UserInfoProvider>(builder: (context, provider, child) {
+            // if (provider.isLoading) {
+            //   return const Center(child: CircularProgressIndicator());
+            // }
 
-          // if (provider.errorMessage.isNotEmpty) {
-          //   return Center(child: Text(provider.errorMessage));
-          // }
+            // if (provider.errorMessage.isNotEmpty) {
+            //   return Center(child: Text(provider.errorMessage));
+            // }
 
-          // if (provider.user == null) {
-          //   return const Center(
-          //       child:
-          //           Text("error occur\nplease clear all cache and try again"));
-          // }
+            // if (provider.user == null) {
+            //   return const Center(
+            //       child:
+            //           Text("error occur\nplease clear all cache and try again"));
+            // }
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                ProfileHeader(user: provider.user),
-                WalletRow(user: provider.user),
-                OptionList(user: provider.user),
-              ],
-            ),
-          );
-        }),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  ProfileHeader(user: provider.user),
+                  WalletRow(user: provider.user),
+                  OptionList(user: provider.user),
+                ],
+              ),
+            );
+          }),
+        ),
       ),
     );
   }
@@ -278,7 +289,11 @@ class OptionList extends StatelessWidget {
       'text': 'Transaction Histoty',
       "navigateTo": const TransactionListScreen()
     },
-    {'icon': Icons.campaign_outlined, 'text': 'Advertisement'},
+    {
+      'icon': Icons.campaign_outlined,
+      'text': 'Advertisement',
+      "navigateTo": AdSubmissionScreen()
+    },
     {
       'icon': Icons.card_giftcard,
       'text': 'Refer and Earn',

@@ -359,6 +359,9 @@ class SearchedCreationProvider extends ChangeNotifier {
   int offset = 0;
   int limit = 5;
 
+  final SearchedCreationController _searchedCreationController =
+      SearchedCreationController();
+
   bool get isLoading => _isLoading;
   String get errormassage => _errorMassage;
   List<Creation2>? get searchedCreations => _seachedCreations;
@@ -376,15 +379,25 @@ class SearchedCreationProvider extends ChangeNotifier {
 
   Future<void> fetchSearchedCreation(
       String query, int userId, bool isFirstCall) async {
-    _errorMassage = '';
+    if (isFirstCall) {
+      reset();
+    }
     setLoading(true);
     try {
-      _seachedCreations = await SearchedCreationController()
-          .getSearchedCreation(
+      final newFetchedCreations =
+          await _searchedCreationController.getSearchedCreation(
               query: query, userId: userId, offset: offset, limit: limit);
+      if (isFirstCall) {
+        _seachedCreations = newFetchedCreations;
+      } else {
+        _seachedCreations!.addAll(newFetchedCreations);
+      }
+      offset += _seachedCreations!.length; // Update the offset for pagination
     } catch (e) {
-      _errorMassage  = 'Failed to fetch searched creation creations: $e';
+      _errorMassage = 'Failed to fetch searched creation creations: $e';
+      log(e.toString());
+    } finally {
+      setLoading(false);
     }
-  setLoading(false);
   }
 }

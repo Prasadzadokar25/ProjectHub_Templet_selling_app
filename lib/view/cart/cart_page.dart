@@ -53,7 +53,7 @@ class _AddToCartPage extends State<AddToCartPage> {
 
     for (int i = 0; i < order.creations.length; i++) {
       double price = double.parse(
-          (double.parse(order.creations[i].creation.creationPrice!))
+          (double.parse(order.creations[i].creation.creationPrice!.toString()))
               .toStringAsFixed(2));
 
       log((order.creations[i].creation).toString());

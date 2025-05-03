@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CategoriesProvider()),
         ChangeNotifierProvider(create: (_) => ReelsProvider()),
         ChangeNotifierProvider(create: (_) => HistroyProvider()),
+        ChangeNotifierProvider(create: (_) => SearchedCreationProvider()),
       ],
       child: GetMaterialApp(
         // navigatorKey: navigatorKey,

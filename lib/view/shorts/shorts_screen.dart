@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:projecthub/app_providers/reels_providel.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/model/reel_model.dart';
+import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
@@ -70,58 +72,67 @@ class _ReelsScreenState extends State<ReelsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Consumer<ReelsProvider>(builder: (context, provider, child) {
-      if (_isLoading) {
-        return _buildShimmerLoader();
-      }
-      if (provider.errorMassage != null) {
-        return Center(
-          child: Text(provider.errorMassage!),
-        );
-      }
-      return SmartRefresher(
-        controller: _refreshController,
-        enablePullDown: true,
-        onRefresh: _onRefresh,
-        child: PageView.builder(
-          physics: const BouncingScrollPhysics(),
-          controller: _pageController,
-          scrollDirection: Axis.vertical,
-          itemCount: provider.reels!.length + 3,
-          onPageChanged: (index) {
-            setState(() => _currentPage = index);
-            if (index + 1 < provider.reels!.length) {
-              // Preload next video
-              final nextId =
-                  extractVideoId(provider.reels![index + 1].youtubeLink!);
-              YoutubePlayerController tempController = YoutubePlayerController(
-                initialVideoId: nextId,
-                flags: const YoutubePlayerFlags(autoPlay: false),
-              );
-              tempController.load(nextId);
-              Future.delayed(
-                  const Duration(seconds: 1), () => tempController.dispose());
-            }
-            if (index == provider.reels!.length - 2) {
-              fetchMoreReel();
-            }
-          },
-          itemBuilder: (context, index) {
-            if (index >= provider.reels!.length) {
-              if (provider.isLoading) {
+    return WillPopScope(
+      onWillPop: () async {
+        Get.offAll(() => const AppNavigationScreen(),
+            transition: Transition
+                .leftToRightWithFade); // Replace with your actual home screen
+        return false;
+      },
+      child: Scaffold(
+          body: Consumer<ReelsProvider>(builder: (context, provider, child) {
+        if (_isLoading) {
+          return _buildShimmerLoader();
+        }
+        if (provider.errorMassage != null) {
+          return Center(
+            child: Text(provider.errorMassage!),
+          );
+        }
+        return SmartRefresher(
+          controller: _refreshController,
+          enablePullDown: true,
+          onRefresh: _onRefresh,
+          child: PageView.builder(
+            physics: const BouncingScrollPhysics(),
+            controller: _pageController,
+            scrollDirection: Axis.vertical,
+            itemCount: provider.reels!.length + 3,
+            onPageChanged: (index) {
+              setState(() => _currentPage = index);
+              if (index + 1 < provider.reels!.length) {
+                // Preload next video
+                final nextId =
+                    extractVideoId(provider.reels![index + 1].youtubeLink!);
+                YoutubePlayerController tempController =
+                    YoutubePlayerController(
+                  initialVideoId: nextId,
+                  flags: const YoutubePlayerFlags(autoPlay: false),
+                );
+                tempController.load(nextId);
+                Future.delayed(
+                    const Duration(seconds: 1), () => tempController.dispose());
+              }
+              if (index == provider.reels!.length - 2) {
+                fetchMoreReel();
+              }
+            },
+            itemBuilder: (context, index) {
+              if (index >= provider.reels!.length) {
+                if (provider.isLoading) {
+                  return _buildShimmerLoader();
+                }
                 return _buildShimmerLoader();
               }
-              return _buildShimmerLoader();
-            }
-            return VideoItem(
-              isCurrent: index == _currentPage,
-              reel: provider.reels![index],
-            );
-          },
-        ),
-      );
-    }));
+              return VideoItem(
+                isCurrent: index == _currentPage,
+                reel: provider.reels![index],
+              );
+            },
+          ),
+        );
+      })),
+    );
   }
 
   Widget _buildShimmerLoader() {
