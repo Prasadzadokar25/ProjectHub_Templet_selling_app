@@ -1,49 +1,6 @@
 import 'dart:io';
-import 'package:projecthub/config/api_config.dart';
-import 'seller_model.dart';
 
-class Creation {
-  String title;
-  String subtitle;
-  String imagePath;
-  double price;
-  double rating;
-  Seller seller;
-
-  // Constructor
-  Creation({
-    required this.title,
-    required this.subtitle,
-    required this.imagePath,
-    required this.price,
-    required this.rating,
-    required this.seller,
-  });
-
-  // From JSON
-  factory Creation.fromJson(Map<String, dynamic> json) {
-    return Creation(
-      title: json['title'],
-      subtitle: json['subtitle'],
-      imagePath: json['imagePath'],
-      price: json['price'],
-      rating: json['rating'],
-      seller: Seller.fromJson(json['seller']),
-    );
-  }
-
-  // To JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'subtitle': subtitle,
-      'imagePath': imagePath,
-      'price': price,
-      'rating': rating,
-      'seller': seller.toJson(),
-    };
-  }
-}
+import '../config/api_config.dart';
 
 class ListedCreation {
   final int? creationId;

@@ -75,7 +75,7 @@ class _SplashscreenState extends State<Splashscreen> {
       Get.snackbar("Error", "Unable to load app data. Please try again.");
       _navigateToDefaultScreen();
     } finally {
-      setState(() => _isLoading = false);
+      //setState(() => _isLoading = false);
     }
   }
 

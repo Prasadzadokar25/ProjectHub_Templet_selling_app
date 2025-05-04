@@ -15,7 +15,7 @@ class AdvertisementController {
       log(response.body.toString());
       if (response.statusCode == 200) {
         log("pppppp");
-        List<dynamic> data = jsonDecode(response.body)['data'];
+        List<dynamic> data = jsonDecode(response.body)['advertisements'];
 
         return data.map((json) => AdvertisementModel.fromJson(json)).toList();
       } else if (response.statusCode == 404) {

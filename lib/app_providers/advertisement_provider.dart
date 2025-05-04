@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:projecthub/model/advertisement_model.dart';
 
@@ -11,7 +13,7 @@ class AdvertisementProvider extends ChangeNotifier {
   List<AdvertisementModel> get advertisements => _advertisements;
 
   bool get isLoading => _isLoading;
-  String? _errorMessage;
+  String? _errorMessage = "";
   String? get errorMessage => _errorMessage;
 
   set isLoading(bool value) {

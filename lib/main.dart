@@ -4,7 +4,6 @@ import 'package:projecthub/app_providers/advertisement_provider.dart';
 import 'package:projecthub/app_providers/bank_account_provider.dart';
 import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
-import 'package:projecthub/app_providers/data_file_provider.dart';
 import 'package:projecthub/app_providers/histroy_provider.dart';
 import 'package:projecthub/app_providers/order_provider.dart';
 import 'package:projecthub/app_providers/reels_providel.dart';
@@ -30,7 +29,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => DataFileProvider()),
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
         ChangeNotifierProvider(create: (_) => ListedCreationProvider()),
         ChangeNotifierProvider(create: (_) => GeneralCreationProvider()),

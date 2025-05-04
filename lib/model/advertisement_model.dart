@@ -7,15 +7,15 @@ class AdvertisementModel {
   final String? adDescription;
   final String? adWebsite;
   final String? adImage;
-  final DateTime adStartDate;
-  final DateTime adEndDate;
+  final String? adStartDate;
+  final String? adEndDate;
   final int adDuration;
   final List<String> targetLocations;
   final List<String> targetCategories;
   final int? isActive;
   final String? paymentId;
-  final DateTime? createdDate;
-  final DateTime? updatedDate;
+  final String? createdDate;
+  final String? updatedDate;
   final int? adOwnerId;
   final List<String> platformTarget;
   final int? priorityLevel;
@@ -53,8 +53,8 @@ class AdvertisementModel {
       adDescription: json['ad_description'],
       adWebsite: json['ad_website'],
       adImage: json['ad_image'],
-      adStartDate: DateTime.parse(json['ad_start_date']),
-      adEndDate: DateTime.parse(json['ad_end_date']),
+      adStartDate: json['ad_start_date'],
+      adEndDate: json['ad_end_date'],
       adDuration: json['ad_duration'],
       targetLocations:
           List<String>.from(jsonDecode(json['target_locations'] ?? '[]')),
@@ -62,12 +62,8 @@ class AdvertisementModel {
           List<String>.from(jsonDecode(json['target_categories'] ?? '[]')),
       isActive: json['is_active'],
       paymentId: json['payment_id'],
-      createdDate: json['created_date'] != null
-          ? DateTime.parse(json['created_date'])
-          : null,
-      updatedDate: json['updated_date'] != null
-          ? DateTime.parse(json['updated_date'])
-          : null,
+      createdDate: json['created_date'],
+      updatedDate: json['updated_date'],
       adOwnerId: json['ad_owner_id'],
       platformTarget:
           List<String>.from(jsonDecode(json['platform_target'] ?? '[]')),
@@ -85,15 +81,15 @@ class AdvertisementModel {
       'ad_description': adDescription,
       'ad_website': adWebsite,
       'ad_image': adImage,
-      'ad_start_date': adStartDate.toIso8601String(),
-      'ad_end_date': adEndDate.toIso8601String(),
+      'ad_start_date': adStartDate,
+      'ad_end_date': adEndDate,
       'ad_duration': adDuration,
       'target_locations': targetLocations,
       'target_categories': targetCategories,
       'is_active': isActive,
       'payment_id': paymentId,
-      'created_date': createdDate?.toIso8601String(),
-      'updated_date': updatedDate?.toIso8601String(),
+      'created_date': createdDate,
+      'updated_date': updatedDate,
       'ad_owner_id': adOwnerId,
       'platform_target': platformTarget,
       'priority_level': priorityLevel,
