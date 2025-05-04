@@ -95,7 +95,7 @@ class _SlidePageState extends State<SlidePage> {
           if (currentpage == pages.length - 1) {
             PrefData.setIntro(true);
             Get.to(
-              LoginScreen(),
+              const LoginScreen(),
               transition: Transition.rightToLeftWithFade,
             );
           } else {

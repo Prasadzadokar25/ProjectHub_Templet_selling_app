@@ -18,6 +18,7 @@ import '../../constant/app_text.dart';
 import '../../constant/app_textfield_border.dart';
 import '../loading_screen.dart/loading_screen.dart';
 import '../login/forgot_password.dart';
+import '../permission_screen/permission_screen.dart';
 import 'sign_up/sign_in_phonenumber.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -36,16 +37,16 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _showCircularIndicater = false;
   bool ispassHiden = false;
   bool _isSubmitPressedOnce = false;
-  fetchData(int uid) async {
-    await Provider.of<UserInfoProvider>(context, listen: false)
-        .fetchUserDetails(uid);
-    await Provider.of<GeneralCreationProvider>(context, listen: false)
-        .fetchGeneralCreations(uid, 1, 10);
-    await Provider.of<RecentCreationProvider>(context, listen: false)
-        .fetchRecentCreations(uid, 1, 10);
-    await Provider.of<TreandingCreationProvider>(context, listen: false)
-        .fetchTrendingCreations(uid, 1, 10);
-  }
+  // fetchData(int uid) async {
+  //   await Provider.of<UserInfoProvider>(context, listen: false)
+  //       .fetchUserDetails(uid);
+  //   await Provider.of<GeneralCreationProvider>(context, listen: false)
+  //       .fetchGeneralCreations(uid, 1, 10);
+  //   await Provider.of<RecentCreationProvider>(context, listen: false)
+  //       .fetchRecentCreations(uid, 1, 10);
+  //   await Provider.of<TreandingCreationProvider>(context, listen: false)
+  //       .fetchTrendingCreations(uid, 1, 10);
+  // }
 
   checkLogindetails() async {
     setState(() {
@@ -73,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // PrefData.setVarification(true);
         //Get.offAll(const AppNavigationScreen());
         // Navigate to the loading screen
-        Get.offAll(() => LoadingScreen(
+        Get.offAll(() => PermissionRequestScreen(
               userId: res['data'][0]['user_id'],
             ));
 

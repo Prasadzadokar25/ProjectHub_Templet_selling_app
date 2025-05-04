@@ -1,3 +1,5 @@
+import 'package:geolocator/geolocator.dart';
+
 class UserModel {
   int userId;
   String? userName;
@@ -11,6 +13,7 @@ class UserModel {
   double? walletMoney;
   int? boughthCreationNumber;
   int? listedCreationNumber;
+  Position? userLocation; // Added userLocation field
 
   // Constructor
   UserModel({

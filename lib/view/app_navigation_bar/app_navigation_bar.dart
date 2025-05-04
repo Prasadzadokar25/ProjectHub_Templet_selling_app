@@ -1,12 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/app_permission_controller.dart';
 import 'package:projecthub/view/home/home_screen.dart';
 import 'package:projecthub/view/profile/profile_screen.dart';
 import 'package:projecthub/view/purchase/purchase_screen.dart';
 import 'package:projecthub/view/search_screen/search_screen.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:provider/provider.dart';
 
+import '../../model/user_info_model.dart';
 import '../shorts/shorts_screen.dart';
 
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -45,6 +51,21 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
       if (!isPermissionGranted) {
         // If permission is not granted, show a dialog to inform the user
         showLocationErrorDialog("Location permissions are denied.");
+      } else {
+        // If permission is granted, proceed with your logic
+        // For example, you can fetch the user's location here
+        Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+
+        Provider.of<UserInfoProvider>(context, listen: false)
+            .setLocation(position);
+        print("User's location: ${position.latitude}, ${position.longitude}");
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
+
+        if (placemarks.isNotEmpty) {
+          log(placemarks[0].locality!); // this is the city name
+        }
       }
     }
   }

@@ -4,7 +4,11 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:projecthub/app_providers/advertisement_provider.dart';
 import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +19,7 @@ import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/slider_screen/slider_screen.dart';
 import 'package:projecthub/view/loading_screen.dart/loading_screen.dart';
 import '../login/login_screen.dart';
+import '../permission_screen/permission_screen.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -27,73 +32,124 @@ class _SplashscreenState extends State<Splashscreen> {
   bool _isLoading = true;
   bool? isIntro;
   int? isLoginId;
+  bool _splashTimeout = false;
+  bool _dataLoaded = false;
 
   @override
   void initState() {
     super.initState();
+    // Start 3-second timer for splash screen
+    Timer(const Duration(seconds: 3), () {
+      if (!_dataLoaded) {
+        setState(() => _splashTimeout = true);
+      }
+    });
     _loadInitialData();
   }
 
   Future<void> _loadInitialData() async {
-    setState(() {
-      _isLoading = true;
-    });
     try {
+      // 1. First load the basic preferences
       isIntro = await PrefData.getIntro();
       isLoginId = await PrefData.getLogin();
-      //PrefData.clearAppSharedPref();
-      _navigateAfterSplash();
 
+      // For testing: Uncomment if you need to clear preferences
+      //PrefData.clearAppSharedPref();
+
+      // 2. If user is logged in, fetch all required data
       if (isLoginId != null && isLoginId! > 0 && isIntro == true) {
-        await Provider.of<UserInfoProvider>(context, listen: false)
-            .fetchUserDetails(isLoginId!);
-        await Provider.of<GeneralCreationProvider>(context, listen: false)
-            .fetchGeneralCreations(isLoginId!, 1, 10);
-        await Provider.of<RecentCreationProvider>(context, listen: false)
-            .fetchRecentCreations(isLoginId!, 1, 10);
-        await Provider.of<TreandingCreationProvider>(context, listen: false)
-            .fetchTrendingCreations(isLoginId!, 1, 10);
-        await Provider.of<CategoriesProvider>(context, listen: false)
-            .fetchCategories(isLoginId!);
+        final locationStatus = await Permission.location.status;
+        if (locationStatus.isGranted) {
+          await _fetchUserData();
+        }
       }
 
-      setState(() {
-        _isLoading = false;
-      });
+      // Mark data as loaded
+      _dataLoaded = true;
+
+      // Navigate immediately if data is loaded
       _navigateAfterSplash();
-      // Get.to(() => const AppNavigationScreen());
     } catch (e) {
-      log("$e");
-      Get.snackbar("Error with app server url", "Please notify developer team");
+      log("Error in splash screen: $e");
+      _dataLoaded = true; // Consider data loaded even if error occurs
+      Get.snackbar("Error", "Unable to load app data. Please try again.");
+      _navigateToDefaultScreen();
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
-  void _navigateAfterSplash() {
+  Future<void> _fetchUserData() async {
+    try {
+      await Future.wait([
+        Provider.of<UserInfoProvider>(Get.context!, listen: false)
+            .fetchUserDetails(isLoginId!),
+        Provider.of<GeneralCreationProvider>(Get.context!, listen: false)
+            .fetchGeneralCreations(isLoginId!, 1, 10),
+        Provider.of<RecentCreationProvider>(Get.context!, listen: false)
+            .fetchRecentCreations(isLoginId!, 1, 10),
+        Provider.of<TreandingCreationProvider>(Get.context!, listen: false)
+            .fetchTrendingCreations(isLoginId!, 1, 10),
+        Provider.of<CategoriesProvider>(Get.context!, listen: false)
+            .fetchCategories(isLoginId!),
+        fetchAdvertisements(),
+      ]);
+    } catch (e) {
+      log("Error fetching user data: $e");
+      Get.snackbar("Error", "Unable to fetch user data. Please try again.");
+      // Continue even if some API calls fail
+    }
+  }
+
+  Future<void> fetchAdvertisements() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      await Provider.of<AdvertisementProvider>(Get.context!, listen: false)
+          .getAdvertisements(isLoginId!, placemarks[0].locality!);
+    } catch (e) {
+      log("Error fetching advertisements: $e");
+      Get.snackbar(
+          "Error", "Unable to fetch advertisements. Please try again.");
+    }
+  }
+
+  Future<void> _navigateAfterSplash() async {
+    if (!_dataLoaded && !_splashTimeout) return;
+
+    // Check location permission if user is logged in
+    if (isLoginId != null && isLoginId! > 0) {
+      final locationStatus = await Permission.location.status;
+      if (!locationStatus.isGranted) {
+        Get.offAll(() => PermissionRequestScreen(userId: isLoginId!));
+        return;
+      }
+    }
+
     if (isIntro == false) {
-      Timer(
-        const Duration(seconds: 3),
-        () => Get.to(() => const SlidePage()),
-      );
+      Get.offAll(() => const SlidePage());
     } else if (isLoginId == null || isLoginId == -1) {
       Get.offAll(() => const LoginScreen());
-    } else if (!_isLoading) {
+    } else if (_dataLoaded) {
       Get.offAll(() => const AppNavigationScreen());
     } else {
-      Timer(
-        const Duration(seconds: 3),
-        () {
-          if (_isLoading) {
-            Get.to(() => LoadingScreen(
-                  userId: isLoginId!,
-                ));
-          }
-        },
-      );
+      Get.offAll(() => LoadingScreen(userId: isLoginId!));
     }
+  }
+
+  void _navigateToDefaultScreen() {
+    Get.offAll(() => isIntro == true ? const LoginScreen() : const SlidePage());
   }
 
   @override
   Widget build(BuildContext context) {
+    // If splash timeout occurred but data isn't loaded, show loading screen
+    if (_splashTimeout && !_dataLoaded) {
+      return LoadingScreen(userId: isLoginId ?? -1);
+    }
+
     initializeScreenSize(context);
     return Scaffold(
       body: Column(

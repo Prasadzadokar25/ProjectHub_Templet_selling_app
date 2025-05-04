@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +8,7 @@ import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../app_providers/advertisement_provider.dart';
 import '../../app_providers/categories_provider.dart';
 import '../../app_providers/creation_provider.dart';
 import '../../app_providers/user_provider.dart';
@@ -24,21 +27,36 @@ class _LoadingScreentState extends State<LoadingScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    fetchData(widget.userId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Fetch data after the first frame is rendered
+      fetchData(widget.userId);
+    });
+    // Fetch data when the widget is built
   }
 
   fetchData(int uid) async {
-    await Provider.of<UserInfoProvider>(context, listen: false)
-        .fetchUserDetails(uid);
-    await Provider.of<GeneralCreationProvider>(context, listen: false)
-        .fetchGeneralCreations(uid, 1, 10);
-    await Provider.of<RecentCreationProvider>(context, listen: false)
-        .fetchRecentCreations(uid, 1, 10);
-    await Provider.of<TreandingCreationProvider>(context, listen: false)
-        .fetchTrendingCreations(uid, 1, 10);
-    await Provider.of<CategoriesProvider>(context, listen: false)
-        .fetchCategories(uid);
-    Get.offAll(() => AppNavigationScreen());
+    try {
+      await Future.wait([
+        Provider.of<UserInfoProvider>(Get.context!, listen: false)
+            .fetchUserDetails(uid),
+        Provider.of<GeneralCreationProvider>(Get.context!, listen: false)
+            .fetchGeneralCreations(uid, 1, 10),
+        Provider.of<RecentCreationProvider>(Get.context!, listen: false)
+            .fetchRecentCreations(uid, 1, 10),
+        Provider.of<TreandingCreationProvider>(Get.context!, listen: false)
+            .fetchTrendingCreations(uid, 1, 10),
+        Provider.of<CategoriesProvider>(Get.context!, listen: false)
+            .fetchCategories(uid),
+        Provider.of<AdvertisementProvider>(Get.context!, listen: false)
+            .getAdvertisements(uid, "India"),
+      ]);
+
+      Get.offAll(() => const AppNavigationScreen());
+    } catch (e) {
+      log("Error fetching user data: $e");
+      Get.snackbar("Error", "Unable to fetch user data. Please try again.");
+      // Continue even if some API calls fail
+    }
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:projecthub/controller/user_controller.dart';
 import 'package:projecthub/model/user_info_model.dart';
 
@@ -35,6 +36,11 @@ class UserInfoProvider extends ChangeNotifier {
 
   void setUserName(String name) {
     _user!.userName = name;
+    notifyListeners();
+  }
+
+  void setLocation(Position location) {
+    _user!.userLocation = location;
     notifyListeners();
   }
 

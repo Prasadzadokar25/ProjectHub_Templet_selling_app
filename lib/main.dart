@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:projecthub/app_providers/advertisement_provider.dart';
 import 'package:projecthub/app_providers/bank_account_provider.dart';
 import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ReelsProvider()),
         ChangeNotifierProvider(create: (_) => HistroyProvider()),
         ChangeNotifierProvider(create: (_) => SearchedCreationProvider()),
+        ChangeNotifierProvider(create: (_) => AdvertisementProvider()),
       ],
       child: GetMaterialApp(
         // navigatorKey: navigatorKey,

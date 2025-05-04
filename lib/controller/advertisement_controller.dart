@@ -7,11 +7,11 @@ import '../config/api_config.dart';
 import '../model/advertisement_model.dart';
 
 class AdvertisementController {
-  Future<List<AdvertisementModel>> fetchAdvertisements(int userId,
-      [String location = "India"]) async {
+  Future<List<AdvertisementModel>> fetchAdvertisements(
+      int userId, String location) async {
     try {
-      final response = await http.get(Uri.parse(
-          "${ApiConfig.getAdvertisements(userId, location)}/$userId"));
+      final response = await http
+          .get(Uri.parse(ApiConfig.getAdvertisements(userId, location)));
       log(response.body.toString());
       if (response.statusCode == 200) {
         log("pppppp");

@@ -6,6 +6,7 @@ import '../controller/advertisement_controller.dart';
 class AdvertisementProvider extends ChangeNotifier {
   List<AdvertisementModel> _advertisements = [];
   bool _isLoading = false;
+  AdvertisementController _advertisementController = AdvertisementController();
 
   List<AdvertisementModel> get advertisements => _advertisements;
 
@@ -23,11 +24,12 @@ class AdvertisementProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getAdvertisements() async {
+  Future<void> getAdvertisements(int userId, String city) async {
     errorMessage = null;
     isLoading = true;
     try {
-      _advertisements = await AdvertisementController().fetchAdvertisements(1);
+      _advertisements =
+          await _advertisementController.fetchAdvertisements(userId, city);
       if (advertisements.isEmpty) {
         errorMessage = "No advertisements found";
       } else {
