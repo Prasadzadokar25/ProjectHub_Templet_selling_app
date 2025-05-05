@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ import '../../app_providers/categories_provider.dart';
 import '../../app_providers/creation_provider.dart';
 import '../../app_providers/user_provider.dart';
 import '../../constant/app_padding.dart';
+import '../error_screen/error_screen.dart';
 
 class LoadingScreen extends StatefulWidget {
   final int userId;
@@ -47,15 +50,40 @@ class _LoadingScreentState extends State<LoadingScreen> {
             .fetchTrendingCreations(uid, 1, 10),
         Provider.of<CategoriesProvider>(Get.context!, listen: false)
             .fetchCategories(uid),
-        Provider.of<AdvertisementProvider>(Get.context!, listen: false)
-            .getAdvertisements(uid, "India"),
+        fetchAdvertisements(uid),
       ]);
 
       Get.offAll(() => const AppNavigationScreen());
     } catch (e) {
       log("Error fetching user data: $e");
       Get.snackbar("Error", "Unable to fetch user data. Please try again.");
+      Get.to(ErrorScreen(
+          errorMessage: "Unable to load app data. Please try again.",
+          onRetry: () {
+            _navigateToDefaultScreen(uid);
+          }));
       // Continue even if some API calls fail
+    }
+  }
+
+  void _navigateToDefaultScreen(int userId) {
+    Get.offAll(() => LoadingScreen(
+          userId: userId,
+        ));
+  }
+
+  Future<void> fetchAdvertisements(uid) async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      await Provider.of<AdvertisementProvider>(Get.context!, listen: false)
+          .getAdvertisements(uid!, placemarks[0].locality!);
+      Provider.of<UserInfoProvider>(context, listen: false)
+          .setLocation(position);
+    } catch (e) {
+      log("Error fetching advertisements: $e");
     }
   }
 

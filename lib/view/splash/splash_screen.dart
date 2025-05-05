@@ -18,6 +18,7 @@ import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/slider_screen/slider_screen.dart';
 import 'package:projecthub/view/loading_screen.dart/loading_screen.dart';
+import '../error_screen/error_screen.dart';
 import '../login/login_screen.dart';
 import '../permission_screen/permission_screen.dart';
 
@@ -59,7 +60,18 @@ class _SplashscreenState extends State<Splashscreen> {
       if (isLoginId != null && isLoginId! > 0 && isIntro == true) {
         final locationStatus = await Permission.location.status;
         if (locationStatus.isGranted) {
-          await _fetchUserData();
+          try {
+            await _fetchUserData();
+          } catch (e) {
+            log("Error fetching user data: $e");
+
+            Get.to(ErrorScreen(
+                errorMessage: "Unable to load app data. Please try again.",
+                onRetry: () {
+                  _navigateToDefaultScreen(isLoginId ?? -1);
+                }));
+            return;
+          }
         }
       }
 
@@ -71,8 +83,12 @@ class _SplashscreenState extends State<Splashscreen> {
     } catch (e) {
       log("Error in splash screen: $e");
       _dataLoaded = true; // Consider data loaded even if error occurs
-      Get.snackbar("Error", "Unable to load app data. Please try again.");
-      _navigateToDefaultScreen();
+      // Get.snackbar("Error", "Unable to load app data. Please try again.");
+      // Get.to(ErrorScreen(
+      //     errorMessage: e.toString(),
+      //     onRetry: () {
+      //       _navigateToDefaultScreen(isLoginId ?? -1);
+      //     }));
     } finally {
       //setState(() => _isLoading = false);
     }
@@ -95,8 +111,8 @@ class _SplashscreenState extends State<Splashscreen> {
       ]);
     } catch (e) {
       log("Error fetching user data: $e");
-      Get.snackbar("Error", "Unable to fetch user data. Please try again.");
       // Continue even if some API calls fail
+      rethrow;
     }
   }
 
@@ -108,10 +124,10 @@ class _SplashscreenState extends State<Splashscreen> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
       await Provider.of<AdvertisementProvider>(Get.context!, listen: false)
           .getAdvertisements(isLoginId!, placemarks[0].locality!);
+      Provider.of<UserInfoProvider>(context, listen: false)
+          .setLocation(position);
     } catch (e) {
       log("Error fetching advertisements: $e");
-      Get.snackbar(
-          "Error", "Unable to fetch advertisements. Please try again.");
     }
   }
 
@@ -138,8 +154,10 @@ class _SplashscreenState extends State<Splashscreen> {
     }
   }
 
-  void _navigateToDefaultScreen() {
-    Get.offAll(() => isIntro == true ? const LoginScreen() : const SlidePage());
+  void _navigateToDefaultScreen(int userId) {
+    Get.offAll(() => LoadingScreen(
+          userId: userId,
+        ));
   }
 
   @override

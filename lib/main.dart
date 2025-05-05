@@ -12,7 +12,7 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/initialization_controller.dart';
 import 'package:provider/provider.dart';
 
-import 'view/no_internet_screen/no_intermet_screen.dart';
+import 'view/network_check_screen/network_check_screen.dart';
 import 'view/splash/splash_screen.dart';
 
 void main() async {
@@ -48,9 +48,7 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         // navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
-        initialRoute: "/splash",
         routes: {
-          '/noInternet': (context) => const NoInternetScreen(),
           '/splash': (context) => const Splashscreen(),
         },
         theme: ThemeData(
@@ -85,6 +83,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+        home: const InternetChecker(child: Splashscreen()),
       ),
     );
   }

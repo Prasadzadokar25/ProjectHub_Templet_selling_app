@@ -146,8 +146,7 @@ class _SectionHeader extends StatelessWidget {
           ),
           const Spacer(),
           InkWell(
-            onTap: () =>
-                Get.to(navigateTo, transition: Transition.rightToLeftWithFade),
+            onTap: () => Get.to(navigateTo),
             child: Text(
               rightTitle,
               style: TextStyle(
@@ -436,6 +435,22 @@ class _TrendingCreationItem extends StatelessWidget {
                   child: Image.network(
                     ApiConfig.getFileUrl(creation.creationThumbnail!),
                     fit: BoxFit.fill,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (_, __, ___) => Icon(
+                      Icons.broken_image,
+                      size: 50.r,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ),
@@ -541,6 +556,22 @@ class _RecentlyAddedCreationItem extends StatelessWidget {
                     child: Image.network(
                       ApiConfig.getFileUrl(creation.creationThumbnail!),
                       fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        );
+                      },
+                      errorBuilder: (_, __, ___) => Icon(
+                        Icons.broken_image,
+                        size: 50.r,
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
                   Positioned(

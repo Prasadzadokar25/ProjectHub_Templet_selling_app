@@ -68,7 +68,7 @@ class _AllCreationScreenState extends State<AllCreationScreen> {
       )),
       body: Column(
         children: [
-          getSearchField(),
+          // getSearchField(),
           Expanded(
             child: Consumer(
               builder: (
