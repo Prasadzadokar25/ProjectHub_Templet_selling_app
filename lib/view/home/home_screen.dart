@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,6 +22,7 @@ import 'package:projecthub/view/product_details_screen/product_details_screen.da
 import 'package:provider/provider.dart';
 
 import '../../app_providers/user_provider.dart';
+import '../../utils/uri_launch_service.dart';
 import '../all_creation_screen/all_creation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -327,11 +330,12 @@ class _AdvertisementSlider extends StatelessWidget {
         }
         return CarouselSlider(
           options: CarouselOptions(
-            height: Get.height * 0.19,
+            height: Get.height * 0.22,
             autoPlay: true,
             autoPlayAnimationDuration: const Duration(seconds: 1),
             autoPlayInterval: const Duration(seconds: 4),
             aspectRatio: 1,
+            viewportFraction: 0.85,
             enlargeCenterPage: true,
             enlargeStrategy: CenterPageEnlargeStrategy.height,
           ),
@@ -352,16 +356,40 @@ class _AdItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(6),
       child: InkWell(
-        onTap: () {},
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(7)),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              image: DecorationImage(
-                image: NetworkImage(ApiConfig.getFileUrl(ad.adImage!)),
-                fit: BoxFit.cover,
+        onTap: () async {
+          final url =
+              ad.adWebsite; // Assuming `ad.adLink` contains the target URL
+          if (url != null && await UriLaunchService.canLaunchUrlApp(url)) {
+            await UriLaunchService.launchUrlApp(url);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Could not launch the ad link')),
+            );
+          }
+        },
+        child: GestureDetector(
+          onTap: () async {
+            log(ad.adWebsite.toString());
+            final url = ad.adWebsite!
+                .trim(); // Assuming `ad.adLink` contains the target URL
+            if (url != null && await UriLaunchService.canLaunchUrlApp(url)) {
+              await UriLaunchService.launchUrlApp(url);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Could not launch the ad link')),
+              );
+            }
+          },
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                image: DecorationImage(
+                  image: NetworkImage(ApiConfig.getFileUrl(ad.adImage!)),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

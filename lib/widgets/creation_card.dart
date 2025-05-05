@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/controller/files_download_controller.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/creation_model.dart';
 import 'package:projecthub/model/purched_creation_model.dart';
-import 'package:share_plus/share_plus.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
 class CreatationCard extends StatelessWidget {

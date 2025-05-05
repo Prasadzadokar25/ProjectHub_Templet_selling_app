@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,11 +8,9 @@ import 'package:projecthub/model/creation_model.dart';
 import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:provider/provider.dart';
-
 import '../../app_providers/creation_provider.dart';
 import '../../constant/app_padding.dart';
 import '../../constant/app_textfield_border.dart';
-import '../home/home_screen.dart';
 
 class TemplateListScreen extends StatefulWidget {
   const TemplateListScreen({super.key});

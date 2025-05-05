@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/app_permission_controller.dart';
@@ -56,7 +57,7 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
         Position position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
 
-        Provider.of<UserInfoProvider>(context, listen: false)
+        Provider.of<UserInfoProvider>(Get.context!, listen: false)
             .setLocation(position);
         List<Placemark> placemarks = await placemarkFromCoordinates(
             position.latitude, position.longitude);
