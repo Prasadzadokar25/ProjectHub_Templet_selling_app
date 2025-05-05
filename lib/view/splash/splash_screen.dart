@@ -29,7 +29,6 @@ class Splashscreen extends StatefulWidget {
 }
 
 class _SplashscreenState extends State<Splashscreen> {
-  bool _isLoading = true;
   bool? isIntro;
   int? isLoginId;
   bool _splashTimeout = false;

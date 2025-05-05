@@ -437,131 +437,187 @@ class PurchedCreationCard extends StatefulWidget {
 }
 
 class _PurchedCreationCardState extends State<PurchedCreationCard> {
+  bool _isHovering = false;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.h),
+    final creation = widget.purchedCreationModel.creation;
+    final purchaseDate = widget.purchedCreationModel.orderDate.split(" ")[0];
+    final price = widget.purchedCreationModel.purchasePrice;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.identity()..scale(_isHovering ? 1.01 : 1.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: const Color(0XFF23408F).withOpacity(0.24),
-              offset: const Offset(-4, 5),
-              blurRadius: 16.h,
+              color: Colors.grey.withOpacity(_isHovering ? 0.3 : 0.2),
+              blurRadius: _isHovering ? 12 : 8,
+              offset: Offset(0, _isHovering ? 4 : 2),
             ),
           ],
-          color: Colors.white),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.h),
-              boxShadow: [
-                BoxShadow(
-                    color: const Color(0XFF23408F).withOpacity(0.14),
-                    offset: const Offset(-4, 5),
-                    blurRadius: 16.h),
-              ],
-              color: Colors.white,
-            ),
-            child: Stack(
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image with overlay
+            Stack(
               children: [
-                Container(
-                  height: 210.h,
-                  width: double.infinity.w,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.h),
-                      color: Colors.white),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12.h),
-                        topRight: Radius.circular(12.h)),
-                    child: Image(
-                      image: NetworkImage(ApiConfig.getFileUrl(widget
-                          .purchedCreationModel.creation.creationThumbnail!)),
-                      fit: BoxFit.fill,
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12.r),
+                    topRight: Radius.circular(12.r),
+                  ),
+                  child: Container(
+                    height: 180.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                    ),
+                    child: creation.creationThumbnail != null
+                        ? Image.network(
+                            ApiConfig.getFileUrl(creation.creationThumbnail!),
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
+                            errorBuilder: (_, __, ___) => Icon(
+                              Icons.broken_image,
+                              size: 50.r,
+                              color: Colors.grey,
+                            ),
+                          )
+                        : Icon(
+                            Icons.image_not_supported,
+                            size: 50.r,
+                            color: Colors.grey,
+                          ),
+                  ),
+                ),
+                Positioned(
+                  top: 10.r,
+                  right: 10.r,
+                  child: Container(
+                    padding: EdgeInsets.all(6.r),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      '₹${price.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green[700],
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 5.h),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+
+            // Content section
+            Padding(
+              padding: EdgeInsets.all(12.r),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          creation.creationTitle ?? 'Untitled Creation',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          FilesDownloadController().downloadZipFile(creation);
+                        },
+                        icon: Icon(
+                          Icons.download_rounded,
+                          size: 22.r,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        tooltip: 'Download',
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 8.h),
+
+                  // Purchase info row
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 16.r,
+                        color: Colors.grey[600],
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        'Purchased: $purchaseDate',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 6.h),
+
+                  // Rating row (if available)
+                  if (creation.averageRating != null)
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          width: Get.width * 0.7,
-                          child: Text(
-                            widget.purchedCreationModel.creation.creationTitle!,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 17.sp,
-                              fontFamily: 'Gilroy',
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                            ),
+                        Icon(
+                          Icons.star_rounded,
+                          size: 16.r,
+                          color: Colors.amber,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          '${creation.averageRating!} (${creation.numberOfReviews ?? 0} reviews)',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            color: Colors.grey[600],
                           ),
                         ),
-                        IconButton(
-                            onPressed: () {
-                              FilesDownloadController().downloadZipFile(
-                                widget.purchedCreationModel.creation,
-                              );
-                            },
-                            icon: const Icon(Icons.download))
                       ],
                     ),
-                    Row(
-                      children: [
-                        const Text(
-                          "Purched for : ",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black54),
-                        ),
-                        Text(
-                          "₹${widget.purchedCreationModel.purchasePrice.toString()}",
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black54),
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text(
-                          "Purched date : ",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black54),
-                        ),
-                        Text(
-                          (widget.purchedCreationModel.orderDate).split(" ")[0],
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black54),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 11.h),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

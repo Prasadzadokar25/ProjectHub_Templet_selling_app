@@ -12,7 +12,6 @@ import 'package:projecthub/view/search_screen/search_screen.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/user_info_model.dart';
 import '../shorts/shorts_screen.dart';
 
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -59,7 +58,6 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
 
         Provider.of<UserInfoProvider>(context, listen: false)
             .setLocation(position);
-        print("User's location: ${position.latitude}, ${position.longitude}");
         List<Placemark> placemarks = await placemarkFromCoordinates(
             position.latitude, position.longitude);
 

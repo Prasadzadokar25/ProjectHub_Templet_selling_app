@@ -15,20 +15,41 @@ class SlidePage extends StatefulWidget {
 }
 
 class _SlidePageState extends State<SlidePage> {
-  List<Sliders> pages = [];
+  late final List<Sliders> pages;
   int currentpage = 0;
-  PageController controller = PageController();
+  final PageController controller = PageController();
 
   @override
   void initState() {
-    pages = Utils.getSliderPages();
     super.initState();
+    pages = Utils.getSliderPages();
   }
 
-  _onchanged(index) {
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void _onChanged(int index) {
     setState(() {
       currentpage = index;
     });
+  }
+
+  void _handleButtonPress() {
+    if (currentpage == pages.length - 1) {
+      PrefData.setIntro(true);
+      Get.to(
+        const LoginScreen(),
+        transition: Transition.rightToLeftWithFade,
+      );
+    } else {
+      controller.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
@@ -38,184 +59,163 @@ class _SlidePageState extends State<SlidePage> {
       body: SafeArea(
         child: Stack(
           children: [
-            generatepage(),
-            Padding(
-              padding: EdgeInsets.only(left: 20.w, right: 20.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 42.h),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        indicator(),
-                        button(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            _buildPageView(),
+            Positioned(
+              bottom: 42.h,
+              left: 20.w,
+              right: 20.w,
+              child: _buildBottomControls(),
             ),
-            SizedBox(height: 20.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                skipbutton(),
-              ],
-            ),
+            if (currentpage != pages.length - 1) _buildSkipButton(),
           ],
         ),
       ),
     );
   }
 
-  Widget indicator() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(pages.length, (index) {
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: 10,
-            width: 10,
-            margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 30.h),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.h),
-                color: (index == currentpage)
-                    ? const Color(0XFF23408F)
-                    : const Color(0XFFDEDEDE)),
-          );
-        }));
+  Widget _buildPageView() {
+    return PageView.builder(
+      itemCount: pages.length,
+      controller: controller,
+      onPageChanged: _onChanged,
+      itemBuilder: (context, index) {
+        final page = pages[index];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: Get.width,
+                maxHeight: Get.height * 0.7,
+              ),
+              child: Image.asset(
+                page.image!,
+                width: Get.width,
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(height: 20.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 35.w),
+              child: Column(
+                children: [
+                  Text(
+                    page.name!,
+                    style: TextStyle(
+                      fontFamily: 'Gilroy',
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0XFF000000),
+                      fontSize: 22.sp,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 10.h),
+                  Text(
+                    page.title!,
+                    style: TextStyle(
+                      fontFamily: 'Gilroy',
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0XFF000000),
+                      fontSize: 15.sp,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  Widget button() {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          if (currentpage == pages.length - 1) {
-            PrefData.setIntro(true);
-            Get.to(
-              const LoginScreen(),
-              transition: Transition.rightToLeftWithFade,
-            );
-          } else {
-            controller.nextPage(
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.bounceIn);
-          }
-        });
-      },
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 300),
-        height: 56.h,
-        width: 177.w,
-        //color: Color(0XFF23408F),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22.h),
-            color: const Color(0XFF23408F)),
-        child: (currentpage == pages.length - 1)
-            ? Center(
-                child: Text(
-                  "Get Started",
-                  style: TextStyle(
-                      color: const Color(0XFFFFFFFF),
-                      fontSize: 18.sp,
-                      fontFamily: 'Gilroy',
-                      fontWeight: FontWeight.w700),
-                ),
-              )
-            : Center(
-                child: Text(
-                  "Next",
-                  style: TextStyle(
-                      color: const Color(0XFFFFFFFF),
-                      fontSize: 18.sp,
-                      fontFamily: 'Gilroy',
-                      fontWeight: FontWeight.w700),
-                ),
-              ),
+  Widget _buildBottomControls() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _buildPageIndicator(),
+        _buildActionButton(),
+      ],
+    );
+  }
+
+  Widget _buildPageIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(pages.length, (index) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          height: 10.h,
+          width: (index == currentpage) ? 20.w : 10.w,
+          margin: EdgeInsets.symmetric(horizontal: 4.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.h),
+            color: (index == currentpage)
+                ? const Color(0XFF23408F)
+                : const Color(0XFFDEDEDE),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildActionButton() {
+    return Material(
+      borderRadius: BorderRadius.circular(22.h),
+      color: const Color(0XFF23408F),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(22.h),
+        onTap: _handleButtonPress,
+        child: Container(
+          height: 56.h,
+          width: 177.w,
+          alignment: Alignment.center,
+          child: Text(
+            currentpage == pages.length - 1 ? "Get Started" : "Next",
+            style: TextStyle(
+              color: const Color(0XFFFFFFFF),
+              fontSize: 18.sp,
+              fontFamily: 'Gilroy',
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  Widget skipbutton() {
-    return currentpage == pages.length - 1
-        ? const SizedBox()
-        : Padding(
-            padding: const EdgeInsets.only(top: 25, right: 20),
-            child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    controller.nextPage(
-                        duration: const Duration(milliseconds: 100),
-                        curve: Curves.bounceIn);
-                  });
-                },
-                child: Container(
-                    height: 40.h,
-                    width: 68.w,
-                    //color: Colors.red,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: const Color(0XFFFFFFFF)),
-                    child: Center(
-                        child: Text(
-                      "Skip",
-                      style: TextStyle(
-                          fontFamily: 'Gilroy',
-                          fontWeight: FontWeight.w500,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 15.sp,
-                          color: const Color(0xFF000000)),
-                    )))),
+  Widget _buildSkipButton() {
+    return Positioned(
+      top: 25.h,
+      right: 20.w,
+      child: GestureDetector(
+        onTap: () {
+          controller.animateToPage(
+            pages.length - 1,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
           );
-  }
-
-  Widget generatepage() {
-    return PageView.builder(
-        itemCount: pages.length,
-        scrollDirection: Axis.horizontal,
-        controller: controller,
-        onPageChanged: _onchanged,
-        itemBuilder: (context, index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                constraints:
-                    const BoxConstraints(maxWidth: 600, maxHeight: 800),
-                child: Image(
-                  image: AssetImage(pages[index].image!),
-                  //height: Get.height * 0.7,
-                  width: Get.width,
-                  fit: BoxFit.fill,
-                ),
+        },
+        child: Container(
+          height: 40.h,
+          width: 68.w,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.h),
+            color: const Color(0XFFFFFFFF),
+          ),
+          child: Center(
+            child: Text(
+              "Skip",
+              style: TextStyle(
+                fontFamily: 'Gilroy',
+                fontWeight: FontWeight.w500,
+                fontSize: 15.sp,
+                color: const Color(0xFF000000),
               ),
-              SizedBox(height: 20.h),
-              Text(
-                pages[index].name!,
-                style: TextStyle(
-                    fontFamily: 'Gilroy',
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0XFF000000),
-                    fontSize: 22.sp),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 10.h),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 35),
-                child: Text(
-                  pages[index].title!,
-                  style: TextStyle(
-                      fontFamily: 'Gilroy',
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0XFF000000),
-                      fontSize: 15.sp),
-                  textAlign: TextAlign.center,
-                ),
-              )
-            ],
-          );
-        });
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

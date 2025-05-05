@@ -204,6 +204,8 @@ class TreandingCreationProvider extends ChangeNotifier {
 
 class PurchedCreationProvider extends ChangeNotifier {
   List<PurchedCreationModel>? _purchedCreations;
+  List<PurchedCreationModel>? _filteredCreations;
+  List<PurchedCreationModel>? get filteredCreations => _filteredCreations;
   int page = 1;
   int perPage = 10;
   bool _isLoading = false;
@@ -213,6 +215,11 @@ class PurchedCreationProvider extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   void reset() {
     _purchedCreations = null; // Clear data
+    notifyListeners();
+  }
+
+  setFilteredCreations(List<PurchedCreationModel>? creations) {
+    _filteredCreations = creations;
     notifyListeners();
   }
 

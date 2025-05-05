@@ -7,10 +7,18 @@ import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
-import 'package:projecthub/widgets/creation_card.dart';
 import 'package:provider/provider.dart';
-
+import '../../model/purched_creation_model.dart';
+import '../../widgets/creation_card.dart';
 import '../app_navigation_bar/app_navigation_bar.dart';
+
+enum PurchaseSortOption {
+  latestFirst,
+  oldestFirst,
+  mostPopular,
+  priceHighToLow,
+  priceLowToHigh,
+}
 
 class PurchaseScreen extends StatefulWidget {
   const PurchaseScreen({super.key});
@@ -25,140 +33,141 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   double _lastScrollOffset = 0.0;
   bool _isLoadingMore = false;
   int page = 1;
+  PurchaseSortOption _currentSortOption = PurchaseSortOption.latestFirst;
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _loadInitialData();
+  }
+
+  void _loadInitialData() {
     Provider.of<PurchedCreationProvider>(context, listen: false)
         .fetchUserPurchedCreation(
-            Provider.of<UserInfoProvider>(context, listen: false).user!.userId);
-    setState(() {
-      page++;
-    });
+      Provider.of<UserInfoProvider>(context, listen: false).user!.userId,
+    );
+    setState(() => page++);
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels ==
-            (_scrollController.position.maxScrollExtent) &&
+            _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
-      setState(() {
-        _isLoadingMore = true;
-      });
-      // _fetchNextCreations();// update
+      _loadMoreData();
     }
+
     double currentOffset = _scrollController.position.pixels;
-
-    if (currentOffset > _lastScrollOffset && _isSearchVisible) {
-      // Scrolling down - hide search field
-      setState(() {
-        _isSearchVisible = false;
-      });
-    } else if (currentOffset < _lastScrollOffset && !_isSearchVisible) {
-      // Scrolling up - show search field
-      setState(() {
-        _isSearchVisible = true;
-      });
+    if (currentOffset > _lastScrollOffset + 5 && _isSearchVisible) {
+      setState(() => _isSearchVisible = false);
+    } else if (currentOffset < _lastScrollOffset - 5 && !_isSearchVisible) {
+      setState(() => _isSearchVisible = true);
     }
-
     _lastScrollOffset = currentOffset;
   }
 
-  Future<void> _fetchNextCreations() async {
+  Future<void> _loadMoreData() async {
+    setState(() => _isLoadingMore = true);
     await Provider.of<PurchedCreationProvider>(context, listen: false)
         .fetchMoreUserPurchedCreation(
       Provider.of<UserInfoProvider>(context, listen: false).user!.userId,
     );
-    await Future.delayed(const Duration(seconds: 2));
     setState(() {
       page++;
       _isLoadingMore = false;
     });
+    _applyFilters();
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  void _applyFilters() {
+    final provider =
+        Provider.of<PurchedCreationProvider>(context, listen: false);
+    List<PurchedCreationModel> filtered = provider.purchedCreations ?? [];
+
+    if (_searchQuery.isNotEmpty) {
+      filtered = filtered.where((purchase) {
+        return purchase.creation.creationTitle!
+            .toLowerCase()
+            .contains(_searchQuery.toLowerCase());
+      }).toList();
+    }
+
+    switch (_currentSortOption) {
+      case PurchaseSortOption.latestFirst:
+        filtered.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+        break;
+      case PurchaseSortOption.oldestFirst:
+        filtered.sort((a, b) => a.orderDate.compareTo(b.orderDate));
+        break;
+      case PurchaseSortOption.mostPopular:
+        filtered.sort((a, b) => (b.creation.numberOfReviews ?? 0)
+            .compareTo(a.creation.numberOfReviews ?? 0));
+        break;
+      case PurchaseSortOption.priceHighToLow:
+        filtered.sort((a, b) => b.purchasePrice.compareTo(a.purchasePrice));
+        break;
+      case PurchaseSortOption.priceLowToHigh:
+        filtered.sort((a, b) => a.purchasePrice.compareTo(b.purchasePrice));
+        break;
+    }
+
+    provider.setFilteredCreations(filtered);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Get.offAll(() => const AppNavigationScreen(),
-            transition: Transition
-                .leftToRightWithFade); // Replace with your actual home screen
-        return false;
-      },
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              getSearchField(),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: AppPadding.edgePadding,
-                    right: AppPadding.edgePadding,
-                    top: AppPadding.edgePadding,
-                    bottom: AppPadding.edgePadding * 0.6),
-                child: Text(
-                  "My puchesed creations",
-                  style: AppText.heddingStyle2bBlack,
+  void _showFilters() {
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+        ),
+        padding: EdgeInsets.all(AppPadding.edgePadding),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              "Sort Purchases",
+              style: AppText.heddingStyle2bBlack.copyWith(fontSize: 18.sp),
+            ),
+            SizedBox(height: 16.h),
+            const Divider(),
+            ...PurchaseSortOption.values.map((option) {
+              return RadioListTile<PurchaseSortOption>(
+                title: Text(
+                  option.toString().split('.').last.replaceAllMapped(
+                      RegExp(r'([A-Z])'), (m) => ' ${m.group(1)}'),
+                  style: TextStyle(fontSize: 15.sp),
                 ),
-              ),
-              Expanded(
-                child: Consumer<PurchedCreationProvider>(
-                    builder: (context, provider, child) {
-                  if (provider.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                value: option,
+                groupValue: _currentSortOption,
+                onChanged: (PurchaseSortOption? value) {
+                  if (value != null) {
+                    setState(() => _currentSortOption = value);
+                    _applyFilters();
+                    Get.back();
                   }
-
-                  if (provider.errorMessage.isNotEmpty) {
-                    return Center(child: Text(provider.errorMessage));
-                  }
-
-                  if (provider.purchedCreations!.isEmpty) {
-                    return Center(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 150.h,
-                          width: 150.w,
-                          child: SvgPicture.asset(
-                              "assets/images/no_creation_found.svg"),
-                        ),
-                        SizedBox(height: 20.h),
-                        Text(
-                          "You did't purched anything",
-                          style: AppText.heddingStyle2bBlack,
-                        ),
-                      ],
-                    ));
-                  }
-                  return ListView.separated(
-                      controller: _scrollController,
-                      padding: EdgeInsets.all(AppPadding.edgePadding),
-                      itemCount: provider.purchedCreations!.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 15),
-                      itemBuilder: (context, index) {
-                        return PurchedCreationCard(
-                            purchedCreationModel:
-                                provider.purchedCreations![index]);
-                      });
-                }),
-              ),
-            ],
-          ),
+                },
+              );
+            }).toList(),
+            SizedBox(height: 8.h),
+          ],
         ),
       ),
     );
   }
 
-  Widget getSearchField() {
+  Widget _buildSearchField() {
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 300),
       opacity: _isSearchVisible ? 1 : 0,
@@ -170,6 +179,11 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             ? Padding(
                 padding: EdgeInsets.all(AppPadding.edgePadding),
                 child: TextFormField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() => _searchQuery = value);
+                    _applyFilters();
+                  },
                   decoration: InputDecoration(
                     focusedBorder: AppTextfieldBorder.focusedBorder,
                     contentPadding: const EdgeInsets.all(8),
@@ -178,11 +192,23 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     prefixIcon: const Icon(Icons.search),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        showFilters();
-                      },
-                      icon: const Icon(Icons.filter_list),
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (_searchQuery.isNotEmpty)
+                          IconButton(
+                            icon: const Icon(Icons.clear, color: Colors.grey),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() => _searchQuery = '');
+                              _applyFilters();
+                            },
+                          ),
+                        IconButton(
+                          onPressed: _showFilters,
+                          icon: const Icon(Icons.tune, color: Colors.grey),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -192,15 +218,149 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     );
   }
 
-  showFilters() {
-    Get.defaultDialog(
-      title: "Filters",
-      content: const Column(
-        children: [
-          ListTile(title: Text("Latest first")),
-          ListTile(title: Text("Oldest first")),
-          ListTile(title: Text("Most popular first")),
-        ],
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Get.offAll(
+          () => const AppNavigationScreen(),
+          transition: Transition.leftToRightWithFade,
+        );
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.grey[50],
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSearchField(),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppPadding.edgePadding,
+                ),
+                child: Text(
+                  "My Purchases",
+                  style: AppText.heddingStyle2bBlack.copyWith(
+                    fontSize: 18.5.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Expanded(
+                child: Consumer<PurchedCreationProvider>(
+                  builder: (context, provider, child) {
+                    final items = _searchQuery.isEmpty &&
+                            _currentSortOption == PurchaseSortOption.latestFirst
+                        ? provider.purchedCreations
+                        : provider.filteredCreations;
+
+                    if (provider.isLoading && items == null) {
+                      return const Center(
+                          child: CircularProgressIndicator.adaptive());
+                    }
+
+                    if (provider.errorMessage.isNotEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(AppPadding.edgePadding),
+                          child: Text(
+                            provider.errorMessage,
+                            textAlign: TextAlign.center,
+                            style: AppText.heddingStyle2bBlack.copyWith(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (items == null || items.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 180.h,
+                              width: 180.w,
+                              child: SvgPicture.asset(
+                                "assets/images/no_creation_found.svg",
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                            SizedBox(height: 24.h),
+                            Text(
+                              _searchQuery.isEmpty
+                                  ? "No purchases yet"
+                                  : "No matching purchases",
+                              style: AppText.heddingStyle2bBlack.copyWith(
+                                fontSize: 18.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            Text(
+                              _searchQuery.isEmpty
+                                  ? "Your purchased items will appear here"
+                                  : "Try a different search term",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        await Provider.of<PurchedCreationProvider>(context,
+                                listen: false)
+                            .fetchUserPurchedCreation(
+                          Provider.of<UserInfoProvider>(context, listen: false)
+                              .user!
+                              .userId,
+                        );
+                        _applyFilters();
+                      },
+                      child: ListView.separated(
+                        controller: _scrollController,
+                        padding: EdgeInsets.all(AppPadding.edgePadding),
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: items.length + (_isLoadingMore ? 1 : 0),
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 16.h),
+                        itemBuilder: (context, index) {
+                          if (index >= items.length) {
+                            return Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(16.h),
+                                child:
+                                    const CircularProgressIndicator.adaptive(),
+                              ),
+                            );
+                          }
+                          return PurchedCreationCard(
+                            purchedCreationModel: items[index],
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

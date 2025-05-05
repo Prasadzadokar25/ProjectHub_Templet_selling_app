@@ -11,7 +11,6 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/model/advertisement_model.dart';
 import 'package:projecthub/model/categories_info_model.dart';
-import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/creation_model.dart';
 import 'package:projecthub/view/app_shimmer.dart';
 import 'package:projecthub/view/profile/profile_screen.dart';
@@ -78,42 +77,42 @@ class _HomeScreenState extends State<HomeScreen> {
       width: Get.width,
       child: ListView(
         controller: _scrollController,
-        children: [
-          const SizedBox(height: 12),
-          const _TopBar(),
-          const SizedBox(height: 6),
-          const _AdvertisementSlider(),
-          const SizedBox(height: 18),
+        children: const [
+          SizedBox(height: 12),
+          _TopBar(),
+          SizedBox(height: 6),
+          _AdvertisementSlider(),
+          SizedBox(height: 18),
           _SectionHeader(
             leftTitle: "Categories",
             rightTitle: "See All",
-            navigateTo: const CategoriesPage(),
+            navigateTo: CategoriesPage(),
           ),
-          const _CategoriesSlider(),
-          const SizedBox(height: 18),
+          _CategoriesSlider(),
+          SizedBox(height: 18),
           _SectionHeader(
             leftTitle: "Trending Creations",
             rightTitle: "See All",
-            navigateTo: const AllCreationScreen(type: "trending"),
+            navigateTo: AllCreationScreen(type: "trending"),
           ),
-          const SizedBox(height: 8),
-          const _TrendingCreationsView(),
-          const SizedBox(height: 35),
+          SizedBox(height: 8),
+          _TrendingCreationsView(),
+          SizedBox(height: 35),
           _SectionHeader(
             leftTitle: "Recently Added Creations",
             rightTitle: "See All",
-            navigateTo: const AllCreationScreen(type: "recent"),
+            navigateTo: AllCreationScreen(type: "recent"),
           ),
-          const _RecentlyAddedCreationsView(),
-          const SizedBox(height: 12),
+          _RecentlyAddedCreationsView(),
+          SizedBox(height: 12),
           _SectionHeader(
             leftTitle: "Other",
             rightTitle: "See All",
-            navigateTo: const AllCreationScreen(type: "other"),
+            navigateTo: AllCreationScreen(type: "other"),
           ),
-          const SizedBox(height: 12),
-          const _OtherCreationsView(),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
+          _OtherCreationsView(),
+          SizedBox(height: 12),
         ],
       ),
     );
@@ -178,7 +177,8 @@ class _TopBar extends StatelessWidget {
           child: Row(
             children: [
               GestureDetector(
-                onTap: () => Get.to(() => const ProfileScreen()),
+                onTap: () => Get.to(() => const ProfileScreen(),
+                    transition: Transition.rightToLeftWithFade),
                 child: CircleAvatar(
                   radius: Get.height * 0.028,
                   backgroundImage: user.profilePhoto != null
@@ -291,8 +291,8 @@ class _CategoryCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 12,
+                    style: TextStyle(
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -510,146 +510,143 @@ class _RecentlyAddedCreationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Get.to(ProductDetailsScreen(creation: creation)),
+    return InkWell(
+      borderRadius: BorderRadius.circular(16.r),
+      onTap: () {
+        Get.to(() => ProductDetailsScreen(creation: creation));
+      },
       child: Container(
-        width: 266.h,
+        width: 220.w,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(9.h),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
-              color: const Color(0XFF23408F).withOpacity(0.14),
-              offset: const Offset(-4, 5),
-              blurRadius: 16,
-            ),
+              color: Colors.black12,
+              blurRadius: 8.r,
+              offset: const Offset(0, 4),
+            )
           ],
-          color: Colors.white,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: 160.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(9.h),
-                  topRight: Radius.circular(9.h),
-                ),
-                image: DecorationImage(
-                  image: NetworkImage(
-                      ApiConfig.getFileUrl(creation.creationThumbnail!)),
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 8.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+              child: Stack(
                 children: [
-                  Container(
-                    height: 25.h,
-                    width: 58.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: const Color(0XFFFAF4E1),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(
-                          Icons.star_rate_rounded,
-                          color: AppColor.secYello,
-                          size: 15,
-                        ),
-                        Text(
-                          creation.averageRating!.substring(0, 3),
-                          style: TextStyle(
-                            fontFamily: 'Gilroy',
-                            color: AppColor.secYello,
-                            fontSize: 15.sp,
-                          ),
-                        ),
-                      ],
+                  SizedBox(
+                    height: 140.h,
+                    width: double.infinity,
+                    child: Image.network(
+                      ApiConfig.getFileUrl(creation.creationThumbnail!),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  SizedBox(height: 11.h),
-                  Text(
-                    creation.creationTitle!,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15.sp,
-                      color: const Color(0XFF000000),
-                      fontFamily: 'Gilroy',
+                  Positioned(
+                    top: 8.w,
+                    right: 8.w,
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.star, color: Colors.amber, size: 14.r),
+                          SizedBox(width: 4.w),
+                          Text(
+                            creation.averageRating!.substring(0, 3),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            const Spacer(),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              padding: EdgeInsets.all(12.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    creation.creationTitle!,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 8.h),
                   Row(
                     children: [
                       CircleAvatar(
-                        radius: Get.height * 0.02,
+                        radius: 14.r,
                         backgroundImage:
                             creation.seller!.sellerProfilePhoto != null
                                 ? NetworkImage(ApiConfig.baseURL +
                                     creation.seller!.sellerProfilePhoto!)
                                 : null,
                         child: creation.seller!.sellerProfilePhoto == null
-                            ? const Icon(
-                                Icons.person,
-                                size: 20,
-                                color: Colors.black45,
-                              )
+                            ? Icon(Icons.person, size: 14.r)
                             : null,
                       ),
-                      const SizedBox(width: 5),
-                      SizedBox(
-                        width: 100,
+                      SizedBox(width: 8.w),
+                      Expanded(
                         child: Text(
                           creation.seller!.sellerName!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontFamily: 'Gilroy',
-                            fontWeight: FontWeight.w400,
-                            color: const Color(0XFF23408F),
-                            fontSize: 15.sp,
+                            fontSize: 14.sp,
+                            color: Colors.grey.shade700,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "₹${creation.creationPrice!}",
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.primaryColor,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 4.h),
+                        decoration: BoxDecoration(
+                          color: AppColor.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Text(
+                          "View",
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: AppColor.primaryColor,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 2),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: const Color(0XFFE5ECFF),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "₹ ${creation.creationPrice!}",
-                        style: TextStyle(
-                          color: const Color(0XFF23408F),
-                          fontFamily: 'Gilroy',
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
-            SizedBox(height: 8.h),
           ],
         ),
       ),
@@ -673,16 +670,14 @@ class _OtherCreationsView extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
           child: Column(
             children: [
-              ...provider.generalCreations!
-                  .map((creation) => Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: GestureDetector(
-                          onTap: () =>
-                              Get.to(ProductDetailsScreen(creation: creation)),
-                          child: CreatationCard(creation: creation),
-                        ),
-                      ))
-                  .toList(),
+              ...provider.generalCreations!.map((creation) => Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: GestureDetector(
+                      onTap: () =>
+                          Get.to(ProductDetailsScreen(creation: creation)),
+                      child: CreatationCard(creation: creation),
+                    ),
+                  )),
               if (isLoadingMore) const CreationCardPlaceholder(),
             ],
           ),
@@ -697,8 +692,8 @@ class _LoadingMoreIndicator extends InheritedWidget {
 
   const _LoadingMoreIndicator({
     required this.isLoadingMore,
-    required Widget child,
-  }) : super(child: child);
+    required super.child,
+  });
 
   @override
   bool updateShouldNotify(_LoadingMoreIndicator oldWidget) {

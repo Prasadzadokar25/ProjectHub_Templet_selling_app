@@ -1,22 +1,14 @@
-// ignore_for_file: non_constant_identifier_names, deprecated_member_use
-
 import 'dart:developer';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/login_controller.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
-import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
-import 'package:provider/provider.dart';
-import '../../app_providers/creation_provider.dart';
 import '../../constant/app_text.dart';
 import '../../constant/app_textfield_border.dart';
-import '../loading_screen.dart/loading_screen.dart';
 import '../login/forgot_password.dart';
 import '../permission_screen/permission_screen.dart';
 import 'sign_up/sign_in_phonenumber.dart';
@@ -29,159 +21,88 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final formkey = GlobalKey<FormState>();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final LoginController _loginController = LoginController();
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _loginController = LoginController();
 
-  bool _showCircularIndicater = false;
-  bool ispassHiden = false;
+  bool _showCircularIndicator = false;
+  bool _isPasswordHidden = true;
   bool _isSubmitPressedOnce = false;
-  // fetchData(int uid) async {
-  //   await Provider.of<UserInfoProvider>(context, listen: false)
-  //       .fetchUserDetails(uid);
-  //   await Provider.of<GeneralCreationProvider>(context, listen: false)
-  //       .fetchGeneralCreations(uid, 1, 10);
-  //   await Provider.of<RecentCreationProvider>(context, listen: false)
-  //       .fetchRecentCreations(uid, 1, 10);
-  //   await Provider.of<TreandingCreationProvider>(context, listen: false)
-  //       .fetchTrendingCreations(uid, 1, 10);
-  // }
 
-  checkLogindetails() async {
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _checkLoginDetails() async {
     setState(() {
       _isSubmitPressedOnce = true;
     });
+
     FocusScope.of(context).unfocus();
-    if (formkey.currentState!.validate()) {
-      setState(() {
-        _showCircularIndicater = true;
-      });
+
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _showCircularIndicator = true;
+    });
+
+    try {
       final res = await _loginController.checkLogindetails(
-        emailController.text.trim(),
-        passwordController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
       );
-      setState(() {
-        _showCircularIndicater = false;
-      });
+
       if (res['status'] == 'True') {
         log(res['data'][0].toString());
-        // ignore: use_build_context_synchronously
-
         PrefData.setLogin(res['data'][0]['user_id']);
         PrefData.setIntro(true);
-
-        // PrefData.setVarification(true);
-        //Get.offAll(const AppNavigationScreen());
-        // Navigate to the loading screen
         Get.offAll(() => PermissionRequestScreen(
               userId: res['data'][0]['user_id'],
             ));
-
-// Fetch data asynchronously
-//         await fetchData(res['data'][0]['user_id']);
-
-// // Once data is fetched, navigate to the next screen
-//         print("Navigating to AppNavigationScreen");
-//         Get.offAll(() => AppNavigationScreen());
       } else {
-        String numberTitle = "Mobile number/Email or Password is wrong";
-        String emailTitle = "Email or Password is wrong";
-        Get.snackbar(
-            emailController.text.contains('@') ? emailTitle : numberTitle,
-            "Please enter correct details");
+        final title = _emailController.text.contains('@')
+            ? "Email or Password is wrong"
+            : "Mobile number/Email or Password is wrong";
+        Get.snackbar(title, "Please enter correct details");
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _showCircularIndicator = false;
+        });
       }
     }
   }
 
-  toggle() {
+  void _togglePasswordVisibility() {
     setState(() {
-      ispassHiden = !ispassHiden;
+      _isPasswordHidden = !_isPasswordHidden;
     });
-  }
-
-  @override
-  void dispose() {
-    passwordController.dispose();
-    emailController.dispose();
-
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: WillPopScope(
-          onWillPop: () {
-            return Future.value(false);
-          },
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(left: 20.w, right: 20.w),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 16.h),
                 Expanded(
-                  flex: 1,
-                  child: ListView(
-                    primary: true,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      SizedBox(height: 20.h),
-                      Center(
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 24.sp,
-                              fontFamily: 'Gilroy',
-                              color: const Color(0XFF000000)),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(height: 16.h),
-                      Center(
-                          child: Text(
-                        "Glad to meet you again!",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0XFF000000),
-                            fontSize: 15.sp,
-                            fontFamily: 'Gilroy',
-                            fontStyle: FontStyle.normal),
-                        textAlign: TextAlign.center,
-                      )),
-                      SizedBox(height: 10.h),
-                      email_password_form(),
-                      SizedBox(height: 21.h),
-                      forgotpassword(),
-                      SizedBox(height: 40.h),
-                      AppPrimaryElevetedButton(
-                        onPressed: checkLogindetails,
-                        title: "Log in",
-                      ),
-                      SizedBox(height: 40.h),
-                      or_sign_in_with_text(),
-                      SizedBox(height: 41.h),
-                      login_google(),
-                      SizedBox(height: 20.h),
-                      login_facebook(),
-                      SizedBox(height: 30.h),
-                      if (_showCircularIndicater)
-                        Center(
-                          child: CircularProgressIndicator(
-                            color: AppColor.primaryColor,
-                          ),
-                        ),
-                    ],
-                  ),
+                  child: _buildMainContent(),
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 30.h),
-                  child: sign_up(),
+                  child: _buildSignUpText(),
                 ),
               ],
             ),
@@ -191,13 +112,139 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget forgotpassword() {
+  Widget _buildMainContent() {
+    return ListView(
+      physics: const ClampingScrollPhysics(),
+      children: [
+        SizedBox(height: 20.h),
+        _buildLoginHeader(),
+        SizedBox(height: 16.h),
+        _buildWelcomeText(),
+        SizedBox(height: 10.h),
+        _buildLoginForm(),
+        SizedBox(height: 21.h),
+        _buildForgotPassword(),
+        SizedBox(height: 40.h),
+        AppPrimaryElevetedButton(
+          onPressed: _checkLoginDetails,
+          title: "Log in",
+        ),
+        SizedBox(height: 40.h),
+        _buildOrSignInWith(),
+        SizedBox(height: 41.h),
+        _buildSocialLoginButton(
+          asset: "assets/images/google.png",
+          text: "Login with Google",
+        ),
+        SizedBox(height: 20.h),
+        _buildSocialLoginButton(
+          asset: "assets/images/facebook.png",
+          text: "Login with Facebook",
+        ),
+        SizedBox(height: 30.h),
+        if (_showCircularIndicator)
+          Center(
+            child: CircularProgressIndicator(
+              color: AppColor.primaryColor,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildLoginHeader() {
+    return Center(
+      child: Text(
+        "Login",
+        style: TextStyle(
+          fontWeight: FontWeight.w700,
+          fontSize: 24.sp,
+          fontFamily: 'Gilroy',
+          color: const Color(0XFF000000),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWelcomeText() {
+    return Center(
+      child: Text(
+        "Glad to meet you again!",
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          color: const Color(0XFF000000),
+          fontSize: 15.sp,
+          fontFamily: 'Gilroy',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: _emailController,
+            onChanged: (_) {
+              if (_isSubmitPressedOnce) _formKey.currentState!.validate();
+            },
+            decoration: InputDecoration(
+              hintText: 'Mobile number / Email',
+              hintStyle: AppText.textFieldHintTextStyle,
+              focusedErrorBorder: AppTextfieldBorder.focusedErrorBorder,
+              errorBorder: AppTextfieldBorder.errorBorder,
+              focusedBorder: AppTextfieldBorder.focusedBorder,
+              enabledBorder: AppTextfieldBorder.enabledBorder,
+              filled: true,
+              fillColor: const Color(0xFFF5F5F5),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 20.w,
+                vertical: 20.h,
+              ),
+            ),
+            validator: (val) =>
+                val!.isEmpty ? 'Enter Mobile number or email' : null,
+          ),
+          SizedBox(height: 15.h),
+          TextFormField(
+            controller: _passwordController,
+            obscureText: _isPasswordHidden,
+            onChanged: (_) => _formKey.currentState!.validate(),
+            decoration: InputDecoration(
+              hintText: 'Password',
+              hintStyle: AppText.textFieldHintTextStyle,
+              focusedErrorBorder: AppTextfieldBorder.focusedErrorBorder,
+              errorBorder: AppTextfieldBorder.errorBorder,
+              focusedBorder: AppTextfieldBorder.focusedBorder,
+              enabledBorder: AppTextfieldBorder.enabledBorder,
+              filled: true,
+              fillColor: const Color(0xFFF5F5F5),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 20.w,
+                vertical: 20.h,
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordHidden ? Icons.visibility : Icons.visibility_off,
+                  color: const Color.fromARGB(255, 171, 170, 170),
+                ),
+                onPressed: _togglePasswordVisibility,
+              ),
+            ),
+            validator: (val) => val!.isEmpty ? 'Enter the password' : null,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildForgotPassword() {
     return GestureDetector(
-      onTap: () {
-        Get.to(const ForgotPassword());
-      },
+      onTap: () => Get.to(const ForgotPassword()),
       child: Align(
-        alignment: Alignment.topRight,
+        alignment: Alignment.centerRight,
         child: Text(
           "Forgot password ?",
           style: TextStyle(
@@ -211,22 +258,56 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget login_google() {
+  Widget _buildOrSignInWith() {
+    return Row(
+      children: [
+        Expanded(
+          child: Divider(
+            thickness: 2,
+            endIndent: 20.w,
+            color: const Color(0XFFDEDEDE),
+          ),
+        ),
+        Text(
+          "Or Sign in with",
+          style: TextStyle(
+            color: const Color(0XFF000000),
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w400,
+            fontFamily: 'Gilroy',
+          ),
+        ),
+        Expanded(
+          child: Divider(
+            thickness: 2,
+            indent: 20.w,
+            color: const Color(0XFFDEDEDE),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSocialLoginButton({
+    required String asset,
+    required String text,
+  }) {
     return GestureDetector(
       onTap: () {},
       child: Container(
         height: 56.h,
         width: 374.w,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.grey.withOpacity(0.1)),
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.grey.withOpacity(0.1),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Image(image: AssetImage("assets/images/google.png")),
+            Image(image: AssetImage(asset)),
             SizedBox(width: 10.w),
             Text(
-              "Login with Google",
+              text,
               style: TextStyle(
                 color: const Color(0XFF000000),
                 fontSize: 18.sp,
@@ -239,46 +320,18 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget login_facebook() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        height: 56.h,
-        width: 374.w,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.grey.withOpacity(0.1)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Image(image: AssetImage("assets/images/facebook.png")),
-            SizedBox(width: 10.w),
-            Text(
-              "Login with Facebook",
-              style: TextStyle(
-                  color: const Color(0XFF000000),
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget sign_up() {
+  Widget _buildSignUpText() {
     return Center(
       child: RichText(
-          text: TextSpan(
-              text: 'Already have an account?',
-              style: TextStyle(
-                  color: Colors.black, fontSize: 15.sp, fontFamily: 'Gilroy'),
-              children: [
+        text: TextSpan(
+          text: 'Already have an account?',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 15.sp,
+            fontFamily: 'Gilroy',
+          ),
+          children: [
             TextSpan(
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  Get.to(const SignInPhonenumber());
-                },
               text: '  Sign up',
               style: TextStyle(
                 color: const Color(0XFF000000),
@@ -286,119 +339,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Gilroy',
               ),
-            )
-          ])),
-    );
-  }
-
-  Widget or_sign_in_with_text() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Divider(
-            height: 0.h,
-            thickness: 2,
-            // indent: 20,
-            endIndent: 020,
-            color: const Color(0XFFDEDEDE),
-          ),
-        ),
-        Text("Or Sign in with",
-            style: TextStyle(
-                color: const Color(0XFF000000),
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Gilroy',
-                fontStyle: FontStyle.normal)),
-        Expanded(
-          child: Divider(
-            height: 0.h,
-            thickness: 2,
-            indent: 20,
-            endIndent: 0,
-            color: const Color(0XFFDEDEDE),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget email_password_form() {
-    return Form(
-      key: formkey,
-      child: Column(
-        children: [
-          TextFormField(
-            onChanged: (value) {
-              if (_isSubmitPressedOnce) {
-                formkey.currentState!.validate();
-              }
-            },
-            controller: emailController,
-            decoration: InputDecoration(
-              hintText: 'Mobile number / Email',
-              hintStyle: AppText.textFieldHintTextStyle,
-              focusedErrorBorder: AppTextfieldBorder.focusedErrorBorder,
-              errorBorder: AppTextfieldBorder.errorBorder,
-              focusedBorder: AppTextfieldBorder.focusedBorder,
-              enabledBorder: AppTextfieldBorder.enabledBorder,
-              filled: true,
-              fillColor: const Color(0xFFF5F5F5),
-              contentPadding:
-                  EdgeInsets.only(left: 20.w, top: 20.h, bottom: 20.h),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => Get.to(const SignInPhonenumber()),
             ),
-            validator: (val) {
-              if (val!.isEmpty) {
-                return 'Enter Mobile number or email';
-              } else {
-                // if (!RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-                //     .hasMatch(val)) {
-                //   return 'Please enter valid email address';
-                // }
-              }
-              return null;
-            },
-          ),
-          SizedBox(height: 15.h),
-          TextFormField(
-            onChanged: (value) {
-              formkey.currentState!.validate();
-            },
-            controller: passwordController,
-            obscureText: ispassHiden,
-            decoration: InputDecoration(
-                hintText: 'Password',
-                hintStyle: AppText.textFieldHintTextStyle,
-                focusedErrorBorder: AppTextfieldBorder.focusedErrorBorder,
-                errorBorder: AppTextfieldBorder.errorBorder,
-                focusedBorder: AppTextfieldBorder.focusedBorder,
-                enabledBorder: AppTextfieldBorder.enabledBorder,
-                filled: true,
-                fillColor: const Color(0xFFF5F5F5),
-                contentPadding:
-                    EdgeInsets.only(left: 20.w, top: 20.h, bottom: 20.h),
-                suffixIcon: ispassHiden
-                    ? GestureDetector(
-                        onTap: () => toggle(),
-                        child: const Icon(
-                          Icons.visibility,
-                          color: Color.fromARGB(255, 171, 170, 170),
-                        ))
-                    : GestureDetector(
-                        onTap: () => toggle(),
-                        child: const Icon(
-                          Icons.visibility_off,
-                          color: Color.fromARGB(255, 171, 170, 170),
-                        ))),
-            validator: (val) {
-              if (val!.isEmpty) {
-                return 'Enter the  password';
-              }
-              return null;
-            },
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
