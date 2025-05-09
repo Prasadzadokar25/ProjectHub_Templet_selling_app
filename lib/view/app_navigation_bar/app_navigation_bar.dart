@@ -8,7 +8,7 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/app_permission_controller.dart';
 import 'package:projecthub/view/home/home_screen.dart';
 import 'package:projecthub/view/profile/profile_screen.dart';
-import 'package:projecthub/view/purchase/purchase_screen.dart';
+import 'package:projecthub/view/purchase/view/purchase_screen.dart';
 import 'package:projecthub/view/search_screen/search_screen.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';

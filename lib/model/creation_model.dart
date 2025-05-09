@@ -1,92 +1,106 @@
 import 'package:projecthub/model/seller_model.dart';
 
-class Creation2 {
-  String? averageRating;
-  int? categoryId;
-  String? creationDescription;
-  String? creationFile;
-  int? creationId;
-  String? creationOtherImages;
-  String? creationPrice;
-  String? creationThumbnail;
-  String? creationTitle;
-  String? keyword;
-  int? numberOfReviews;
-  String? createtime;
-  Seller? seller;
-  int? totalCopySell;
-  double? gstTaxPercentage;
-  double? platFromFees;
-  int? totalLikes;
-  bool? isLikedByUser;
+class Creation {
+  final int creationId;
+  final String? creationTitle;
+  final String? creationDescription;
+  final double? creationPrice;
+  final double? gstTaxPercentage;
+  final double? platformFee;
+  final String? creationThumbnail;
+  final String? creationFile;
+  final String? fileFormat;
+  final String? fileSize;
+  //final int categoryId;
+  final String? creationOtherImages;
+  final String? createtime;
+  final String? youtubeLink;
+  final String? lastUpdated;
+  final double? avgRating;
+  final int totalReviews;
+  final int totalLikes;
+  final int totalCopySold;
+  final bool isLikedByUser;
+  final Seller seller;
 
-  Creation2({
-    this.averageRating,
-    this.categoryId,
-    this.creationDescription,
-    this.creationFile,
-    this.creationId,
-    this.creationOtherImages,
-    this.creationPrice,
-    this.creationThumbnail,
+  Creation({
+    required this.creationId,
     this.creationTitle,
-    this.keyword,
-    this.numberOfReviews,
-    this.seller,
-    this.totalCopySell,
-    this.createtime,
+    this.creationDescription,
+    this.creationPrice,
     this.gstTaxPercentage,
-    this.platFromFees,
-    this.totalLikes,
-    this.isLikedByUser,
+    this.platformFee,
+    this.creationThumbnail,
+    this.creationFile,
+    this.fileFormat,
+    this.fileSize,
+    //required this.categoryId,
+    this.creationOtherImages,
+    this.createtime,
+    this.youtubeLink,
+    this.lastUpdated,
+    this.avgRating,
+    required this.totalReviews,
+    required this.totalLikes,
+    required this.totalCopySold,
+    required this.isLikedByUser,
+    required this.seller,
   });
 
-  Creation2.fromJson(Map<String, dynamic> json) {
-    averageRating = (json['average_rating'] is String)
-        ? json['average_rating']
-        : json['average_rating'].toString();
-    categoryId = json['category_id'];
-    creationDescription = json['creation_description'];
-    creationFile = json['creation_file'];
-    creationId = json['creation_id'];
-    creationOtherImages = json['creation_other_images'];
-    creationPrice = (json['creation_price'] is String)
-        ? json['creation_price']
-        : json['creation_price'].toString();
-    creationThumbnail = json['creation_thumbnail'];
-    creationTitle = json['creation_title'];
-    keyword = json['keyword'];
-    numberOfReviews = json['number_of_reviews'];
-    seller = json['seller'] != null ? Seller.fromJson(json['seller']) : null;
-    totalCopySell = json['total_copy_sell'];
-    createtime = json['createtime'];
-    gstTaxPercentage = json['gst_percentage'];
-    platFromFees = json['platform_fee_percentage'];
-    totalLikes = json['total_likes'];
-    isLikedByUser = (json['isLikedByUser']);
+  factory Creation.fromJson(Map<String, dynamic> json) {
+    return Creation(
+      creationId: json['creation_id'],
+      creationTitle: json['creation_title'],
+      creationDescription: json['creation_description'],
+      creationPrice: double.parse(json['creation_price'].toString()),
+      gstTaxPercentage: json['gst_percentage'] != null
+          ? double.parse(json['gst_percentage'].toString())
+          : null,
+      platformFee: json['platform_fee_percentage'] != null
+          ? double.parse(json['platform_fee_percentage'].toString())
+          : null,
+      creationThumbnail: json['creation_thumbnail'],
+      creationFile: json['creation_file'],
+      fileFormat: json['file_format'],
+      fileSize: json['file_size'],
+      //categoryId: json['category_id'],
+      creationOtherImages: json['creation_other_images'],
+      createtime: json['createtime'],
+      youtubeLink: json['youtube_link'],
+      lastUpdated: json['last_updated'],
+      avgRating: json['avg_rating'] != null
+          ? double.parse(json['avg_rating'].toString())
+          : null,
+      totalReviews: json['total_reviews'] ?? 0,
+      totalLikes: json['total_likes'] ?? 0,
+      totalCopySold: json['total_copy_sold'] ?? 0,
+      isLikedByUser: json['is_liked_by_user'] ?? false,
+      seller: Seller.fromJson(json['seller']),
+    );
   }
-
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['average_rating'] = averageRating;
-    data['category_id'] = categoryId;
-    data['creation_description'] = creationDescription;
-    data['creation_file'] = creationFile;
-    data['creation_id'] = creationId;
-    data['creation_other_images'] = creationOtherImages;
-    data['creation_price'] = creationPrice;
-    data['creation_thumbnail'] = creationThumbnail;
-    data['creation_title'] = creationTitle;
-    data['keyword'] = keyword;
-    data['total_likes'] = totalLikes;
-    data['number_of_reviews'] = numberOfReviews;
-    if (seller != null) {
-      data['seller'] = seller!.toJson();
-    }
-    data['total_copy_sell'] = totalCopySell;
-    data['gst_percentage'] = gstTaxPercentage;
-    data['platform_fee_percentage'] = platFromFees;
-    data['isLikedByUser'] = isLikedByUser;
-    return data;
+    return {
+      'creation_id': creationId,
+      'creation_title': creationTitle,
+      'creation_description': creationDescription,
+      'creation_price': creationPrice,
+      'gst_percentage': gstTaxPercentage,
+      'platform_fee_percentage': platformFee,
+      'creation_thumbnail': creationThumbnail,
+      'creation_file': creationFile,
+      'file_format': fileFormat,
+      'file_size': fileSize,
+      //'category_id': categoryId,
+      'creation_other_images': creationOtherImages,
+      'createtime': createtime,
+      'youtube_link': youtubeLink,
+      'last_updated': lastUpdated,
+      'avg_rating': avgRating,
+      'total_reviews': totalReviews,
+      'total_likes': totalLikes,
+      'total_copy_sold': totalCopySold,
+      'is_liked_by_user': isLikedByUser,
+      'seller': seller.toJson(),
+    };
   }
 }

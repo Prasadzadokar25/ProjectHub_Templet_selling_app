@@ -13,6 +13,7 @@ import 'package:projecthub/controller/initialization_controller.dart';
 import 'package:provider/provider.dart';
 
 import 'view/network_check_screen/network_check_screen.dart';
+import 'view/purchase/provider/purchased_creation_provider.dart';
 import 'view/splash/splash_screen.dart';
 
 void main() async {

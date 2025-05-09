@@ -9,8 +9,8 @@ import 'package:http/http.dart' as http;
 class BankAccountController {
   Future<List<BankAccount>> fetchUserBankAccounts(int userId) async {
     try {
-      final response =
-          await http.get(Uri.parse("${ApiConfig.getBankAccount}/$userId"));
+      final response = await http
+          .get(Uri.parse("${ApiConfig.getBankAccount}?user_id=$userId"));
 
       log(response.body);
 

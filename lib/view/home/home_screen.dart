@@ -20,6 +20,7 @@ import 'package:projecthub/widgets/creation_card.dart';
 import 'package:projecthub/view/home/categories_screen.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../app_providers/user_provider.dart';
 import '../../utils/uri_launch_service.dart';
@@ -357,42 +358,35 @@ class _AdItem extends StatelessWidget {
       margin: const EdgeInsets.all(6),
       child: InkWell(
         onTap: () async {
-          final url =
-              ad.adWebsite; // Assuming `ad.adLink` contains the target URL
-          if (url != null && await UriLaunchService.canLaunchUrlApp(url)) {
-            await UriLaunchService.launchUrlApp(url);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Could not launch the ad link')),
-            );
-          }
+          launchWebSite(ad.adWebsite!);
         },
         child: GestureDetector(
-          onTap: () async {
-            log(ad.adWebsite.toString());
-            final url = ad.adWebsite!
-                .trim(); // Assuming `ad.adLink` contains the target URL
-            if (url != null && await UriLaunchService.canLaunchUrlApp(url)) {
-              await UriLaunchService.launchUrlApp(url);
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Could not launch the ad link')),
-              );
-            }
-          },
+          onTap: () async {},
           child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(12)),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                image: DecorationImage(
-                  image: NetworkImage(ApiConfig.getFileUrl(ad.adImage!)),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+              child: Container(
+                  width: Get.width * 0.85,
+                  child: Image.network(
+                    ApiConfig.getFileUrl(ad.adImage!),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Shimmer(
+                        child: Container(
+                          width: Get.width * 0.85,
+                        ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.grey.shade300,
+                            Colors.grey.shade100,
+                            Colors.grey.shade300,
+                          ],
+                        ),
+                      );
+                    },
+                    fit: BoxFit.cover,
+                  ))),
         ),
       ),
     );
@@ -426,7 +420,7 @@ class _TrendingCreationsView extends StatelessWidget {
 }
 
 class _TrendingCreationItem extends StatelessWidget {
-  final Creation2 creation;
+  final Creation creation;
 
   const _TrendingCreationItem({required this.creation});
 
@@ -547,7 +541,7 @@ class _RecentlyAddedCreationsView extends StatelessWidget {
 }
 
 class _RecentlyAddedCreationItem extends StatelessWidget {
-  final Creation2 creation;
+  final Creation creation;
 
   const _RecentlyAddedCreationItem({required this.creation});
 
@@ -618,7 +612,7 @@ class _RecentlyAddedCreationItem extends StatelessWidget {
                           Icon(Icons.star, color: Colors.amber, size: 14.r),
                           SizedBox(width: 4.w),
                           Text(
-                            creation.averageRating!.substring(0, 3),
+                            creation.avgRating!.toString(),
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12.sp,
@@ -732,9 +726,9 @@ class _OtherCreationsView extends StatelessWidget {
               ...provider.generalCreations!.map((creation) => Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: GestureDetector(
-                      onTap: () =>
-                          Get.to(ProductDetailsScreen(creation: creation)),
-                      child: CreatationCard(creation: creation),
+                      onTap: () => Get.to(
+                          ProductDetailsScreen(creation: creation as Creation)),
+                      child: CreatationCard(creation: creation as Creation),
                     ),
                   )),
               if (isLoadingMore) const CreationCardPlaceholder(),
@@ -757,5 +751,17 @@ class _LoadingMoreIndicator extends InheritedWidget {
   @override
   bool updateShouldNotify(_LoadingMoreIndicator oldWidget) {
     return isLoadingMore != oldWidget.isLoadingMore;
+  }
+}
+
+launchWebSite(websiteUrl) async {
+  final url =
+      websiteUrl!.trim(); // Assuming `ad.adLink` contains the target URL
+  if (url != null && await UriLaunchService.canLaunchUrlApp(url)) {
+    await UriLaunchService.launchUrlApp(url);
+  } else {
+    ScaffoldMessenger.of(Get.context!).showSnackBar(
+      SnackBar(content: Text('Could not launch the ad link')),
+    );
   }
 }

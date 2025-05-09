@@ -58,14 +58,14 @@ class _AddToCartPage extends State<AddToCartPage> {
 
       log((order.creations[i].creation).toString());
       productDetail.add({
-        'seller_id': order.creations[i].creation.seller!.sellerId!,
-        'creation_id': order.creations[i].creation.creationId!,
+        'seller_id': order.creations[i].creation.seller.sellerId,
+        'creation_id': order.creations[i].creation.creationId,
         'price': price,
         'gst_amount': double.parse(
             (price * (order.creations[i].creation.gstTaxPercentage!) / 100)
                 .toStringAsFixed(2)),
         'platform_fee': double.parse(
-            (price * (order.creations[i].creation.platFromFees!) / 100)
+            (price * (order.creations[i].creation.platformFee!) / 100)
                 .toStringAsFixed(2)),
       });
     }
@@ -179,7 +179,7 @@ class _AddToCartPage extends State<AddToCartPage> {
       gst = gst +
           (creationPrice * creationList[i].creation.gstTaxPercentage!) / 100;
       platFromFees = platFromFees +
-          (creationPrice * creationList[i].creation.platFromFees!) / 100;
+          (creationPrice * creationList[i].creation.platformFee!) / 100;
     }
 
     // Round values to 2 decimal places
@@ -222,6 +222,21 @@ class _AddToCartPage extends State<AddToCartPage> {
             Consumer<InCardCreationProvider>(builder: (context, value, child) {
           if (value.isLoading) {
             return const Center(child: CircularProgressIndicator());
+          }
+          if (value.errorMessage.isNotEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error),
+                  const SizedBox(height: 10),
+                  Text(
+                    value.errorMessage,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
           }
           if (value.creations!.isEmpty) {
             return Center(

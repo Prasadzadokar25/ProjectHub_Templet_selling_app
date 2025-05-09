@@ -1,22 +1,26 @@
 class ApiConfig {
   // static String baseURL = "https://projecthub.pythonanywhere.com";
-  static String baseURL = "http://192.168.0.100:5000/";
+  static String baseURL = "http://192.168.0.105:5000/";
 
-  static String addUser = "$baseURL/addUser";
-  static String checkNumber = "$baseURL/checkNumber";
+// usesr rougths
+  static String addUser = "$baseURL/user/add";
+  static String getUserDetailsByID = "$baseURL/user/getUser";
+  static String updateUser = "$baseURL/user/update-user";
+  static String checkNumber = "$baseURL/user/checkNumber";
   static String checkLogindetails = "$baseURL/checkLogin";
+
+// banck account
+  static String addBankAccount = "$baseURL/bank-account/add";
+  static String getBankAccount = "$baseURL/bank-account/get";
+  static String setPrimaryBankAccount = "$baseURL/bank-account/set-primary";
+
   static String listCreation = "$baseURL/listCreation";
-  static String getUserDetailsByID = "$baseURL/getUser";
   static String userListedCreations = "$baseURL/userListedCreations";
   static String addCreationToCard = "$baseURL/creation/card/add";
   static String removeItemFromCard = "$baseURL//creation/card/remove";
   static String incardCreations = "$baseURL/creation/card/get/userid";
-  static String getBankAccount = "$baseURL/accounts";
-  static String addBankAccount = "$baseURL/add-bank-account";
-  static String setPrimaryBankAccount = "$baseURL/set-primary-account";
   static String placeOrder = "$baseURL/create-order";
   static String categories = "$baseURL/categories";
-  static String updateUser = "$baseURL/update_user";
   static String getReels = "$baseURL/reels";
   static String getLikeInfo = "$baseURL/reel/likes";
   static String addLikeToReel = "$baseURL/reel/addLike";
@@ -40,7 +44,7 @@ class ApiConfig {
   }
 
   static String getPurchedCreations(int pageNo, [int perPage = 10]) {
-    return "$baseURL/creation/purched/page/$pageNo/perPage/$perPage/uid";
+    return "$baseURL/creation/purchesed";
   }
 
   static String getFileUrl(String path) {
@@ -53,5 +57,9 @@ class ApiConfig {
 
   static String getAdvertisements(int userid, String location) {
     return "$baseURL/advertisements?user_id=$userid&location=$location";
+  }
+
+  static String getPurchedCreationDetails(int userid, int creationId) {
+    return "$baseURL/creation/purchesed-details?user_id=$userid&creation_id=$creationId";
   }
 }

@@ -117,7 +117,7 @@ class _AllCreationScreenState extends State<AllCreationScreen> {
   }
 
   Widget _buildListView(
-      List<Creation2> creations, Function fetchMoreCreations, provider) {
+      List<Creation> creations, Function fetchMoreCreations, provider) {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
               _scrollController.position.maxScrollExtent &&

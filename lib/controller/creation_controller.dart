@@ -16,7 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:projecthub/model/incard_creation_model.dart';
 import 'package:projecthub/model/creation_model.dart';
 
-import '../model/purched_creation_model.dart';
+import '../view/purchase/model/purched_creation_model.dart';
 
 class CreationController {
   final Dio _dio = Dio();
@@ -75,7 +75,7 @@ class CreationController {
     }
   }
 
-  Future<List<Creation2>> fetchGeneralCreations(
+  Future<List<Creation>> fetchGeneralCreations(
       int userId, int page, int perPage) async {
     log("pppppp");
     try {
@@ -86,7 +86,7 @@ class CreationController {
 
         // log(response.body);
 
-        return data.map((json) => Creation2.fromJson(json)).toList();
+        return data.map((json) => Creation.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load creations');
       }
@@ -95,7 +95,7 @@ class CreationController {
     }
   }
 
-  Future<List<Creation2>> fetchRecentCreations(
+  Future<List<Creation>> fetchRecentCreations(
       int userId, int page, int perPage) async {
     log("pppppp");
     try {
@@ -105,7 +105,7 @@ class CreationController {
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['creations'];
 
-        return data.map((json) => Creation2.fromJson(json)).toList();
+        return data.map((json) => Creation.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load creations');
       }
@@ -114,7 +114,7 @@ class CreationController {
     }
   }
 
-  Future<List<Creation2>> fetchTrendingCreations(
+  Future<List<Creation>> fetchTrendingCreations(
       int userId, int page, int perPage) async {
     log("pppppp");
     try {
@@ -124,7 +124,7 @@ class CreationController {
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['creations'];
 
-        return data.map((json) => Creation2.fromJson(json)).toList();
+        return data.map((json) => Creation.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load creations');
       }
@@ -152,8 +152,8 @@ class CreationController {
     }
   }
 
-  Future<List<Creation2>> fetchRecomandedCreations(
-      int userId, int pageNo, int perPage, Creation2 creation) async {
+  Future<List<Creation>> fetchRecomandedCreations(
+      int userId, int pageNo, int perPage, Creation creation) async {
     final data = {"userId": userId, "creation": creation.toJson()};
     final header = {
       'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ class CreationController {
         log("pppppp");
         List<dynamic> data = jsonDecode(response.body)['creations'];
 
-        return data.map((json) => Creation2.fromJson(json)).toList();
+        return data.map((json) => Creation.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load creations');
       }

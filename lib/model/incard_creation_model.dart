@@ -5,7 +5,7 @@ import 'package:projecthub/model/creation_model.dart';
 class InCardCreationInfo {
   int carditemId;
   String addedOn;
-  Creation2 creation;
+  Creation creation;
 
   InCardCreationInfo({
     required this.carditemId,
@@ -26,7 +26,7 @@ class InCardCreationInfo {
       carditemId: jsonDecode(json['card_item_details'])['carditem_id'],
       addedOn: jsonDecode(json['card_item_details'])['added_on'],
       creation:
-          Creation2.fromJson(jsonDecode(json['card_item_details'])['creation']),
+          Creation.fromJson(jsonDecode(json['card_item_details'])['creation']),
     );
   }
 }

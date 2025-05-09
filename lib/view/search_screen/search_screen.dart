@@ -52,7 +52,7 @@ class _TemplateListScreenState extends State<TemplateListScreen> {
 
     // Check if we've reached the bottom for pagination
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+        _scrollController.position.maxScrollExtent) {
       fetchSearchedCreations(_searchController.text.trim(), false);
     }
   }
@@ -224,7 +224,7 @@ class _TemplateListScreenState extends State<TemplateListScreen> {
 // Keep your ComfortableTemplateCard widget as is
 
 class ComfortableTemplateCard extends StatelessWidget {
-  final Creation2 template;
+  final Creation template;
   final VoidCallback? onTap;
 
   const ComfortableTemplateCard({
@@ -334,7 +334,7 @@ class ComfortableTemplateCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Category
-                        if (template.averageRating != null)
+                        if (template.avgRating != null)
                           Container(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8.w, vertical: 4.h),
@@ -352,9 +352,11 @@ class ComfortableTemplateCard extends StatelessWidget {
                                 ),
                                 SizedBox(width: 4.w),
                                 Text(
-                                  template.averageRating!.length > 3
-                                      ? template.averageRating!.substring(0, 3)
-                                      : template.averageRating!,
+                                  template.avgRating!.toString().length > 3
+                                      ? template.avgRating!
+                                          .toString()
+                                          .substring(0, 3)
+                                      : template.avgRating!.toString(),
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
@@ -366,7 +368,7 @@ class ComfortableTemplateCard extends StatelessWidget {
 
                         // Price
                         Text(
-                          '\$${double.parse(template.creationPrice!).toStringAsFixed(2)}',
+                          '\$${template.creationPrice!.toStringAsFixed(2)}',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

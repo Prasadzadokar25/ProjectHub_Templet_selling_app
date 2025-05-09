@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:provider/provider.dart';
-import '../../model/purched_creation_model.dart';
-import '../../widgets/creation_card.dart';
-import '../app_navigation_bar/app_navigation_bar.dart';
+import '../../../widgets/creation_card.dart';
+import '../../app_navigation_bar/app_navigation_bar.dart';
+import '../model/purched_creation_model.dart';
+import '../provider/purchased_creation_provider.dart';
+import '../widgets/purched_creation_card.dart';
 
 enum PurchaseSortOption {
   latestFirst,
   oldestFirst,
-  mostPopular,
   priceHighToLow,
   priceLowToHigh,
 }
@@ -88,7 +88,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
 
     if (_searchQuery.isNotEmpty) {
       filtered = filtered.where((purchase) {
-        return purchase.creation.creationTitle!
+        return purchase.creationTitle
             .toLowerCase()
             .contains(_searchQuery.toLowerCase());
       }).toList();
@@ -101,15 +101,12 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
       case PurchaseSortOption.oldestFirst:
         filtered.sort((a, b) => a.orderDate.compareTo(b.orderDate));
         break;
-      case PurchaseSortOption.mostPopular:
-        filtered.sort((a, b) => (b.creation.numberOfReviews ?? 0)
-            .compareTo(a.creation.numberOfReviews ?? 0));
-        break;
+
       case PurchaseSortOption.priceHighToLow:
-        filtered.sort((a, b) => b.purchasePrice.compareTo(a.purchasePrice));
+        filtered.sort((a, b) => b.purchasedPrice.compareTo(a.purchasedPrice));
         break;
       case PurchaseSortOption.priceLowToHigh:
-        filtered.sort((a, b) => a.purchasePrice.compareTo(b.purchasePrice));
+        filtered.sort((a, b) => a.purchasedPrice.compareTo(b.purchasedPrice));
         break;
     }
 
@@ -159,7 +156,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                   }
                 },
               );
-            }).toList(),
+            }),
             SizedBox(height: 8.h),
           ],
         ),

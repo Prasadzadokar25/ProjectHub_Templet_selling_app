@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:projecthub/model/creation_model.dart';
 
 class SearchedCreationController {
-  Future<List<Creation2>> getSearchedCreation(
+  Future<List<Creation>> getSearchedCreation(
       {required String query,
       required int userId,
       required int offset,
@@ -20,7 +20,7 @@ class SearchedCreationController {
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['data'];
 
-        return data.map((json) => Creation2.fromJson(json)).toList();
+        return data.map((json) => Creation.fromJson(json)).toList();
       } else if (response.statusCode == 204) {
         log("No creation found for query ");
         throw Exception('No creation found for query');

@@ -21,7 +21,7 @@ import '../cart/cart_page.dart';
 
 // ignore: must_be_immutable
 class ProductDetailsScreen extends StatefulWidget {
-  Creation2 creation;
+  Creation creation;
   ProductDetailsScreen({super.key, required this.creation});
 
   @override
@@ -202,12 +202,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                             SizedBox(width: Get.height * 0.01),
                             Text(
-                              widget.creation.averageRating!.substring(0, 3),
+                              widget.creation.avgRating!
+                                  .toString()
+                                  .substring(0, 3),
                               style: const TextStyle(fontSize: 12),
                             ),
                             SizedBox(width: Get.height * 0.01),
                             Text(
-                              "(${widget.creation.numberOfReviews} Reviews)",
+                              "(${widget.creation.totalReviews} Reviews)",
                               style: const TextStyle(fontSize: 12),
                             ),
                             (showReview)
@@ -452,7 +454,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         itemCount: value.recomandedCreationProvider.length,
         separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (BuildContext context, index) {
-          Creation2 creation = value.recomandedCreationProvider[index];
+          Creation creation = value.recomandedCreationProvider[index];
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 10.h),
             child: GestureDetector(

@@ -9,10 +9,12 @@ import 'package:projecthub/controller/notification_controller.dart';
 import 'package:projecthub/model/creation_model.dart';
 
 class FilesDownloadController {
-  final NotificationController _notificationController = NotificationController();
-  final AppPermissionController _appPermissionController = AppPermissionController();
+  final NotificationController _notificationController =
+      NotificationController();
+  final AppPermissionController _appPermissionController =
+      AppPermissionController();
 
-  Future<void> downloadZipFile(Creation2 creation) async {
+  Future<void> downloadZipFile(Creation creation) async {
     if (await _appPermissionController.requestStoragePermission()) {
       try {
         var response = await http.Client().send(http.Request(
@@ -29,7 +31,7 @@ class FilesDownloadController {
 
           response.stream.listen(
             (chunk) {
-              log("1");   
+              log("1");
               bytes.addAll(chunk);
               received += chunk.length;
               var progress = ((received / total) * 100).toInt();

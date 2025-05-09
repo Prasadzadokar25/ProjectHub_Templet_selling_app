@@ -8,7 +8,7 @@ import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/model/creation_model.dart';
 
 import '../model/incard_creation_model.dart';
-import '../model/purched_creation_model.dart';
+import '../view/purchase/model/purched_creation_details_model.dart';
 
 class ListedCreationProvider with ChangeNotifier {
   List<ListedCreation>? _userListedcreations;
@@ -45,13 +45,13 @@ class ListedCreationProvider with ChangeNotifier {
 }
 
 class GeneralCreationProvider with ChangeNotifier {
-  List<Creation2>? _generalCreations;
+  List<Creation>? _generalCreations;
   int currentPage = 1;
   int perPage = 10;
   bool _isLoading = false;
   String _errorMessage = '';
 
-  List<Creation2>? get generalCreations => _generalCreations;
+  List<Creation>? get generalCreations => _generalCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
   void reset() {
@@ -80,7 +80,7 @@ class GeneralCreationProvider with ChangeNotifier {
   Future<void> fetchMoreGeneralCreations(
     int userId,
   ) async {
-    List<Creation2> newFetchedCreation = [];
+    List<Creation> newFetchedCreation = [];
     await Future.delayed(const Duration(milliseconds: 10));
     try {
       newFetchedCreation = await CreationController()
@@ -99,13 +99,13 @@ class GeneralCreationProvider with ChangeNotifier {
 }
 
 class RecentCreationProvider extends ChangeNotifier {
-  List<Creation2>? _recentlyAddedCreations;
+  List<Creation>? _recentlyAddedCreations;
   int page = 2;
   int perPage = 10;
   bool _isLoading = false;
   String _errorMessage = '';
 
-  List<Creation2>? get recentlyAddedCreations => _recentlyAddedCreations;
+  List<Creation>? get recentlyAddedCreations => _recentlyAddedCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
   void reset() {
@@ -151,7 +151,7 @@ class RecentCreationProvider extends ChangeNotifier {
 }
 
 class TreandingCreationProvider extends ChangeNotifier {
-  List<Creation2>? _treandingCreations;
+  List<Creation>? _treandingCreations;
   int page = 2;
   int perPage = 10;
   bool _isLoading = false;
@@ -161,7 +161,7 @@ class TreandingCreationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Creation2>? get threandingCreations => _treandingCreations;
+  List<Creation>? get threandingCreations => _treandingCreations;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
@@ -202,90 +202,15 @@ class TreandingCreationProvider extends ChangeNotifier {
   }
 }
 
-class PurchedCreationProvider extends ChangeNotifier {
-  List<PurchedCreationModel>? _purchedCreations;
-  List<PurchedCreationModel>? _filteredCreations;
-  List<PurchedCreationModel>? get filteredCreations => _filteredCreations;
-  int page = 1;
-  int perPage = 10;
-  bool _isLoading = false;
-  String _errorMessage = '';
-  List<PurchedCreationModel>? get purchedCreations => _purchedCreations;
-  bool get isLoading => _isLoading;
-  String get errorMessage => _errorMessage;
-  void reset() {
-    _purchedCreations = null; // Clear data
-    notifyListeners();
-  }
-
-  setFilteredCreations(List<PurchedCreationModel>? creations) {
-    _filteredCreations = creations;
-    notifyListeners();
-  }
-
-  Future<void> fetchUserPurchedCreation(int userId) async {
-    List<PurchedCreationModel>? newFetchedCreations;
-
-    if (_purchedCreations != null) {
-      await fetchMoreUserPurchedCreation(userId);
-      return;
-    }
-    _isLoading = true;
-    await Future.delayed(const Duration(microseconds: 5));
-
-    notifyListeners();
-    try {
-      newFetchedCreations = await CreationController()
-          .fetchPurchedCreations(userId, page, perPage);
-      _purchedCreations = newFetchedCreations;
-      _errorMessage = '';
-    } catch (e) {
-      _errorMessage = 'Failed to fetch creations: $e';
-      throw Exception("failed to feach purched creations $e");
-    } finally {
-      _isLoading = false;
-      if (newFetchedCreations != null && newFetchedCreations.length == 10) {
-        page++;
-      }
-      notifyListeners();
-    }
-  }
-
-  Future<void> fetchMoreUserPurchedCreation(int userId) async {
-    List<PurchedCreationModel>? newFetchedCreations;
-
-    if (_purchedCreations == null) {
-      _isLoading = true;
-      await Future.delayed(const Duration(microseconds: 5));
-      notifyListeners();
-    }
-    try {
-      newFetchedCreations = await CreationController()
-          .fetchPurchedCreations(userId, page, perPage);
-      _purchedCreations = newFetchedCreations;
-      _errorMessage = '';
-    } catch (e) {
-      _errorMessage = 'Failed to fetch creations: $e';
-      throw Exception("failed to feach purched creations $e");
-    }
-    _isLoading = false;
-    if (newFetchedCreations.length == (perPage + 1)) {
-      page++;
-    }
-    notifyListeners();
-  }
-}
-
 class RecomandedCreationProvider extends ChangeNotifier {
-  List<Creation2>? _recomandedCreationProvider;
+  List<Creation>? _recomandedCreationProvider;
   int page = 1;
   int perPage = 10;
 
   bool _isLoading = false;
   String _errorMessage = '';
 
-  List<Creation2>? get recomandedCreationProvider =>
-      _recomandedCreationProvider;
+  List<Creation>? get recomandedCreationProvider => _recomandedCreationProvider;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
   void reset() {
@@ -293,7 +218,7 @@ class RecomandedCreationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> feachRecommandedCreation(int userId, Creation2 creation) async {
+  Future<void> feachRecommandedCreation(int userId, Creation creation) async {
     _isLoading = true;
     await Future.delayed(const Duration(microseconds: 10));
     notifyListeners();
@@ -334,7 +259,7 @@ class InCardCreationProvider extends ChangeNotifier {
       _errorMessage = ''; // Clear any previous error
     } catch (e) {
       _errorMessage = 'Failed to fetch creations: $e';
-      throw Exception("failed to feach in crad creations $e");
+      //throw Exception("failed to feach in crad creations $e");
     }
     _isLoading = false;
     notifyListeners();
@@ -362,7 +287,7 @@ class InCardCreationProvider extends ChangeNotifier {
 class SearchedCreationProvider extends ChangeNotifier {
   bool _isLoading = false;
   String _errorMassage = '';
-  List<Creation2>? _seachedCreations;
+  List<Creation>? _seachedCreations;
   int offset = 0;
   int limit = 5;
 
@@ -371,7 +296,7 @@ class SearchedCreationProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String get errormassage => _errorMassage;
-  List<Creation2>? get searchedCreations => _seachedCreations;
+  List<Creation>? get searchedCreations => _seachedCreations;
 
   setLoading(value) {
     _isLoading = value;
@@ -399,7 +324,7 @@ class SearchedCreationProvider extends ChangeNotifier {
       } else {
         _seachedCreations!.addAll(newFetchedCreations);
       }
-      offset += _seachedCreations!.length; // Update the offset for pagination
+      offset += newFetchedCreations.length; // Update the offset for pagination
     } catch (e) {
       _errorMassage = 'Failed to fetch searched creation creations: $e';
       log(e.toString());
