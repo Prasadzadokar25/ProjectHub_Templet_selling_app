@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:projecthub/view/shorts/provider/reels_providel.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/view/shorts/model/reel_model.dart';

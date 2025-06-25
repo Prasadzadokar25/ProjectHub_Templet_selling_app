@@ -13,7 +13,7 @@ import 'package:shimmer/shimmer.dart';
 import '../advertisement/provider/advertisement_provider.dart';
 import '../../app_providers/categories_provider.dart';
 import '../../app_providers/creation_provider.dart';
-import '../../app_providers/user_provider.dart';
+import '../profile/provider/user_provider.dart';
 import '../../constant/app_padding.dart';
 import '../error_screen/error_screen.dart';
 

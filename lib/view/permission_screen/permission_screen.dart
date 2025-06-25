@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:projecthub/view/loading_screen.dart/loading_screen.dart';
+import 'package:projecthub/view/loading_screen/loading_screen.dart';
 
 class PermissionRequestScreen extends StatefulWidget {
   final int userId;

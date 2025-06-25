@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:projecthub/view/purchase/model/purched_creation_model.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:projecthub/controller/user_controller.dart';
+import 'package:projecthub/view/profile/controller/user_controller.dart';
 import 'package:projecthub/model/user_info_model.dart';
 
 class UserInfoProvider extends ChangeNotifier {

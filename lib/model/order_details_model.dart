@@ -1,4 +1,4 @@
-import 'package:projecthub/model/incard_creation_model.dart';
+import 'package:projecthub/view/cart/model/incard_creation_model.dart';
 
 class OrderDetails {
   List<InCardCreationInfo> creations; // List to hold Creation2 objects

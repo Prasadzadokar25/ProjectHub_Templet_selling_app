@@ -15,14 +15,14 @@ import 'package:projecthub/view/advertisement/model/advertisement_model.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_model.dart';
 import 'package:projecthub/view/app_shimmer.dart';
-import 'package:projecthub/view/profile/profile_screen.dart';
+import 'package:projecthub/view/profile/view/profile_screen.dart';
 import 'package:projecthub/widgets/creation_card.dart';
 import 'package:projecthub/view/home/categories_screen.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../app_providers/user_provider.dart';
+import '../profile/provider/user_provider.dart';
 import '../../utils/uri_launch_service.dart';
 import '../all_creation_screen/all_creation_screen.dart';
 

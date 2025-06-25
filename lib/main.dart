@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/view/advertisement/provider/advertisement_provider.dart';
-import 'package:projecthub/view/profile/bank_accounts/provider/bank_account_provider.dart';
+import 'package:projecthub/view/bank_accounts/provider/bank_account_provider.dart';
 import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
-import 'package:projecthub/view/profile/transactions_history/provider/histroy_provider.dart';
+import 'package:projecthub/view/transactions_history/provider/histroy_provider.dart';
 import 'package:projecthub/app_providers/order_provider.dart';
 import 'package:projecthub/view/shorts/provider/reels_providel.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/initialization_controller.dart';
 import 'package:provider/provider.dart';
 
+import 'view/cart/provider/card_creation_provider.dart';
 import 'view/network_check_screen/network_check_screen.dart';
 import 'view/purchase/provider/purchased_creation_provider.dart';
 import 'view/search_screen/provider/search_creation_controller.dart';

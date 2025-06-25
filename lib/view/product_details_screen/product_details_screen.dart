@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
@@ -17,7 +17,7 @@ import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
 import '../app_shimmer.dart';
-import '../cart/cart_page.dart';
+import '../cart/view/cart_page.dart';
 
 // ignore: must_be_immutable
 class ProductDetailsScreen extends StatefulWidget {

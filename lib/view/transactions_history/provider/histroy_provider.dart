@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:projecthub/view/profile/transactions_history/controller/transaction_controller.dart';
+import 'package:projecthub/view/transactions_history/controller/transaction_controller.dart';
 
 import '../model/transaction_model.dart';
 

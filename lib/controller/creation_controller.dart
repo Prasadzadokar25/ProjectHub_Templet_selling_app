@@ -13,7 +13,7 @@ import 'package:dio/dio.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/model/creation_info_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:projecthub/model/incard_creation_model.dart';
+import 'package:projecthub/view/cart/model/incard_creation_model.dart';
 import 'package:projecthub/model/creation_model.dart';
 
 import '../view/purchase/model/purched_creation_model.dart';

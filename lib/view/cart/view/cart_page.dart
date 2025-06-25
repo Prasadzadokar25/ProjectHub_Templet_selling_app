@@ -7,21 +7,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/app_providers/order_provider.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/controller/paymet_controller.dart';
-import 'package:projecthub/model/incard_creation_model.dart';
+import 'package:projecthub/view/cart/model/incard_creation_model.dart';
 import 'package:projecthub/model/order_details_model.dart';
 import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
-
-import '../../app_providers/creation_provider.dart';
-import '../../config/api_config.dart';
-import '../../model/payment_ingo_model.dart';
+import '../../../config/api_config.dart';
+import '../../../model/payment_ingo_model.dart';
+import '../provider/card_creation_provider.dart';
 
 class AddToCartPage extends StatefulWidget {
   const AddToCartPage({super.key});

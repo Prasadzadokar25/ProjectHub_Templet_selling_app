@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/view/profile/bank_accounts/provider/bank_account_provider.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/view/bank_accounts/provider/bank_account_provider.dart';
+import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
-import 'package:projecthub/view/profile/bank_accounts/model/bank_account_model.dart';
+import 'package:projecthub/view/bank_accounts/model/bank_account_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 

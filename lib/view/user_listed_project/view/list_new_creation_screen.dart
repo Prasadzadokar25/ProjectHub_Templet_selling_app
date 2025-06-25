@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
 import 'package:projecthub/app_providers/creation_provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
@@ -21,7 +21,7 @@ import 'package:projecthub/model/creation_info_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
-import '../../app_providers/categories_provider.dart';
+import '../../../app_providers/categories_provider.dart';
 
 class ListNewCreationScreen extends StatefulWidget {
   const ListNewCreationScreen({super.key});

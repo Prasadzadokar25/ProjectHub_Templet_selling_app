@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:projecthub/view/profile/bank_accounts/provider/bank_account_provider.dart';
+import 'package:projecthub/view/bank_accounts/provider/bank_account_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
-import 'package:projecthub/app_providers/user_provider.dart';
+import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../view/purchase/provider/purchased_creation_provider.dart';
