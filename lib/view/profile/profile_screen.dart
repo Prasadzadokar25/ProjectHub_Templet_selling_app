@@ -8,7 +8,7 @@ import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/controller/logout_data_controller.dart';
 import 'package:projecthub/view/cart/cart_page.dart';
 import 'package:projecthub/view/listed_project/listed_creation_screen.dart';
-import 'package:projecthub/view/profile/bank_account_page.dart';
+import 'package:projecthub/view/profile/bank_accounts/view/bank_account_page.dart';
 import 'package:projecthub/view/profile/edit_profile.dart';
 import 'package:projecthub/view/splash/splash_screen.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
@@ -18,7 +18,7 @@ import '../../utils/app_shared_preferences.dart';
 import '../advertisement/view/add_submission_form.dart';
 import '../app_navigation_bar/app_navigation_bar.dart';
 import 'reffer_screen.dart';
-import 'transactions/view/all_transactions_screen.dart';
+import 'transactions_history/view/all_transactions_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

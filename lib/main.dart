@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/view/advertisement/provider/advertisement_provider.dart';
-import 'package:projecthub/app_providers/bank_account_provider.dart';
+import 'package:projecthub/view/profile/bank_accounts/provider/bank_account_provider.dart';
 import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
-import 'package:projecthub/view/profile/transactions/provider/histroy_provider.dart';
+import 'package:projecthub/view/profile/transactions_history/provider/histroy_provider.dart';
 import 'package:projecthub/app_providers/order_provider.dart';
 import 'package:projecthub/view/shorts/provider/reels_providel.dart';
 import 'package:projecthub/app_providers/user_provider.dart';

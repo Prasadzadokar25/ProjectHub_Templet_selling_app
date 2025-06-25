@@ -1,7 +1,7 @@
 // screens/transaction_list_screen.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:projecthub/view/profile/transactions/provider/histroy_provider.dart';
+import 'package:projecthub/view/profile/transactions_history/provider/histroy_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import '../model/transaction_model.dart';

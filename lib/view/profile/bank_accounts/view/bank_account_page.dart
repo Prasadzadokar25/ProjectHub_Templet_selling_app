@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/app_providers/bank_account_provider.dart';
+import 'package:projecthub/view/profile/bank_accounts/provider/bank_account_provider.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_icons.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
-import 'package:projecthub/model/bank_account_model.dart';
+import 'package:projecthub/view/profile/bank_accounts/model/bank_account_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
@@ -184,6 +184,7 @@ class _BankAccountPageState extends State<BankAccountPage> {
                 backgroundColor: const Color.fromARGB(255, 136, 254, 136));
 
             await provider.fetchUserBankAccounts(
+                // ignore: use_build_context_synchronously
                 Provider.of<UserInfoProvider>(context, listen: false)
                     .user!
                     .userId);

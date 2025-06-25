@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:projecthub/controller/bank_account_controller.dart';
+import 'package:projecthub/view/profile/bank_accounts/controller/bank_account_controller.dart';
 
 import '../model/bank_account_model.dart';
 
