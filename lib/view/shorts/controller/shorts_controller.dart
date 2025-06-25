@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:projecthub/config/api_config.dart';
-import 'package:projecthub/model/reel_model.dart';
+import 'package:projecthub/view/shorts/model/reel_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:projecthub/model/user_info_model.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:projecthub/controller/reels_controller.dart';
-import 'package:projecthub/model/reel_model.dart';
+import 'package:projecthub/view/shorts/controller/shorts_controller.dart';
+import 'package:projecthub/view/shorts/model/reel_model.dart';
 import 'package:projecthub/model/user_info_model.dart';
 
 class ReelsProvider extends ChangeNotifier {

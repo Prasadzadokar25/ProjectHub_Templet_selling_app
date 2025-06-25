@@ -6,7 +6,7 @@ import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/app_providers/histroy_provider.dart';
 import 'package:projecthub/app_providers/order_provider.dart';
-import 'package:projecthub/app_providers/reels_providel.dart';
+import 'package:projecthub/view/shorts/provider/reels_providel.dart';
 import 'package:projecthub/app_providers/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/controller/initialization_controller.dart';
