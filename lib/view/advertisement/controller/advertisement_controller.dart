@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 
-import '../config/api_config.dart';
+import '../../../config/api_config.dart';
 import '../model/advertisement_model.dart';
 
 class AdvertisementController {

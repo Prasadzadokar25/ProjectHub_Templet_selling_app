@@ -10,7 +10,7 @@ import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../app_providers/advertisement_provider.dart';
+import '../advertisement/provider/advertisement_provider.dart';
 import '../../app_providers/categories_provider.dart';
 import '../../app_providers/creation_provider.dart';
 import '../../app_providers/user_provider.dart';

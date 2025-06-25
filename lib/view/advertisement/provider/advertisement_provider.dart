@@ -1,14 +1,12 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:projecthub/model/advertisement_model.dart';
+import 'package:projecthub/view/advertisement/model/advertisement_model.dart';
 
 import '../controller/advertisement_controller.dart';
 
 class AdvertisementProvider extends ChangeNotifier {
   List<AdvertisementModel> _advertisements = [];
   bool _isLoading = false;
-  AdvertisementController _advertisementController = AdvertisementController();
+  final _advertisementController = AdvertisementController();
 
   List<AdvertisementModel> get advertisements => _advertisements;
 

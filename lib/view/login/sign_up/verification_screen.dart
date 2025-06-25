@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
-import 'package:projecthub/controller/authentication.dart';
+import 'package:projecthub/services/firebase_service.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/view/home/home_screen.dart';
 import 'package:projecthub/view/login/sign_up/sign_up_add_user_screen.dart';

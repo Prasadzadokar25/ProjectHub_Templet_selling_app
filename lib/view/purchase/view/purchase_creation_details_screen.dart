@@ -75,6 +75,9 @@ class _PurchaseDetailsScreenState extends State<PurchaseDetailsScreen> {
         if (provider.detailScreenErrorMessage.isNotEmpty) {
           return Center(child: Text(provider.detailScreenErrorMessage));
         }
+        if (provider.purchedCreationDetails == null) {
+          return const Center(child: Text('No purchase details available'));
+        }
         final creation = provider.purchedCreationDetails!.creation;
         return SingleChildScrollView(
           padding: EdgeInsets.all(16.r),
@@ -319,16 +322,16 @@ class _PurchaseDetailsScreenState extends State<PurchaseDetailsScreen> {
                         leading: CircleAvatar(
                           radius: 25.r,
                           backgroundImage:
-                              creation.seller?.sellerProfilePhoto != null
-                                  ? NetworkImage(ApiConfig.getFileUrl(
-                                      creation.seller!.sellerProfilePhoto!))
+                              creation.seller!.sellerProfilePhoto != null
+                                  ? NetworkImage(ApiConfig.baseURL +
+                                      creation.seller!.sellerProfilePhoto!)
                                   : null,
-                          child: creation.seller?.sellerProfilePhoto == null
-                              ? Icon(Icons.person, size: 25.r)
+                          child: creation.seller!.sellerProfilePhoto == null
+                              ? Icon(Icons.person, size: 14.r)
                               : null,
                         ),
                         title: Text(
-                          creation.seller?.sellerName ?? 'Unknown Seller',
+                          creation.seller.sellerName ?? 'Unknown Seller',
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
@@ -339,19 +342,19 @@ class _PurchaseDetailsScreenState extends State<PurchaseDetailsScreen> {
                         //   style: TextStyle(fontSize: 13.sp),
                         // ),
                       ),
-                      SizedBox(height: 8.h),
-                      Row(
-                        children: [
-                          _buildSellerStat(
-                              'Products', '42'), // Replace with actual
-                          SizedBox(width: 16.w),
-                          _buildSellerStat(
-                              'Rating', '4.8'), // Replace with actual
-                          SizedBox(width: 16.w),
-                          _buildSellerStat(
-                              'Sales', '128'), // Replace with actual
-                        ],
-                      ),
+                      // SizedBox(height: 8.h),
+                      // Row(
+                      //   children: [
+                      //     _buildSellerStat(
+                      //         'Products', '42'), // Replace with actual
+                      //     SizedBox(width: 16.w),
+                      //     _buildSellerStat(
+                      //         'Rating', '4.8'), // Replace with actual
+                      //     SizedBox(width: 16.w),
+                      //     _buildSellerStat(
+                      //         'Sales', '128'), // Replace with actual
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),

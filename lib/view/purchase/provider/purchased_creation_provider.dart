@@ -20,6 +20,7 @@ class PurchedCreationProvider extends ChangeNotifier {
   bool get isDetailsLoading => _isDetailsLoading;
   String get errorMessage => _errorMessage;
   String get detailScreenErrorMessage => _detailScreenErrorMessage;
+  final _puechasedCreationController = PuechasedCreationController();
 
   void reset() {
     _errorMessage = '';
@@ -51,7 +52,7 @@ class PurchedCreationProvider extends ChangeNotifier {
 
     notifyListeners();
     try {
-      newFetchedCreations = await PuechasedCreationController()
+      newFetchedCreations = await _puechasedCreationController
           .fetchPurchedCreations(userId, page, perPage);
       _purchedCreations = newFetchedCreations;
       _errorMessage = '';
@@ -76,7 +77,7 @@ class PurchedCreationProvider extends ChangeNotifier {
       notifyListeners();
     }
     try {
-      newFetchedCreations = await PuechasedCreationController()
+      newFetchedCreations = await _puechasedCreationController
           .fetchPurchedCreations(userId, page, perPage);
       _purchedCreations = newFetchedCreations;
       _errorMessage = '';
@@ -93,10 +94,11 @@ class PurchedCreationProvider extends ChangeNotifier {
 
   Future<void> fetchPurchedCreationDetails(int userId, int creationId) async {
     setIsDetailsLoading(true);
-    _purchedCreationDetails = await PuechasedCreationController()
-        .fetchPurchedCreationDetails(userId, creationId);
-    _errorMessage = '';
-    try {} catch (e) {
+    try {
+      _purchedCreationDetails = await _puechasedCreationController
+          .fetchPurchedCreationDetails(userId, creationId);
+      _errorMessage = '';
+    } catch (e) {
       _detailScreenErrorMessage = 'Failed to fetch creations: $e';
       // throw Exception("failed to feach purched creations $e");
     } finally {

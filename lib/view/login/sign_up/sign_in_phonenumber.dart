@@ -9,7 +9,7 @@ import 'package:intl_phone_field/phone_number.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/controller/app_phone_number_controller.dart';
-import 'package:projecthub/controller/authentication.dart';
+import 'package:projecthub/services/firebase_service.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/view/login/login_screen.dart';
 import '../sign_up/verification_screen.dart';

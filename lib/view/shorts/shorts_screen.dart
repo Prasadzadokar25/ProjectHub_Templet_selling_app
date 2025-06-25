@@ -36,6 +36,12 @@ class _ReelsScreenState extends State<ReelsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchVideos(true);
+      _pageController.addListener(() {
+        if (_pageController.position.pixels ==
+            _pageController.position.maxScrollExtent) {
+          fetchMoreReel();
+        }
+      });
     });
   }
 
@@ -114,7 +120,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
                     const Duration(seconds: 1), () => tempController.dispose());
               }
               if (index == provider.reels!.length - 2) {
-                fetchMoreReel();
+                //   fetchMoreReel();
               }
             },
             itemBuilder: (context, index) {
@@ -230,10 +236,12 @@ class _VideoItemState extends State<VideoItem> {
   bool _showHeart = false;
 
   bool isPaying = false;
+  double _descriptionHeight = 0.0;
 
   @override
   void initState() {
     super.initState();
+    _descriptionHeight = Get.height * 0.08;
     _controller = YoutubePlayerController(
       initialVideoId: extractVideoId(widget.reel.youtubeLink!),
       flags: const YoutubePlayerFlags(
@@ -354,8 +362,7 @@ class _VideoItemState extends State<VideoItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  formatProper(
-                      widget.reel.creationTitle), // Replace with actual title
+                  formatProper(widget.reel.creationTitle), // creation title
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -363,14 +370,35 @@ class _VideoItemState extends State<VideoItem> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  formatProper(widget.reel
-                      .creationDescription), // Replace with actual description
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
+                SizedBox(
+                  height: _descriptionHeight,
+                  child: Text(
+                    formatProper(widget
+                        .reel.creationDescription), // creation description
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _descriptionHeight =
+                          (_descriptionHeight == Get.height * 0.08)
+                              ? Get.height * 0.3
+                              : Get.height * 0.08;
+                    });
+                  },
+                  child: Text(
+                    "... more",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
               ],
             ),
           ),

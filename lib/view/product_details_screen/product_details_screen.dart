@@ -414,7 +414,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     listen: false)
                                 .user!
                                 .userId,
-                            widget.creation.creationId!);
+                            widget.creation.creationId);
                         SnackBar snackBar = const SnackBar(
                           content: Text("Product added"),
                           duration: Duration(milliseconds: 500),

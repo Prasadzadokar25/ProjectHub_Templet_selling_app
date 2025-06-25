@@ -30,18 +30,19 @@ class PuechasedCreationController {
 
   Future<PurchaseDetails> fetchPurchedCreationDetails(
       int userId, int creationId) async {
-    final response = await http.get(
-        Uri.parse(ApiConfig.getPurchedCreationDetails(userId, creationId)));
-    log(response.body);
-    if (response.statusCode == 200) {
-      log("pppppp");
-      Map<String, dynamic> data = jsonDecode(response.body)['data'];
+    try {
+      final response = await http.get(
+          Uri.parse(ApiConfig.getPurchedCreationDetails(userId, creationId)));
+      log(response.body);
+      if (response.statusCode == 200) {
+        log("pppppp");
+        Map<String, dynamic> data = jsonDecode(response.body)['data'];
 
-      return PurchaseDetails.fromJson(data);
-    } else {
-      throw Exception('Failed to load creations');
-    }
-    try {} catch (e) {
+        return PurchaseDetails.fromJson(data);
+      } else {
+        throw Exception('Failed to load creations');
+      }
+    } catch (e) {
       throw Exception('Failed to load creations: $e');
     }
   }

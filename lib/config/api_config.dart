@@ -1,6 +1,6 @@
 class ApiConfig {
-  // static String baseURL = "https://projecthub.pythonanywhere.com";
-  static String baseURL = "http://192.168.0.105:5000/";
+  static String baseURL = "https://projecthub.pythonanywhere.com";
+  //static String baseURL = "http://192.168.0.110:5000/";
 
 // usesr rougths
   static String addUser = "$baseURL/user/add";
@@ -14,8 +14,20 @@ class ApiConfig {
   static String getBankAccount = "$baseURL/bank-account/get";
   static String setPrimaryBankAccount = "$baseURL/bank-account/set-primary";
 
-  static String listCreation = "$baseURL/listCreation";
-  static String userListedCreations = "$baseURL/userListedCreations";
+  // user listed creations
+  static String listCreation = "$baseURL/creation/listCreation";
+  static String userListedCreations = "$baseURL/creation/userListedCreations";
+
+  // recent creations
+  static String getRecentaddedCreationUrl(int pageNo, [int perPage = 10]) {
+    return "$baseURL/creation/recentCreations/page/$pageNo/perPage/$perPage/uid";
+  }
+
+// trending creations
+  static String getTrendingCreations(int pageNo, [int perPage = 10]) {
+    return "$baseURL/creation/trendingCreations/page/$pageNo/perPage/$perPage/uid";
+  }
+
   static String addCreationToCard = "$baseURL/creation/card/add";
   static String removeItemFromCard = "$baseURL//creation/card/remove";
   static String incardCreations = "$baseURL/creation/card/get/userid";
@@ -29,14 +41,6 @@ class ApiConfig {
 
   static String getGeneralCreationsUrl(int pageNo, [int perPage = 10]) {
     return "$baseURL/creations/page/$pageNo/perPage/$perPage/uid";
-  }
-
-  static String getRecentaddedCreationUrl(int pageNo, [int perPage = 10]) {
-    return "$baseURL/recentCreations/page/$pageNo/perPage/$perPage/uid";
-  }
-
-  static String getTrendingCreations(int pageNo, [int perPage = 10]) {
-    return "$baseURL/trendingCreations/page/$pageNo/perPage/$perPage/uid";
   }
 
   static String getRecomandedCreations(int pageNo, [int perPage = 10]) {

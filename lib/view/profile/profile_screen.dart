@@ -15,7 +15,7 @@ import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/app_shared_preferences.dart';
-import '../advertisement/add_submission_form.dart';
+import '../advertisement/view/add_submission_form.dart';
 import '../app_navigation_bar/app_navigation_bar.dart';
 import 'reffer_screen.dart';
 import 'transactions/all_transactions_screen.dart';

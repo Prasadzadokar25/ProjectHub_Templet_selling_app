@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:projecthub/app_providers/advertisement_provider.dart';
+import 'package:projecthub/view/advertisement/provider/advertisement_provider.dart';
 import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
-import 'package:projecthub/model/advertisement_model.dart';
+import 'package:projecthub/view/advertisement/model/advertisement_model.dart';
 import 'package:projecthub/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_model.dart';
 import 'package:projecthub/view/app_shimmer.dart';
@@ -334,7 +334,7 @@ class _AdvertisementSlider extends StatelessWidget {
             height: Get.height * 0.22,
             autoPlay: true,
             autoPlayAnimationDuration: const Duration(seconds: 1),
-            autoPlayInterval: const Duration(seconds: 4),
+            autoPlayInterval: const Duration(seconds: 5),
             aspectRatio: 1,
             viewportFraction: 0.85,
             enlargeCenterPage: true,
@@ -360,34 +360,31 @@ class _AdItem extends StatelessWidget {
         onTap: () async {
           launchWebSite(ad.adWebsite!);
         },
-        child: GestureDetector(
-          onTap: () async {},
-          child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(12)),
-              child: Container(
-                  width: Get.width * 0.85,
-                  child: Image.network(
-                    ApiConfig.getFileUrl(ad.adImage!),
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Shimmer(
-                        child: Container(
-                          width: Get.width * 0.85,
-                        ),
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.grey.shade300,
-                            Colors.grey.shade100,
-                            Colors.grey.shade300,
-                          ],
-                        ),
-                      );
-                    },
-                    fit: BoxFit.cover,
-                  ))),
-        ),
+        child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            child: SizedBox(
+                width: Get.width * 0.85,
+                child: Image.network(
+                  ApiConfig.getFileUrl(ad.adImage!),
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Shimmer(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.grey.shade300,
+                          Colors.grey.shade100,
+                          Colors.grey.shade300,
+                        ],
+                      ),
+                      child: Container(
+                        width: Get.width * 0.85,
+                      ),
+                    );
+                  },
+                  fit: BoxFit.cover,
+                ))),
       ),
     );
   }
@@ -402,17 +399,20 @@ class _TrendingCreationsView extends StatelessWidget {
       builder: (context, provider, _) {
         return SizedBox(
           height: 240.h,
-          child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
-            physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: provider.threandingCreations!.length,
-            separatorBuilder: (_, __) => SizedBox(width: 10.w),
-            itemBuilder: (context, index) {
-              final creation = provider.threandingCreations![index];
-              return _TrendingCreationItem(creation: creation);
-            },
-          ),
+          child: (provider.threandingCreations!.isEmpty)
+              ? const Center(child: Text("No trending creations available."))
+              : ListView.separated(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: provider.threandingCreations!.length,
+                  separatorBuilder: (_, __) => SizedBox(width: 10.w),
+                  itemBuilder: (context, index) {
+                    final creation = provider.threandingCreations![index];
+                    return _TrendingCreationItem(creation: creation);
+                  },
+                ),
         );
       },
     );
@@ -523,17 +523,20 @@ class _RecentlyAddedCreationsView extends StatelessWidget {
       builder: (context, provider, _) {
         return SizedBox(
           height: 323.h,
-          child: ListView.separated(
-            padding: EdgeInsets.all(AppPadding.edgePadding),
-            physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: provider.recentlyAddedCreations!.length,
-            separatorBuilder: (_, __) => SizedBox(width: 12.w),
-            itemBuilder: (context, index) {
-              final creation = provider.recentlyAddedCreations![index];
-              return _RecentlyAddedCreationItem(creation: creation);
-            },
-          ),
+          child: (provider.recentlyAddedCreations!.isEmpty)
+              ? const Center(
+                  child: Text("No recently added creations available."))
+              : ListView.separated(
+                  padding: EdgeInsets.all(AppPadding.edgePadding),
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: provider.recentlyAddedCreations!.length,
+                  separatorBuilder: (_, __) => SizedBox(width: 12.w),
+                  itemBuilder: (context, index) {
+                    final creation = provider.recentlyAddedCreations![index];
+                    return _RecentlyAddedCreationItem(creation: creation);
+                  },
+                ),
         );
       },
     );
@@ -718,7 +721,9 @@ class _OtherCreationsView extends StatelessWidget {
                 .dependOnInheritedWidgetOfExactType<_LoadingMoreIndicator>()
                 ?.isLoadingMore ??
             false;
-
+        if (provider.generalCreations!.isEmpty) {
+          return const Center(child: Text("No other creations available."));
+        }
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: AppPadding.edgePadding),
           child: Column(

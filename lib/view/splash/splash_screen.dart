@@ -8,7 +8,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:projecthub/app_providers/advertisement_provider.dart';
+import 'package:projecthub/view/advertisement/provider/advertisement_provider.dart';
 import 'package:projecthub/app_providers/categories_provider.dart';
 import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:provider/provider.dart';
