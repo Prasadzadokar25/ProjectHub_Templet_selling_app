@@ -10,7 +10,7 @@ import 'package:pinput/pinput.dart';
 import 'package:projecthub/services/firebase_service.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/view/home/home_screen.dart';
-import 'package:projecthub/view/login/sign_up/sign_up_add_user_screen.dart';
+import 'package:projecthub/view/sign_up/sign_up_add_user_screen.dart';
 
 class Verification extends StatefulWidget {
   final String number;

@@ -19,7 +19,7 @@ import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/view/slider_screen/slider_screen.dart';
 import 'package:projecthub/view/loading_screen.dart/loading_screen.dart';
 import '../error_screen/error_screen.dart';
-import '../login/login_screen.dart';
+import '../login/view/login_screen.dart';
 import '../permission_screen/permission_screen.dart';
 
 class Splashscreen extends StatefulWidget {

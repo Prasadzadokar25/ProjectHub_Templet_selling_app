@@ -29,11 +29,6 @@ class UserInfoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void reset() {
-    _user = null; // Clear data
-    notifyListeners();
-  }
-
   void setUserName(String name) {
     _user!.userName = name;
     notifyListeners();
@@ -41,6 +36,11 @@ class UserInfoProvider extends ChangeNotifier {
 
   void setLocation(Position location) {
     _user!.userLocation = location;
+    notifyListeners();
+  }
+
+  void reset() {
+    _user = null; // Clear data
     notifyListeners();
   }
 

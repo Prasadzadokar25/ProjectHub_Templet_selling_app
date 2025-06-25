@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/utils/screen_size.dart';
 // import 'package:intl_phone_field/intl_phone_field.dart';
-import '../login/reset_password.dart';
+import 'reset_password.dart';
 
 import 'login_screen.dart';
 

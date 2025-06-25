@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/constant/app_color.dart';
-import 'package:projecthub/controller/login_controller.dart';
+import 'package:projecthub/view/login/controller/login_controller.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
-import '../../constant/app_text.dart';
-import '../../constant/app_textfield_border.dart';
-import '../login/forgot_password.dart';
-import '../permission_screen/permission_screen.dart';
-import 'sign_up/sign_in_phonenumber.dart';
+import '../../../constant/app_text.dart';
+import '../../../constant/app_textfield_border.dart';
+import 'forgot_password.dart';
+import '../../permission_screen/permission_screen.dart';
+import '../../sign_up/sign_in_phonenumber.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

@@ -16,8 +16,8 @@ import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/view/app_navigation_bar/app_navigation_bar.dart';
 import 'package:projecthub/view/loading_screen.dart/loading_screen.dart';
 import 'package:provider/provider.dart';
-import '../../../app_providers/creation_provider.dart';
-import '../sign_up/term_and_condition.dart';
+import '../../app_providers/creation_provider.dart';
+import 'term_and_condition.dart';
 
 class SignUpAddUserScreen extends StatefulWidget {
   final String phoneNumber;

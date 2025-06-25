@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,9 +7,9 @@ import 'package:get/get.dart';
 import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/utils/screen_size.dart';
-import '../login_screen.dart';
-import '../sign_up/sign_in_phonenumber.dart';
-import '../sign_up/term_and_condition.dart';
+import '../login/view/login_screen.dart';
+import 'sign_in_phonenumber.dart';
+import 'term_and_condition.dart';
 
 class SignInEmptyScreen extends StatefulWidget {
   const SignInEmptyScreen({super.key});
