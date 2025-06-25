@@ -18,7 +18,7 @@ import '../../utils/app_shared_preferences.dart';
 import '../advertisement/view/add_submission_form.dart';
 import '../app_navigation_bar/app_navigation_bar.dart';
 import 'reffer_screen.dart';
-import 'transactions/all_transactions_screen.dart';
+import 'transactions/view/all_transactions_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

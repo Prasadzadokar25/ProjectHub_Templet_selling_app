@@ -1,7 +1,7 @@
 // screens/transaction_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../model/transaction_model.dart';
+import '../model/transaction_model.dart';
 
 class TransactionDetailScreen extends StatefulWidget {
   final TransactionModel transaction;
