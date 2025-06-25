@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:projecthub/model/categories_info_model.dart';
+import 'package:projecthub/view/home/model/categories_info_model.dart';
 import 'package:http/http.dart' as http;
 
-import '../config/api_config.dart';
+import '../../../config/api_config.dart';
 
 class CategoryController {
   Future<List<CategoryModel>> fetchCategories(int userId) async {

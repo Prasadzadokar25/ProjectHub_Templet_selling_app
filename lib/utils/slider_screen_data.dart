@@ -1,4 +1,4 @@
-import 'package:projecthub/model/slider_info_model.dart';
+import 'package:projecthub/view/intro_slider_screen/model/slider_info_model.dart';
 
 class Utils {
   // static List<User> getUser() {

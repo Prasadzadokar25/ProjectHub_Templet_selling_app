@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projecthub/controller/category_controller.dart';
+import 'package:projecthub/view/home/controller/category_controller.dart';
 
 import '../model/categories_info_model.dart';
 

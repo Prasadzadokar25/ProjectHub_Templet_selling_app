@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:projecthub/constant/app_data.dart';
 import 'package:projecthub/model/order_details_model.dart';
-import 'package:projecthub/model/payment_ingo_model.dart';
+import 'package:projecthub/model/payment_info_model.dart';
 import 'package:projecthub/model/user_info_model.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -61,7 +61,7 @@ class PaymetController {
   ) {
     Fluttertoast.showToast(msg: "Paymet successful");
     log("paymet successful");
-  PaymentData paymentData=  PaymentData(
+    PaymentData paymentData = PaymentData(
         razorpayPaymentId: response.paymentId!,
         paymentAmount: order.total,
         gstAmount: order.totalGst,
@@ -70,7 +70,7 @@ class PaymetController {
         currency: "inr",
         status: "completed",
         paymentGatewayFee: 20);
-    onPaymentSuccessful(order,paymentData);
+    onPaymentSuccessful(order, paymentData);
     _razorpay.clear(); // Removes all listeners
   }
 

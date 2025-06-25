@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
 import 'package:projecthub/app_providers/creation_provider.dart';
+import 'package:projecthub/services/file_service.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
@@ -16,12 +17,12 @@ import 'package:projecthub/constant/app_text.dart';
 import 'package:projecthub/constant/app_textfield_border.dart';
 import 'package:projecthub/controller/creation_controller.dart';
 import 'package:projecthub/controller/files_picked_controller.dart';
-import 'package:projecthub/model/categories_info_model.dart';
-import 'package:projecthub/model/creation_info_model.dart';
+import 'package:projecthub/view/home/model/categories_info_model.dart';
+import 'package:projecthub/view/user_listed_creation/model/listed_creation_model.dart';
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 
-import '../../../app_providers/categories_provider.dart';
+import '../../home/provider/categories_provider.dart';
 
 class ListNewCreationScreen extends StatefulWidget {
   const ListNewCreationScreen({super.key});
@@ -39,7 +40,6 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   final TextEditingController _keywordController = TextEditingController();
   final TextEditingController _filePathController = TextEditingController();
   final TextEditingController _ytVideoController = TextEditingController();
-  final FilesController _filesController = FilesController();
   final _previewDetailsKey = GlobalKey<FormState>();
 
   final _infoFormKey = GlobalKey<FormState>();
@@ -89,7 +89,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   // Function to request permissions and pick an image
   Future<void> _pickThumbnailImage() async {
     // Request permissions before picking the image
-    final thumbnailFile = await _filesController.pickImage();
+    final thumbnailFile = await FileServices.pickImage();
     //PermissionStatus status = await Permission.photos.request();
 
     if (thumbnailFile != null) {
@@ -105,7 +105,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
 
   Future<void> pickZipFile() async {
     // Use file_picker to pick a ZIP file
-    File? result = await _filesController.pickZipFile();
+    File? result = await FileServices.pickZipFile();
     if (result != null) {
       String filePath = result.path;
 
@@ -693,7 +693,7 @@ class _ListNewCreationScreenState extends State<ListNewCreationScreen> {
   }
 
   Future<void> _pickOtherImage() async {
-    final File? image = await _filesController.pickImage();
+    final File? image = await FileServices.pickImage();
     if (image != null) {
       setState(() {
         _otherImages.add(image.path);

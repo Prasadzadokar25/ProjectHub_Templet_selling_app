@@ -5,8 +5,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:projecthub/constant/app_color.dart';
-import 'package:projecthub/controller/app_permission_controller.dart';
-import 'package:projecthub/view/home/home_screen.dart';
+import 'package:projecthub/services/app_local_permission_service.dart';
+import 'package:projecthub/view/home/view/home_screen.dart';
 import 'package:projecthub/view/profile/view/profile_screen.dart';
 import 'package:projecthub/view/purchase/view/purchase_screen.dart';
 import 'package:projecthub/view/search_screen/search_screen.dart';
@@ -28,7 +28,8 @@ class _AppNavigationScreenState extends State<AppNavigationScreen> {
   int _selectedIndex = 0; // Current index of the selected button
   final PageController _pageController =
       PageController(); // Page controller to manage PageView
-  AppPermissionController appPermissionController = AppPermissionController();
+  AppLocalPermissionService appPermissionController =
+      AppLocalPermissionService();
 
   @override
   void initState() {

@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_text.dart';
-import 'package:projecthub/controller/files_download_controller.dart';
-import 'package:projecthub/model/creation_info_model.dart';
+import 'package:projecthub/services/file_service.dart';
+import 'package:projecthub/view/user_listed_creation/model/listed_creation_model.dart';
 import 'package:projecthub/model/creation_model.dart';
 import 'package:share_plus/share_plus.dart';
 

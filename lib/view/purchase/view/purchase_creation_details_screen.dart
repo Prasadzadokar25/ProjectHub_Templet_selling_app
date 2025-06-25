@@ -6,7 +6,7 @@ import 'package:projecthub/view/purchase/model/purched_creation_model.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../config/api_config.dart';
-import '../../../controller/files_download_controller.dart';
+import '../../../services/file_service.dart';
 import '../provider/purchased_creation_provider.dart';
 
 class PurchaseDetailsScreen extends StatefulWidget {
@@ -372,7 +372,7 @@ class _PurchaseDetailsScreenState extends State<PurchaseDetailsScreen> {
                     ),
                   ),
                   onPressed: () {
-                    FilesDownloadController().downloadZipFile(creation);
+                    FileServices.downloadZipFile(creation);
                   },
                   child: Text(
                     'Download Files',

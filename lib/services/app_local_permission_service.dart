@@ -1,22 +1,24 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
 
-class AppPermissionController {
+class AppLocalPermissionService {
   Future<bool> requestNotificationPermission() async {
     // Request permission for notifications
     PermissionStatus status = await Permission.notification.request();
 
     // If the permission is granted, show a notification
     if (status.isGranted) {
-      print("Notification Permission Granted");
+      log("Notification Permission Granted");
       // You can show notifications now
     } else if (status.isDenied) {
-      print("Notification Permission Denied");
+      log("Notification Permission Denied");
       // Handle denied permission (you might show an explanation or guide to settings)
     } else if (status.isPermanentlyDenied) {
-      print("Notification Permission Permanently Denied");
+      log("Notification Permission Permanently Denied");
       // Guide user to open app settings
       _showPermissionDialog();
     }
@@ -37,13 +39,13 @@ class AppPermissionController {
 
     // If the permission is granted, show a notification
     if (status.isGranted) {
-      print("Location Permission Granted");
+      log("Location Permission Granted");
       // You can show notifications now
     } else if (status.isDenied) {
-      print("Location Permission Denied");
+      log("Location Permission Denied");
       // Handle denied permission (you might show an explanation or guide to settings)
     } else if (status.isPermanentlyDenied) {
-      print("Location Permission Permanently Denied");
+      log("Location Permission Permanently Denied");
       // Guide user to open app settings
       _showPermissionDialog();
     }
@@ -59,14 +61,14 @@ class AppPermissionController {
 
     // If the permission is granted, show a notification
     if (status.isGranted) {
-      print("manageExternalStorage Permission Granted");
+      log("manageExternalStorage Permission Granted");
       // You can show notifications now
     } else if (status.isDenied) {
-      print("manageExternalStorage Permission Denied");
+      log("manageExternalStorage Permission Denied");
       await Permission.manageExternalStorage.request();
       // Handle denied permission (you might show an explanation or guide to settings)
     } else if (status.isPermanentlyDenied) {
-      print("manageExternalStorage Permission Permanently Denied");
+      log("manageExternalStorage Permission Permanently Denied");
       // Guide user to open app settings
       _showPermissionDialog();
     }
@@ -80,7 +82,7 @@ class AppPermissionController {
     // Show a dialog asking the user to allow the permission from settings
     Get.defaultDialog(
       title: "Please allow permission from setting",
-      confirm: Text("Open Setting"),
+      confirm: const Text("Open Setting"),
       onConfirm: () {
         // Open app settings to enable notification permission
         openAppSettings();

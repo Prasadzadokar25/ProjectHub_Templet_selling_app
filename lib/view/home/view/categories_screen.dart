@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:projecthub/app_providers/categories_provider.dart';
+import 'package:projecthub/view/home/provider/categories_provider.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_text.dart';
-import 'package:projecthub/model/categories_info_model.dart';
+import 'package:projecthub/view/home/model/categories_info_model.dart';
 import 'package:provider/provider.dart';
 
 class CategoriesPage extends StatefulWidget {

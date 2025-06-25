@@ -4,6 +4,7 @@ import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/view/profile/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../view/cart/provider/card_creation_provider.dart';
 import '../view/purchase/provider/purchased_creation_provider.dart';
 
 class ClearDataController {

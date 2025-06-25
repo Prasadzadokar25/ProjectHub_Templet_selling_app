@@ -19,7 +19,7 @@ import 'package:projecthub/view/product_details_screen/product_details_screen.da
 import 'package:projecthub/widgets/app_primary_button.dart';
 import 'package:provider/provider.dart';
 import '../../../config/api_config.dart';
-import '../../../model/payment_ingo_model.dart';
+import '../../../model/payment_info_model.dart';
 import '../provider/card_creation_provider.dart';
 
 class AddToCartPage extends StatefulWidget {

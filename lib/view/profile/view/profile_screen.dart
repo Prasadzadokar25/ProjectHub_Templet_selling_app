@@ -7,7 +7,7 @@ import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/controller/logout_data_controller.dart';
 import 'package:projecthub/view/cart/view/cart_page.dart';
-import 'package:projecthub/view/user_listed_project/view/listed_creation_screen.dart';
+import 'package:projecthub/view/user_listed_creation/view/listed_creation_screen.dart';
 import 'package:projecthub/view/bank_accounts/view/bank_account_page.dart';
 import 'package:projecthub/view/profile/view/edit_profile.dart';
 import 'package:projecthub/view/splash/splash_screen.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:projecthub/model/slider_info_model.dart';
+import 'package:projecthub/view/intro_slider_screen/model/slider_info_model.dart';
 import 'package:projecthub/utils/screen_size.dart';
 import 'package:projecthub/utils/slider_screen_data.dart';
 import 'package:projecthub/utils/app_shared_preferences.dart';
-import '../login/view/login_screen.dart';
+import '../../login/view/login_screen.dart';
 
 class SlidePage extends StatefulWidget {
   const SlidePage({super.key});

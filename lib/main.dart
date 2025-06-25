@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:projecthub/view/advertisement/provider/advertisement_provider.dart';
 import 'package:projecthub/view/bank_accounts/provider/bank_account_provider.dart';
-import 'package:projecthub/app_providers/categories_provider.dart';
+import 'package:projecthub/view/home/provider/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/view/transactions_history/provider/histroy_provider.dart';
 import 'package:projecthub/app_providers/order_provider.dart';

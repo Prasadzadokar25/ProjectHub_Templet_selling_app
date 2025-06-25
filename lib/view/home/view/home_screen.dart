@@ -6,25 +6,25 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:projecthub/view/advertisement/provider/advertisement_provider.dart';
-import 'package:projecthub/app_providers/categories_provider.dart';
+import 'package:projecthub/view/home/provider/categories_provider.dart';
 import 'package:projecthub/app_providers/creation_provider.dart';
 import 'package:projecthub/config/api_config.dart';
 import 'package:projecthub/constant/app_color.dart';
 import 'package:projecthub/constant/app_padding.dart';
 import 'package:projecthub/view/advertisement/model/advertisement_model.dart';
-import 'package:projecthub/model/categories_info_model.dart';
+import 'package:projecthub/view/home/model/categories_info_model.dart';
 import 'package:projecthub/model/creation_model.dart';
 import 'package:projecthub/view/app_shimmer.dart';
 import 'package:projecthub/view/profile/view/profile_screen.dart';
 import 'package:projecthub/widgets/creation_card.dart';
-import 'package:projecthub/view/home/categories_screen.dart';
+import 'package:projecthub/view/home/view/categories_screen.dart';
 import 'package:projecthub/view/product_details_screen/product_details_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../profile/provider/user_provider.dart';
-import '../../utils/uri_launch_service.dart';
-import '../all_creation_screen/all_creation_screen.dart';
+import '../../profile/provider/user_provider.dart';
+import '../../../utils/uri_launch_service.dart';
+import '../../all_creation_screen/all_creation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
