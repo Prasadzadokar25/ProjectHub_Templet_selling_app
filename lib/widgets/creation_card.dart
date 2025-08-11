@@ -160,7 +160,7 @@ class CreatationCard extends StatelessWidget {
                             ? NetworkImage(
                                 "${ApiConfig.baseURL}/${creation.seller!.sellerProfilePhoto!}")
                             : null,
-                        child: creation.seller?.sellerProfilePhoto == null
+                        child: creation.seller.sellerProfilePhoto == null
                             ? const Icon(Icons.person, size: 20)
                             : null,
                       ),
@@ -170,7 +170,7 @@ class CreatationCard extends StatelessWidget {
                       // Seller Name
                       Expanded(
                         child: Text(
-                          creation.seller?.sellerName ?? 'Unknown Seller',
+                          creation.seller.sellerName ?? 'Unknown Seller',
                           style: TextStyle(
                             fontSize: 14.5.sp,
                             fontWeight: FontWeight.w500,
