@@ -1,6 +1,6 @@
 class ApiConfig {
   // static String baseURL = "https://projecthub.pythonanywhere.com";
-  static String baseURL = "http://192.168.128.38:5000/";
+  static String baseURL = "http://192.168.148.38:5000/";
 
 // usesr rougths
   static String addUser = "$baseURL/user/add";

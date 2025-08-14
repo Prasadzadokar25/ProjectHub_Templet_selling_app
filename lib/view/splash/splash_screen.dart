@@ -174,10 +174,9 @@ class _SplashscreenState extends State<Splashscreen> {
         children: [
           Center(
             child: SizedBox(
-              height: 95.h,
-              width: 95.h,
+              height: 150.h,
               child: Image.asset(
-                "assets/images/education_image.png",
+                "assets/images/icon.png",
                 fit: BoxFit.cover,
               ),
             ),
